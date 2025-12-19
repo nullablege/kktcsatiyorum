@@ -22,7 +22,7 @@ namespace DataAccessLayer.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Bildirim", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Bildirim", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Bildirimler", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.DenetimKaydi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.DenetimKaydi", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,7 +112,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("DenetimKayitlari", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Favori", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Favori", b =>
                 {
                     b.Property<string>("KullaniciId")
                         .HasColumnType("nvarchar(450)")
@@ -133,7 +133,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Favoriler", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Ilan", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Ilan", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -247,7 +247,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Ilanlar", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanAlanDegeri", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanAlanDegeri", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -306,7 +306,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("IlanAlanDegerleri", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanCevabi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanCevabi", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -343,7 +343,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("IlanCevaplari", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanFotografi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanFotografi", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -381,7 +381,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("IlanFotograflari", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanSikayeti", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanSikayeti", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -424,7 +424,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("IlanSikayetleri", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanSorusu", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanSorusu", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -464,7 +464,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("IlanSorulari", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Kategori", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Kategori", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -519,7 +519,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("Kategoriler", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlani", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlani", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -574,7 +574,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("KategoriAlanlari", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlaniSecenegi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlaniSecenegi", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -608,7 +608,7 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("KategoriAlanSecenekleri", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.UygulamaKullanicisi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.UygulamaKullanicisi", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -832,9 +832,9 @@ namespace DataAccessLayer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Bildirim", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Bildirim", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "Kullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "Kullanici")
                         .WithMany("Bildirimler")
                         .HasForeignKey("KullaniciId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -843,9 +843,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Kullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.DenetimKaydi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.DenetimKaydi", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "Kullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "Kullanici")
                         .WithMany("DenetimKayitlari")
                         .HasForeignKey("KullaniciId")
                         .OnDelete(DeleteBehavior.SetNull);
@@ -853,15 +853,15 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Kullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Favori", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Favori", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Ilan", "Ilan")
+                    b.HasOne("EntityLayer.Entities.Ilan", "Ilan")
                         .WithMany("Favoriler")
                         .HasForeignKey("IlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "Kullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "Kullanici")
                         .WithMany("Favoriler")
                         .HasForeignKey("KullaniciId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -872,20 +872,20 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Kullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Ilan", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Ilan", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Kategori", "Kategori")
+                    b.HasOne("EntityLayer.Entities.Kategori", "Kategori")
                         .WithMany("Ilanlar")
                         .HasForeignKey("KategoriId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "OnaylayanKullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "OnaylayanKullanici")
                         .WithMany()
                         .HasForeignKey("OnaylayanKullaniciId")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "SahipKullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "SahipKullanici")
                         .WithMany("Ilanlar")
                         .HasForeignKey("SahipKullaniciId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -898,21 +898,21 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("SahipKullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanAlanDegeri", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanAlanDegeri", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Ilan", "Ilan")
+                    b.HasOne("EntityLayer.Entities.Ilan", "Ilan")
                         .WithMany("AlanDegerleri")
                         .HasForeignKey("IlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.KategoriAlani", "KategoriAlani")
+                    b.HasOne("EntityLayer.Entities.KategoriAlani", "KategoriAlani")
                         .WithMany("IlanAlanDegerleri")
                         .HasForeignKey("KategoriAlaniId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.KategoriAlaniSecenegi", "Secenek")
+                    b.HasOne("EntityLayer.Entities.KategoriAlaniSecenegi", "Secenek")
                         .WithMany("IlanAlanDegerleri")
                         .HasForeignKey("SecenekId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -924,17 +924,17 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Secenek");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanCevabi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanCevabi", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "CevaplayanKullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "CevaplayanKullanici")
                         .WithMany()
                         .HasForeignKey("CevaplayanKullaniciId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.IlanSorusu", "Soru")
+                    b.HasOne("EntityLayer.Entities.IlanSorusu", "Soru")
                         .WithOne("Cevap")
-                        .HasForeignKey("DataAccessLayer.Entities.IlanCevabi", "SoruId")
+                        .HasForeignKey("EntityLayer.Entities.IlanCevabi", "SoruId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -943,9 +943,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Soru");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanFotografi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanFotografi", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Ilan", "Ilan")
+                    b.HasOne("EntityLayer.Entities.Ilan", "Ilan")
                         .WithMany("Fotografler")
                         .HasForeignKey("IlanId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -954,15 +954,15 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Ilan");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanSikayeti", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanSikayeti", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Ilan", "Ilan")
+                    b.HasOne("EntityLayer.Entities.Ilan", "Ilan")
                         .WithMany("Sikayetler")
                         .HasForeignKey("IlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "SikayetEdenKullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "SikayetEdenKullanici")
                         .WithMany()
                         .HasForeignKey("SikayetEdenKullaniciId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -973,15 +973,15 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("SikayetEdenKullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanSorusu", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanSorusu", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Ilan", "Ilan")
+                    b.HasOne("EntityLayer.Entities.Ilan", "Ilan")
                         .WithMany("Sorular")
                         .HasForeignKey("IlanId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", "SoranKullanici")
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", "SoranKullanici")
                         .WithMany()
                         .HasForeignKey("SoranKullaniciId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -992,9 +992,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("SoranKullanici");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Kategori", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Kategori", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Kategori", "UstKategori")
+                    b.HasOne("EntityLayer.Entities.Kategori", "UstKategori")
                         .WithMany("AltKategoriler")
                         .HasForeignKey("UstKategoriId")
                         .OnDelete(DeleteBehavior.Restrict);
@@ -1002,9 +1002,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("UstKategori");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlani", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlani", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.Kategori", "Kategori")
+                    b.HasOne("EntityLayer.Entities.Kategori", "Kategori")
                         .WithMany("KategoriAlanlari")
                         .HasForeignKey("KategoriId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1013,9 +1013,9 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Kategori");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlaniSecenegi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlaniSecenegi", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.KategoriAlani", "KategoriAlani")
+                    b.HasOne("EntityLayer.Entities.KategoriAlani", "KategoriAlani")
                         .WithMany("Secenekler")
                         .HasForeignKey("KategoriAlaniId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1035,7 +1035,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", null)
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1044,7 +1044,7 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", null)
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1059,7 +1059,7 @@ namespace DataAccessLayer.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", null)
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1068,14 +1068,14 @@ namespace DataAccessLayer.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("DataAccessLayer.Entities.UygulamaKullanicisi", null)
+                    b.HasOne("EntityLayer.Entities.UygulamaKullanicisi", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Ilan", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Ilan", b =>
                 {
                     b.Navigation("AlanDegerleri");
 
@@ -1088,12 +1088,12 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("Sorular");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.IlanSorusu", b =>
+            modelBuilder.Entity("EntityLayer.Entities.IlanSorusu", b =>
                 {
                     b.Navigation("Cevap");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.Kategori", b =>
+            modelBuilder.Entity("EntityLayer.Entities.Kategori", b =>
                 {
                     b.Navigation("AltKategoriler");
 
@@ -1102,19 +1102,19 @@ namespace DataAccessLayer.Migrations
                     b.Navigation("KategoriAlanlari");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlani", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlani", b =>
                 {
                     b.Navigation("IlanAlanDegerleri");
 
                     b.Navigation("Secenekler");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.KategoriAlaniSecenegi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.KategoriAlaniSecenegi", b =>
                 {
                     b.Navigation("IlanAlanDegerleri");
                 });
 
-            modelBuilder.Entity("DataAccessLayer.Entities.UygulamaKullanicisi", b =>
+            modelBuilder.Entity("EntityLayer.Entities.UygulamaKullanicisi", b =>
                 {
                     b.Navigation("Bildirimler");
 

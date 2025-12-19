@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Entities
+namespace EntityLayer.Entities
 {
     [Table("Bildirimler")]
     public class Bildirim

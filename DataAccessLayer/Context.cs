@@ -1,16 +1,11 @@
-﻿using DataAccessLayer.Entities;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
+using EntityLayer.Entities;
 
 namespace DataAccessLayer
 {
-    public class Context : IdentityDbContext<UygulamaKullanicisi>
+    public class Context : IdentityDbContext<UygulamaKullanicisi, IdentityRole, string>
     {
         public Context(DbContextOptions<Context> options) : base(options) { }
 

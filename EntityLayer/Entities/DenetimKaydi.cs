@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Entities
+namespace EntityLayer.Entities
 {
     [Table("DenetimKayitlari")]
     public class DenetimKaydi

@@ -7,9 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Entities
+namespace EntityLayer.Entities
 {
-    public class UygulamaKullanicisi : IdentityUser
+    public class UygulamaKullanicisi : IdentityUser<string>
     {
         [Column("AdSoyad")]
         [MaxLength(150)]

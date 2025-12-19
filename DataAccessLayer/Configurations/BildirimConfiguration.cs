@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Entities;
+﻿using EntityLayer.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
@@ -27,5 +27,4 @@ namespace DataAccessLayer.Configurations
             b.HasIndex(x => new { x.KullaniciId, x.OkunduMu });
         }
     }
-
 }
