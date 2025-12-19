@@ -11,16 +11,21 @@ namespace EntityLayer.Entities
 {
     public class UygulamaKullanicisi : IdentityUser<string>
     {
+        public UygulamaKullanicisi()
+        {
+            Id = Guid.NewGuid().ToString();
+        }
+
         [Column("AdSoyad")]
         [MaxLength(150)]
-        public string? AdSoyad { get; set; }
+        public string AdSoyad { get; set; } = null!;
 
         [Column("ProfilFotografYolu")]
         [MaxLength(400)]
         public string? ProfilFotografYolu { get; set; }
 
         [Column("AskidaMi")]
-        public bool AskidaMi { get; set; }
+        public bool AskidaMi { get; set; } = false;
 
         [Column("AskidaBitisTarihi")]
         public DateTime? AskidaBitisTarihi { get; set; }

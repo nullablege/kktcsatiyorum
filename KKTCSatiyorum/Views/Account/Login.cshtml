@@ -1,0 +1,132 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/FE/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="~/FE/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="~/FE/css/styles.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <a href="index.html" class="text-decoration-none">
+                    <i class="bi bi-shop"></i> KKTCSatıyorum
+                </a>
+            </div>
+
+            <h1 class="h2">Giriş Yap</h1>
+            <p class="text-muted text-center mb-4">Hesabınıza giriş yaparak ilanlara erişin</p>
+
+            <form asp-action="Login" asp-asp-controller="Account" method="post">
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-posta Adresi</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" asp-for="Email" id="email" placeholder="ornek@email.com" required
+                               autocomplete="email">
+                    </div>
+                </div>
+                <div style="color:red; text-align:center" asp-asp-validation-summary="all"></div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Şifre</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" asp-for="Password" id="password" placeholder="••••••••" required
+                               autocomplete="current-password">
+                        <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
+                            <i class="bi bi-eye" id="toggleIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="remember">
+                        <label class="form-check-label" for="remember">Beni hatırla</label>
+                    </div>
+                    <a href="#" class="text-primary small">Şifremi unuttum?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 btn-lg mb-3">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Giriş Yap
+                </button>
+
+                <div class="text-center mb-4">
+                    <span class="text-muted">veya</span>
+                </div>
+
+                <button type="button" disabled class="btn btn-outline-secondary w-100 mb-2">
+                    <i class="bi bi-google me-2"></i>Google ile Giriş Yap
+                </button>
+
+                <button type="button" disabled class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-facebook me-2"></i>Facebook ile Giriş Yap
+                </button>
+            </form>
+
+            <hr class="my-4">
+
+            <p class="text-center mb-0">
+                Hesabınız yok mu? <a href="/Account/Register" class="text-primary fw-semibold">Kayıt Ol</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.classList.remove('bi-eye');
+                toggleIcon.classList.add('bi-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.classList.remove('bi-eye-slash');
+                toggleIcon.classList.add('bi-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>
