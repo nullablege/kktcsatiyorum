@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kategori Yönetimi | KKTCSatıyorum Admin</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="bi bi-shop me-2"></i>KKTC Admin</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a href="moderation.html" class="nav-link"><i class="bi bi-shield-check"></i> Moderasyon</a>
+            <a href="categories.html" class="nav-link active"><i class="bi bi-folder"></i> Kategoriler</a>
+            <a href="#" class="nav-link"><i class="bi bi-people"></i> Kullanıcılar</a>
+            <a href="#" class="nav-link"><i class="bi bi-megaphone"></i> İlanlar</a>
+            <hr class="mx-3">
+            <a href="../index.html" class="nav-link"><i class="bi bi-box-arrow-left"></i> Siteye Dön</a>
+        </nav>
+    </aside>
+
+    <main class="admin-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">Kategori Yönetimi</h1>
+                <p class="text-muted mb-0">Kategorileri ve EAV özelliklerini yönetin</p>
+            </div>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">
+                <i class="bi bi-plus-lg me-1"></i> Yeni Kategori
+            </button>
+        </div>
+
+        <div class="row g-4">
+            <!-- Categories List -->
+            <div class="col-lg-5">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Kategoriler</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                onclick="selectCategory('emlak')">
+                                <div>
+                                    <i class="bi bi-house-door text-primary me-2"></i>
+                                    <strong>Emlak</strong>
+                                    <span class="badge bg-light text-dark ms-2">12.450 ilan</span>
+                                </div>
+                                <i class="bi bi-chevron-right text-muted"></i>
+                            </a>
+                            <a href="#"
+                                class="list-group-item list-group-item-action active d-flex justify-content-between align-items-center"
+                                onclick="selectCategory('vasita')">
+                                <div>
+                                    <i class="bi bi-car-front me-2"></i>
+                                    <strong>Vasıta</strong>
+                                    <span class="badge bg-light text-dark ms-2">8.320 ilan</span>
+                                </div>
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                            <a href="#"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                onclick="selectCategory('elektronik')">
+                                <div>
+                                    <i class="bi bi-phone text-primary me-2"></i>
+                                    <strong>Elektronik</strong>
+                                    <span class="badge bg-light text-dark ms-2">15.780 ilan</span>
+                                </div>
+                                <i class="bi bi-chevron-right text-muted"></i>
+                            </a>
+                            <a href="#"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                onclick="selectCategory('evyasam')">
+                                <div>
+                                    <i class="bi bi-lamp text-primary me-2"></i>
+                                    <strong>Ev & Yaşam</strong>
+                                    <span class="badge bg-light text-dark ms-2">6.940 ilan</span>
+                                </div>
+                                <i class="bi bi-chevron-right text-muted"></i>
+                            </a>
+                            <a href="#"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-briefcase text-primary me-2"></i>
+                                    <strong>İş Makineleri</strong>
+                                    <span class="badge bg-light text-dark ms-2">2.150 ilan</span>
+                                </div>
+                                <i class="bi bi-chevron-right text-muted"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EAV Attributes Panel -->
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="mb-0"><i class="bi bi-car-front me-2"></i>Vasıta - Özellikler (EAV)</h5>
+                            <small class="text-muted">Bu kategorideki ilanlar için özel alanlar</small>
+                        </div>
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#addAttributeModal">
+                            <i class="bi bi-plus-lg"></i> Özellik Ekle
+                        </button>
+                    </div>
+                    <div class="card-body p-0">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Özellik Adı</th>
+                                    <th>Tür</th>
+                                    <th>Zorunlu</th>
+                                    <th>İşlem</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Marka</strong></td>
+                                    <td><span class="badge bg-info">Seçim Listesi</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Model</strong></td>
+                                    <td><span class="badge bg-info">Seçim Listesi</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yıl</strong></td>
+                                    <td><span class="badge bg-warning text-dark">Sayı</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Kilometre</strong></td>
+                                    <td><span class="badge bg-warning text-dark">Sayı</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Vites Tipi</strong></td>
+                                    <td><span class="badge bg-info">Seçim Listesi</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Yakıt Tipi</strong></td>
+                                    <td><span class="badge bg-info">Seçim Listesi</span></td>
+                                    <td><i class="bi bi-check-circle-fill text-success"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Renk</strong></td>
+                                    <td><span class="badge bg-info">Seçim Listesi</span></td>
+                                    <td><i class="bi bi-x-circle text-muted"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Motor Hacmi</strong></td>
+                                    <td><span class="badge bg-secondary">Metin</span></td>
+                                    <td><i class="bi bi-x-circle text-muted"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Motor Gücü (HP)</strong></td>
+                                    <td><span class="badge bg-warning text-dark">Sayı</span></td>
+                                    <td><i class="bi bi-x-circle text-muted"></i></td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Info Card -->
+                <div class="card mt-4 border-info">
+                    <div class="card-body">
+                        <h6 class="text-info"><i class="bi bi-info-circle me-2"></i>EAV (Entity-Attribute-Value) Nedir?
+                        </h6>
+                        <p class="small text-muted mb-0">EAV sistemi, farklı kategoriler için farklı özellik alanları
+                            tanımlamanızı sağlar. Örneğin "Vasıta" kategorisinde "Kilometre" ve "Vites" gibi alanlar
+                            varken, "Emlak" kategorisinde "m²" ve "Oda Sayısı" gibi alanlar olabilir. Bu yapı sayesinde
+                            dinamik ve esnek bir ilan sistemi oluşturulur.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Kategori Ekle</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Kategori Adı *</label>
+                        <input type="text" class="form-control" placeholder="Örn: Spor & Outdoor">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">İkon</label>
+                        <select class="form-select">
+                            <option>bi-house-door</option>
+                            <option>bi-car-front</option>
+                            <option>bi-phone</option>
+                            <option>bi-bicycle</option>
+                            <option>bi-controller</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Üst Kategori (Opsiyonel)</label>
+                        <select class="form-select">
+                            <option>-- Ana Kategori --</option>
+                            <option>Emlak</option>
+                            <option>Vasıta</option>
+                            <option>Elektronik</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="activeCheck" checked>
+                        <label class="form-check-label" for="activeCheck">Aktif</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Kaydet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Attribute Modal -->
+    <div class="modal fade" id="addAttributeModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yeni Özellik Ekle (EAV)</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Özellik Adı *</label>
+                        <input type="text" class="form-control" placeholder="Örn: Ekran Boyutu">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Veri Türü *</label>
+                        <select class="form-select">
+                            <option>Metin (Text)</option>
+                            <option>Sayı (Number)</option>
+                            <option selected>Seçim Listesi (Select)</option>
+                            <option>Evet/Hayır (Boolean)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Seçenekler (virgülle ayırın)</label>
+                        <textarea class="form-control" rows="2" placeholder="Örn: 6.1 inç, 6.5 inç, 6.7 inç"></textarea>
+                    </div>
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" id="requiredCheck">
+                        <label class="form-check-label" for="requiredCheck">Zorunlu Alan</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="filterCheck" checked>
+                        <label class="form-check-label" for="filterCheck">Filtrelerde Göster</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Ekle</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function selectCategory(cat) {
+            document.querySelectorAll('.list-group-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.list-group-item').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hesabım | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="bi bi-shop"></i> KKTCSatıyorum</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Ana Sayfa</a></li>
+                    <li class="nav-item"><a class="nav-link" href="search-results.html">İlanlar</a></li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle me-1"></i> Mehmet Y.
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item active" href="dashboard.html"><i
+                                        class="bi bi-grid me-2"></i>Hesabım</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Ayarlar</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-danger" href="login.html"><i
+                                        class="bi bi-box-arrow-right me-2"></i>Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+                    <a href="create-listing.html" class="btn btn-cta"><i class="bi bi-plus-lg"></i> İlan Ver</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Sidebar -->
+                <div class="col-lg-3 mb-4">
+                    <div class="card">
+                        <div class="card-body text-center py-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex p-3 mb-3">
+                                <i class="bi bi-person-circle text-primary" style="font-size:2.5rem;"></i>
+                            </div>
+                            <h5 class="mb-1">Mehmet Yılmaz</h5>
+                            <p class="text-muted small mb-3">mehmet@email.com</p>
+                            <span class="badge bg-success"><i class="bi bi-patch-check me-1"></i>Doğrulanmış Üye</span>
+                            <p class="text-muted small mt-3 mb-0">Üyelik: Mart 2019</p>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-body p-0">
+                            <div class="list-group list-group-flush">
+                                <a href="#" class="list-group-item list-group-item-action active"
+                                    onclick="showTab('listings')">
+                                    <i class="bi bi-grid me-2"></i>İlanlarım <span
+                                        class="badge bg-primary float-end">5</span>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action"
+                                    onclick="showTab('messages')">
+                                    <i class="bi bi-chat-dots me-2"></i>Mesajlar <span
+                                        class="badge bg-danger float-end">3</span>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action"
+                                    onclick="showTab('favorites')">
+                                    <i class="bi bi-heart me-2"></i>Favorilerim <span
+                                        class="badge bg-secondary float-end">8</span>
+                                </a>
+                                <a href="#" class="list-group-item list-group-item-action">
+                                    <i class="bi bi-gear me-2"></i>Hesap Ayarları
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="col-lg-9">
+                    <!-- Listings Tab -->
+                    <div id="listingsTab">
+                        <h1 class="visually-hidden">Hesabım - Dashboard</h1>
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h4 class="mb-0">İlanlarım</h4>
+                            <a href="create-listing.html" class="btn btn-cta"><i class="bi bi-plus-lg me-1"></i>Yeni
+                                İlan</a>
+                        </div>
+
+                        <!-- Listing Item 1 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=150&h=100&fit=crop"
+                                            class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;"
+                                            alt="BMW 320i" loading="lazy">
+                                    </div>
+                                    <div class="col-9 col-md-6">
+                                        <span class="badge bg-success small">Yayında</span>
+                                        <h6 class="mb-1">2021 BMW 320i M Sport</h6>
+                                        <p class="text-primary fw-bold mb-0">1.450.000 ₺</p>
+                                        <small class="text-muted"><i class="bi bi-eye me-1"></i>245 görüntülenme • 3 gün
+                                            önce</small>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-end">
+                                        <a href="listing-detail.html" class="btn btn-sm btn-outline-primary me-1"><i
+                                                class="bi bi-eye"></i></a>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning me-1" title="Pasife Al"><i
+                                                class="bi bi-pause"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Item 2 -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=150&h=100&fit=crop"
+                                            class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
+                                    </div>
+                                    <div class="col-9 col-md-6">
+                                        <span class="badge bg-success small">Yayında</span>
+                                        <h6 class="mb-1">3+1 Deniz Manzaralı Daire</h6>
+                                        <p class="text-primary fw-bold mb-0">2.850.000 ₺</p>
+                                        <small class="text-muted"><i class="bi bi-eye me-1"></i>1.245 görüntülenme •
+                                            1
+                                            hafta önce</small>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-end">
+                                        <a href="listing-detail.html" class="btn btn-sm btn-outline-primary me-1"><i
+                                                class="bi bi-eye"></i></a>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning me-1"><i
+                                                class="bi bi-pause"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Item 3 - Pending -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=150&h=100&fit=crop"
+                                            class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
+                                    </div>
+                                    <div class="col-9 col-md-6">
+                                        <span class="badge bg-warning text-dark small">Onay Bekliyor</span>
+                                        <h6 class="mb-1">iPhone 15 Pro Max 256GB</h6>
+                                        <p class="text-primary fw-bold mb-0">78.500 ₺</p>
+                                        <small class="text-muted"><i class="bi bi-clock me-1"></i>AI analizi devam
+                                            ediyor...</small>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-end">
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Listing Item 4 - Paused -->
+                        <div class="card mb-3 opacity-75">
+                            <div class="card-body">
+                                <div class="row g-3 align-items-center">
+                                    <div class="col-3 col-md-2">
+                                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=150&h=100&fit=crop"
+                                            class="img-fluid rounded" style="height:70px;object-fit:cover;width:100%;">
+                                    </div>
+                                    <div class="col-9 col-md-6">
+                                        <span class="badge bg-secondary small">Pasif</span>
+                                        <h6 class="mb-1">Modern L Koltuk Takımı</h6>
+                                        <p class="text-primary fw-bold mb-0">45.000 ₺</p>
+                                        <small class="text-muted"><i class="bi bi-eye me-1"></i>89
+                                            görüntülenme</small>
+                                    </div>
+                                    <div class="col-12 col-md-4 text-md-end">
+                                        <button class="btn btn-sm btn-success me-1" title="Aktif Et"><i
+                                                class="bi bi-play"></i></button>
+                                        <button class="btn btn-sm btn-outline-secondary me-1"><i
+                                                class="bi bi-pencil"></i></button>
+                                        <button class="btn btn-sm btn-outline-danger"><i
+                                                class="bi bi-trash"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Messages Tab -->
+                    <div id="messagesTab" style="display:none;">
+                        <h4 class="mb-4">Mesajlar / Sorular</h4>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>Ahmet Y.</strong> <span class="text-muted small">BMW 320i
+                                        hakkında</span>
+                                </div>
+                                <span class="badge bg-danger">Yeni</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-3">"Araç hala satılık mı? Yerinde görmek istiyorum."</p>
+                                <div class="mb-3">
+                                    <textarea class="form-control form-control-sm" rows="2"
+                                        placeholder="Cevabınızı yazın..."></textarea>
+                                </div>
+                                <button class="btn btn-sm btn-primary"><i class="bi bi-send me-1"></i>Yanıtla</button>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                <div><strong>Zeynep K.</strong> <span class="text-muted small">Daire hakkında</span>
+                                </div>
+                                <span class="badge bg-danger">Yeni</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-3">"Pazarlık payı var mı? En son ne kadar olur?"</p>
+                                <textarea class="form-control form-control-sm" rows="2"
+                                    placeholder="Cevabınızı yazın..."></textarea>
+                                <button class="btn btn-sm btn-primary mt-2"><i
+                                        class="bi bi-send me-1"></i>Yanıtla</button>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header bg-white">
+                                <strong>Can M.</strong> <span class="text-muted small">BMW 320i hakkında</span>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-2 text-muted">"Takas düşünür müsünüz?"</p>
+                                <div class="bg-light rounded p-2 mb-2">
+                                    <small class="text-muted">Sizin cevabınız:</small>
+                                    <p class="mb-0 small">"Hayır, sadece nakit satış yapıyorum."</p>
+                                </div>
+                                <small class="text-muted">2 gün önce yanıtlandı</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Favorites Tab -->
+                    <div id="favoritesTab" style="display:none;">
+                        <h4 class="mb-4">Favorilerim</h4>
+                        <div class="row g-3">
+                            <div class="col-6 col-md-4">
+                                <a href="listing-detail.html" class="text-decoration-none">
+                                    <div class="card card-product">
+                                        <button class="btn-favorite active"><i class="bi bi-heart-fill"></i></button>
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
+                                            class="card-img-top" style="height:140px;object-fit:cover;">
+                                        <div class="card-body">
+                                            <h6 class="product-title">Havuzlu Villa 5+2</h6>
+                                            <div class="product-price">12.500.000 ₺</div>
+                                            <div class="product-location small"><i class="bi bi-geo-alt"></i> Muğla,
+                                                Bodrum</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <a href="listing-detail.html" class="text-decoration-none">
+                                    <div class="card card-product">
+                                        <button class="btn-favorite active"><i class="bi bi-heart-fill"></i></button>
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop"
+                                            class="card-img-top" style="height:140px;object-fit:cover;">
+                                        <div class="card-body">
+                                            <h6 class="product-title">MacBook Pro M2</h6>
+                                            <div class="product-price">89.000 ₺</div>
+                                            <div class="product-location small"><i class="bi bi-geo-alt"></i>
+                                                İstanbul,
+                                                Şişli</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-6 col-md-4">
+                                <a href="listing-detail.html" class="text-decoration-none">
+                                    <div class="card card-product">
+                                        <button class="btn-favorite active"><i class="bi bi-heart-fill"></i></button>
+                                        <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=400&h=300&fit=crop"
+                                            class="card-img-top" style="height:140px;object-fit:cover;">
+                                        <div class="card-body">
+                                            <h6 class="product-title">Mercedes C200 AMG</h6>
+                                            <div class="product-price">1.750.000 ₺</div>
+                                            <div class="product-location small"><i class="bi bi-geo-alt"></i>
+                                                İstanbul,
+                                                Bakırköy</div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-bottom pt-0 mt-0 border-0">
+                <p class="mb-0">&copy; 2024 KKTCSatıyorum. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function showTab(tab) {
+            document.getElementById('listingsTab').style.display = 'none';
+            document.getElementById('messagesTab').style.display = 'none';
+            document.getElementById('favoritesTab').style.display = 'none';
+            document.getElementById(tab + 'Tab').style.display = 'block';
+
+            document.querySelectorAll('.list-group-item').forEach(el => el.classList.remove('active'));
+            event.target.closest('.list-group-item').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

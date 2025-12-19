@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlan Ver | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><i class="bi bi-shop"></i> KKTCSatıyorum</a>
+            <a href="dashboard.html" class="btn btn-outline-secondary btn-sm"><i class="bi bi-x-lg"></i> İptal</a>
+        </div>
+    </nav>
+
+    <main class="py-4">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h1 class="h2 text-center mb-4">Yeni İlan Oluştur</h1>
+
+                    <div class="wizard-steps mb-4">
+                        <div class="wizard-step completed" data-step="1">
+                            <div class="step-number"><i class="bi bi-check"></i></div>
+                            <span class="step-label">Kategori</span>
+                        </div>
+                        <div class="wizard-step active" data-step="2">
+                            <div class="step-number">2</div>
+                            <span class="step-label">Detaylar</span>
+                        </div>
+                        <div class="wizard-step" data-step="3">
+                            <div class="step-number">3</div>
+                            <span class="step-label">Fotoğraf</span>
+                        </div>
+                        <div class="wizard-step" data-step="4">
+                            <div class="step-number">4</div>
+                            <span class="step-label">Konum</span>
+                        </div>
+                        <div class="wizard-step" data-step="5">
+                            <div class="step-number">5</div>
+                            <span class="step-label">Önizleme</span>
+                        </div>
+                    </div>
+
+                    <!-- Step 1: Kategori -->
+                    <div class="card mb-4 step-content" id="step1" style="display: none;">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Kategori Seçin</h4>
+                            <div class="row g-3">
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card" onclick="selectCategory(this)">
+                                        <i class="bi bi-house-door"></i>
+                                        <div class="category-name">Emlak</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card active" onclick="selectCategory(this)">
+                                        <i class="bi bi-car-front"></i>
+                                        <div class="category-name">Vasıta</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card" onclick="selectCategory(this)">
+                                        <i class="bi bi-phone"></i>
+                                        <div class="category-name">Elektronik</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card" onclick="selectCategory(this)">
+                                        <i class="bi bi-lamp"></i>
+                                        <div class="category-name">Ev & Yaşam</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card" onclick="selectCategory(this)">
+                                        <i class="bi bi-briefcase"></i>
+                                        <div class="category-name">İş Makineleri</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-4">
+                                    <div class="category-card" onclick="selectCategory(this)">
+                                        <i class="bi bi-three-dots"></i>
+                                        <div class="category-name">Diğer</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-end mt-4">
+                                <button class="btn btn-primary" onclick="goToStep(2)">Devam Et <i
+                                        class="bi bi-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Detaylar -->
+                    <div class="card mb-4 step-content" id="step2">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">İlan Detayları</h4>
+                            <p class="text-muted mb-4"><span class="badge bg-primary me-2">Vasıta</span>Seçilen kategori
+                                için detayları doldurun.</p>
+
+                            <h6 class="text-primary mb-3"><i class="bi bi-info-circle me-2"></i>Genel Bilgiler</h6>
+                            <div class="mb-3">
+                                <label class="form-label">İlan Başlığı *</label>
+                                <input type="text" class="form-control" value="2021 BMW 320i M Sport">
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-6">
+                                    <label class="form-label">Fiyat *</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" value="1450000">
+                                        <span class="input-group-text">₺</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Fiyat Türü</label>
+                                    <select class="form-select">
+                                        <option selected>Sabit Fiyat</option>
+                                        <option>Pazarlık Olur</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h6 class="text-primary mb-3"><i class="bi bi-car-front me-2"></i>Araç Özellikleri (EAV)
+                            </h6>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label">Marka *</label>
+                                    <select class="form-select">
+                                        <option>Audi</option>
+                                        <option selected>BMW</option>
+                                        <option>Mercedes</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Model *</label>
+                                    <select class="form-select">
+                                        <option selected>320i</option>
+                                        <option>M3</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Yıl *</label>
+                                    <select class="form-select">
+                                        <option>2023</option>
+                                        <option>2022</option>
+                                        <option selected>2021</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Kilometre *</label>
+                                    <div class="input-group"><input type="number" class="form-control"
+                                            value="45000"><span class="input-group-text">KM</span></div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Vites *</label>
+                                    <select class="form-select">
+                                        <option selected>Otomatik</option>
+                                        <option>Düz</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Yakıt *</label>
+                                    <select class="form-select">
+                                        <option selected>Benzin</option>
+                                        <option>Dizel</option>
+                                        <option>Elektrik</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <h6 class="text-primary mb-3"><i class="bi bi-text-paragraph me-2"></i>Açıklama</h6>
+                            <textarea class="form-control mb-4"
+                                rows="4">2021 model BMW 320i M Sport paket. Tek sahibinden, kazasız araç. Harman Kardon ses sistemi, sunroof, 360 kamera mevcut.</textarea>
+
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-secondary" onclick="goToStep(1)"><i
+                                        class="bi bi-arrow-left me-1"></i> Geri</button>
+                                <button class="btn btn-primary" onclick="goToStep(3)">Devam Et <i
+                                        class="bi bi-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Fotoğraf -->
+                    <div class="card mb-4 step-content" id="step3" style="display: none;">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Fotoğraf Ekle</h4>
+                            <div class="upload-zone mb-4">
+                                <i class="bi bi-cloud-arrow-up"></i>
+                                <p><strong>Fotoğrafları buraya sürükleyin</strong></p>
+                                <button type="button" class="btn btn-outline-primary"><i
+                                        class="bi bi-folder me-2"></i>Dosya Seç</button>
+                            </div>
+                            <div class="row g-3 mb-4">
+                                <div class="col-4 col-md-3">
+                                    <div class="position-relative">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200&h=150&fit=crop"
+                                            class="img-fluid rounded" style="height:80px;width:100%;object-fit:cover;">
+                                        <span class="badge bg-primary position-absolute top-0 start-0 m-1"
+                                            style="font-size:0.65rem;">Kapak</span>
+                                    </div>
+                                </div>
+                                <div class="col-4 col-md-3">
+                                    <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=200&h=150&fit=crop"
+                                        class="img-fluid rounded" style="height:80px;width:100%;object-fit:cover;">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-secondary" onclick="goToStep(2)"><i
+                                        class="bi bi-arrow-left me-1"></i> Geri</button>
+                                <button class="btn btn-primary" onclick="goToStep(4)">Devam Et <i
+                                        class="bi bi-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Konum -->
+                    <div class="card mb-4 step-content" id="step4" style="display: none;">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Konum Belirle</h4>
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-4">
+                                    <label class="form-label">İl *</label>
+                                    <select class="form-select">
+                                        <option selected>İstanbul</option>
+                                        <option>Ankara</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">İlçe *</label>
+                                    <select class="form-select">
+                                        <option>Kadıköy</option>
+                                        <option selected>Beşiktaş</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Mahalle</label>
+                                    <select class="form-select">
+                                        <option selected>Etiler</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="locationMap" class="map-container mb-3"></div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-secondary" onclick="goToStep(3)"><i
+                                        class="bi bi-arrow-left me-1"></i> Geri</button>
+                                <button class="btn btn-primary" onclick="goToStep(5)">Devam Et <i
+                                        class="bi bi-arrow-right ms-1"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Önizleme -->
+                    <div class="card mb-4 step-content" id="step5" style="display: none;">
+                        <div class="card-body p-4">
+                            <h4 class="mb-4">Önizleme ve Onay</h4>
+                            <div class="border rounded p-4 mb-4 bg-light">
+                                <div class="row g-4">
+                                    <div class="col-md-4">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=400&h=300&fit=crop"
+                                            class="img-fluid rounded">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <span class="badge bg-primary mb-2">Vasıta</span>
+                                        <h5>2021 BMW 320i M Sport</h5>
+                                        <div class="h4 text-primary">1.450.000 ₺</div>
+                                        <div class="eav-attributes mt-3" style="background:white;">
+                                            <div class="eav-item"><span class="eav-label">KM</span><span
+                                                    class="eav-value">45.000</span></div>
+                                            <div class="eav-item"><span class="eav-label">Yıl</span><span
+                                                    class="eav-value">2021</span></div>
+                                            <div class="eav-item"><span class="eav-label">Vites</span><span
+                                                    class="eav-value">Otomatik</span></div>
+                                            <div class="eav-item"><span class="eav-label">Yakıt</span><span
+                                                    class="eav-value">Benzin</span></div>
+                                        </div>
+                                        <p class="text-muted small mt-3"><i class="bi bi-geo-alt me-1"></i>İstanbul,
+                                            Beşiktaş</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="alert alert-info d-flex align-items-center">
+                                <i class="bi bi-robot me-3 fs-4"></i>
+                                <div><strong>AI Analizi</strong><br><small>İlanınız yayınlanmadan önce AI tarafından
+                                        analiz edilecektir.</small></div>
+                            </div>
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="terms">
+                                <label class="form-check-label" for="terms"><a href="#">İlan Yayın Kuralları</a>'nı
+                                    kabul ediyorum.</label>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <button class="btn btn-outline-secondary" onclick="goToStep(4)"><i
+                                        class="bi bi-arrow-left me-1"></i> Geri</button>
+                                <button class="btn btn-cta btn-lg" onclick="submitListing()"><i
+                                        class="bi bi-check-lg me-2"></i>İlanı Yayınla</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="successModal" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content text-center p-4">
+                                <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex p-4 mx-auto mb-3">
+                                    <i class="bi bi-check-circle-fill text-success" style="font-size:3rem;"></i>
+                                </div>
+                                <h4>İlanınız Gönderildi!</h4>
+                                <p class="text-muted">AI analizi ve moderatör onayından sonra yayınlanacaktır.</p>
+                                <a href="dashboard.html" class="btn btn-primary mt-2"><i
+                                        class="bi bi-grid me-2"></i>İlanlarıma Git</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        let currentStep = 2, map = null;
+        function goToStep(step) {
+            document.getElementById('step' + currentStep).style.display = 'none';
+            document.getElementById('step' + step).style.display = 'block';
+            document.querySelectorAll('.wizard-step').forEach((el, i) => {
+                el.classList.remove('active', 'completed');
+                if (i + 1 < step) { el.classList.add('completed'); el.querySelector('.step-number').innerHTML = '<i class="bi bi-check"></i>'; }
+                else if (i + 1 === step) { el.classList.add('active'); el.querySelector('.step-number').textContent = step; }
+                else el.querySelector('.step-number').textContent = i + 1;
+            });
+            currentStep = step;
+            if (step === 4 && !map) {
+                setTimeout(() => {
+                    map = L.map('locationMap').setView([41.04, 29.01], 14);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                    L.marker([41.04, 29.01], { draggable: true }).addTo(map);
+                }, 100);
+            }
+        }
+        function selectCategory(el) { document.querySelectorAll('.category-card').forEach(e => e.classList.remove('active')); el.classList.add('active'); }
+        function submitListing() { new bootstrap.Modal(document.getElementById('successModal')).show(); }
+    </script>
+</body>
+
+</html>

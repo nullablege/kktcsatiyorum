@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kayıt Ol | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+    <div class="auth-container">
+        <div class="auth-card" style="max-width: 500px;">
+            <div class="auth-logo">
+                <a href="index.html" class="text-decoration-none">
+                    <i class="bi bi-shop"></i> KKTCSatıyorum
+                </a>
+            </div>
+
+            <h1 class="h2">Hesap Oluştur</h1>
+
+            <p class="text-muted text-center mb-4">Hemen ücretsiz kayıt olun ve ilan vermeye başlayın</p>
+
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="firstName" class="form-label">Ad</label>
+                        <input type="text" class="form-control" id="firstName" placeholder="Adınız" required
+                            autocomplete="given-name">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="lastName" class="form-label">Soyad</label>
+                        <input type="text" class="form-control" id="lastName" placeholder="Soyadınız" required
+                            autocomplete="family-name">
+                    </div>
+                </div>
+
+                <div class="mb-3 mt-3">
+                    <label for="email" class="form-label">E-posta Adresi</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" placeholder="ornek@email.com" required
+                            autocomplete="email">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Telefon Numarası <span
+                            class="text-muted">(Opsiyonel)</span></label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-phone"></i></span>
+                        <input type="tel" class="form-control" id="phone" placeholder="05XX XXX XX XX"
+                            autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="password" class="form-label">Şifre</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="En az 8 karakter"
+                            required autocomplete="new-password">
+                    </div>
+                    <div class="form-text">En az 8 karakter, bir büyük harf ve bir rakam içermeli.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="passwordConfirm" class="form-label">Şifre Tekrar</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" class="form-control" id="passwordConfirm"
+                            placeholder="Şifrenizi tekrar girin" required autocomplete="new-password">
+                    </div>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        <a href="#">Kullanım Koşulları</a> ve <a href="#">Gizlilik Politikası</a>'nı okudum, kabul
+                        ediyorum.
+                    </label>
+                </div>
+
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="newsletter">
+                    <label class="form-check-label" for="newsletter">
+                        Kampanya ve fırsatlardan haberdar olmak istiyorum.
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-cta w-100 btn-lg mb-3">
+                    <i class="bi bi-person-plus me-2"></i>Kayıt Ol
+                </button>
+
+                <div class="text-center mb-4">
+                    <span class="text-muted">veya</span>
+                </div>
+
+                <button type="button" class="btn btn-outline-secondary w-100 mb-2">
+                    <i class="bi bi-google me-2"></i>Google ile Kayıt Ol
+                </button>
+
+                <button type="button" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-facebook me-2"></i>Facebook ile Kayıt Ol
+                </button>
+            </form>
+
+            <hr class="my-4">
+
+            <p class="text-center mb-0">
+                Zaten hesabınız var mı? <a href="login.html" class="text-primary fw-semibold">Giriş Yap</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

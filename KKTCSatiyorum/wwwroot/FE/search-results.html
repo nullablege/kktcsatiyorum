@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAGE_TITLE_PLACEHOLDER | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header / Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shop"></i> KKTCSatıyorum
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Navbar Search -->
+                <form class="d-none d-lg-flex mx-auto" style="max-width: 400px; flex: 1;">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control" placeholder="İlan ara...">
+                        <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                    </div>
+                </form>
+
+                <ul class="navbar-nav ms-auto me-3">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Ana Sayfa</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle active" href="#" data-bs-toggle="dropdown">Kategoriler</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="search-results.html">Emlak</a></li>
+                            <li><a class="dropdown-item" href="search-results.html">Vasıta</a></li>
+                            <li><a class="dropdown-item" href="search-results.html">Elektronik</a></li>
+                            <li><a class="dropdown-item" href="search-results.html">Ev & Yaşam</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="search-results.html">İlanlar</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-2">
+                    <a href="login.html" class="btn btn-outline-primary">
+                        <i class="bi bi-person"></i> Giriş Yap
+                    </a>
+                    <a href="create-listing.html" class="btn btn-cta">
+                        <i class="bi bi-plus-lg"></i> İlan Ver
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <div class="bg-white py-3 border-bottom">
+        <div class="container">
+            <div class="row g-2 align-items-center">
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0" placeholder="Araba, telefon, ev..."
+                            value="Daire">
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <select class="form-select">
+                        <option>Tüm Kategoriler</option>
+                        <option selected>Emlak</option>
+                        <option>Vasıta</option>
+                        <option>Elektronik</option>
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <select class="form-select">
+                        <option>Tüm KKTC</option>
+                        <option selected>Girne</option>
+                        <option>Lefkoşa</option>
+                        <option>Gazimağusa</option>
+                    </select>
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i> Ara
+                    </button>
+                </div>
+                <div class="col-lg-1">
+                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="offcanvas"
+                        data-bs-target="#filterOffcanvas">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="py-4">
+        <div class="container">
+            <div class="row">
+                <!-- Filters Sidebar - Desktop -->
+                <div class="col-lg-3 d-none d-lg-block">
+                    <div class="filter-sidebar">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Filtreler</h5>
+                            <button class="btn btn-link btn-sm text-muted p-0">Temizle</button>
+                        </div>
+
+                        <!-- Category Filter -->
+                        <div class="filter-section">
+                            <h6>Kategori</h6>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat1" checked>
+                                <label class="form-check-label" for="cat1">Satılık Daire <span
+                                        class="text-muted">(3.240)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat2">
+                                <label class="form-check-label" for="cat2">Kiralık Daire <span
+                                        class="text-muted">(1.890)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat3">
+                                <label class="form-check-label" for="cat3">Müstakil Ev <span
+                                        class="text-muted">(756)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="cat4">
+                                <label class="form-check-label" for="cat4">Villa <span
+                                        class="text-muted">(234)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="filter-section">
+                            <h6>Fiyat Aralığı</h6>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Min">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Max">
+                                </div>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="price" id="price1">
+                                <label class="form-check-label" for="price1">1M - 2M ₺</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="price" id="price2" checked>
+                                <label class="form-check-label" for="price2">2M - 3M ₺</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="price" id="price3">
+                                <label class="form-check-label" for="price3">3M - 5M ₺</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="price" id="price4">
+                                <label class="form-check-label" for="price4">5M+ ₺</label>
+                            </div>
+                        </div>
+
+                        <!-- Location Filter -->
+                        <div class="filter-section">
+                            <h6>Konum</h6>
+                            <select class="form-select form-select-sm mb-2">
+                                <option selected>Girne</option>
+                                <option>Lefkoşa</option>
+                                <option>Gazimağusa</option>
+                            </select>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="loc1" checked>
+                                <label class="form-check-label" for="loc1">Alsancak <span
+                                        class="text-muted">(456)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="loc2">
+                                <label class="form-check-label" for="loc2">Karaağaç <span
+                                        class="text-muted">(312)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="loc3">
+                                <label class="form-check-label" for="loc3">Lapta <span
+                                        class="text-muted">(278)</span></label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="loc4">
+                                <label class="form-check-label" for="loc4">Esentepe <span
+                                        class="text-muted">(189)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- EAV Filters: Room Count -->
+                        <div class="filter-section">
+                            <h6>Oda Sayısı</h6>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="btn btn-outline-secondary btn-sm">1+0</button>
+                                <button class="btn btn-outline-secondary btn-sm">1+1</button>
+                                <button class="btn btn-outline-secondary btn-sm">2+1</button>
+                                <button class="btn btn-primary btn-sm">3+1</button>
+                                <button class="btn btn-outline-secondary btn-sm">4+1</button>
+                                <button class="btn btn-outline-secondary btn-sm">5+</button>
+                            </div>
+                        </div>
+
+                        <!-- EAV Filters: Area -->
+                        <div class="filter-section">
+                            <h6>Metrekare (m²)</h6>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Min m²"
+                                        value="100">
+                                </div>
+                                <div class="col-6">
+                                    <input type="text" class="form-control form-control-sm" placeholder="Max m²"
+                                        value="200">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-1"></i> Filtrele
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Results -->
+                <div class="col-lg-9">
+                    <!-- Results Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1 class="h5 mb-1">Arama Sonuçları</h1>
+                            <span class="text-muted">1.245 ilan bulundu</span>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <select class="form-select form-select-sm" style="width: auto;">
+                                <option>Tarih: Yeniden Eskiye</option>
+                                <option>Tarih: Eskiden Yeniye</option>
+                                <option>Fiyat: Artan</option>
+                                <option>Fiyat: Azalan</option>
+                            </select>
+                            <div class="btn-group">
+                                <button class="btn btn-outline-secondary btn-sm active" title="Grid">
+                                    <i class="bi bi-grid"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" title="List">
+                                    <i class="bi bi-list"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Filters -->
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        <span class="badge bg-primary d-flex align-items-center gap-1">
+                            Emlak <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;"></button>
+                        </span>
+                        <span class="badge bg-primary d-flex align-items-center gap-1">
+                            İstanbul, Kadıköy <button class="btn-close btn-close-white ms-1"
+                                style="font-size: 0.6rem;"></button>
+                        </span>
+                        <span class="badge bg-primary d-flex align-items-center gap-1">
+                            3+1 <button class="btn-close btn-close-white ms-1" style="font-size: 0.6rem;"></button>
+                        </span>
+                        <span class="badge bg-primary d-flex align-items-center gap-1">
+                            2M - 3M ₺ <button class="btn-close btn-close-white ms-1"
+                                style="font-size: 0.6rem;"></button>
+                        </span>
+                    </div>
+
+                    <!-- Product Grid -->
+                    <div class="row g-3">
+                        <!-- Product 1 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <span class="product-badge">Vitrin</span>
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">3+1 Deniz Manzaralı Daire</h5>
+                                        <div class="product-price">2.850.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">2 saat önce</span>
+                                            <small class="text-muted">145 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 2 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Yeni Yapılmış Site İçi Daire</h5>
+                                        <div class="product-price">2.450.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">5 saat önce</span>
+                                            <small class="text-muted">130 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 3 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite active"><i class="bi bi-heart-fill"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Villa">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Havuzlu Geniş Bahçeli Daire</h5>
+                                        <div class="product-price">2.950.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">1 gün önce</span>
+                                            <small class="text-muted">160 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 4 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1560185007-cde436f6a4d0?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Merkezi Konumda Lüks Daire</h5>
+                                        <div class="product-price">2.650.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">1 gün önce</span>
+                                            <small class="text-muted">140 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 5 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Yeni Tadilatlı Ferah Daire</h5>
+                                        <div class="product-price">2.200.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">2 gün önce</span>
+                                            <small class="text-muted">125 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 6 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Ev">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Güneş Alan Köşe Daire</h5>
+                                        <div class="product-price">2.750.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">3 gün önce</span>
+                                            <small class="text-muted">155 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 7 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Modern Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Modern Tasarımlı Residence</h5>
+                                        <div class="product-price">2.980.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">4 gün önce</span>
+                                            <small class="text-muted">165 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 8 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Aile İçin İdeal Geniş Daire</h5>
+                                        <div class="product-price">2.550.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">5 gün önce</span>
+                                            <small class="text-muted">150 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Product 9 -->
+                        <div class="col-6 col-md-4">
+                            <a href="listing-detail.html" class="text-decoration-none">
+                                <div class="card card-product">
+                                    <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                    <img src="https://images.unsplash.com/photo-1560185127-6a8e2c5b2df0?w=400&h=300&fit=crop"
+                                        class="card-img-top" alt="Daire">
+                                    <div class="card-body">
+                                        <h5 class="product-title">Yatırıma Uygun Satılık Daire</h5>
+                                        <div class="product-price">2.100.000 ₺</div>
+                                        <div class="product-location">
+                                            <i class="bi bi-geo-alt"></i> İstanbul, Kadıköy
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <span class="product-date">1 hafta önce</span>
+                                            <small class="text-muted">120 m² • 3+1</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav class="mt-5">
+                        <ul class="pagination pagination-custom justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item"><a class="page-link" href="#">4</a></li>
+                            <li class="page-item"><a class="page-link" href="#">5</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Filter Offcanvas -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title">Filtreler</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <!-- Same filters as sidebar -->
+            <div class="filter-section">
+                <h6>Kategori</h6>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="mcat1" checked>
+                    <label class="form-check-label" for="mcat1">Satılık Daire</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="mcat2">
+                    <label class="form-check-label" for="mcat2">Kiralık Daire</label>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h6>Fiyat Aralığı</h6>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-sm" placeholder="Min">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" class="form-control form-control-sm" placeholder="Max">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h6>Konum</h6>
+                <select class="form-select form-select-sm mb-2">
+                    <option selected>İstanbul</option>
+                    <option>Ankara</option>
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h6>Oda Sayısı</h6>
+                <div class="d-flex flex-wrap gap-2">
+                    <button class="btn btn-outline-secondary btn-sm">1+0</button>
+                    <button class="btn btn-outline-secondary btn-sm">1+1</button>
+                    <button class="btn btn-outline-secondary btn-sm">2+1</button>
+                    <button class="btn btn-primary btn-sm">3+1</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary w-100 mt-3" data-bs-dismiss="offcanvas">
+                <i class="bi bi-funnel me-1"></i> Filtrele (1.245 sonuç)
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <h5><i class="bi bi-shop me-2"></i>KKTCSatıyorum</h5>
+                    <p class="text-muted">KKTC'nin en güvenilir ilan platformu.</p>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5>Kategoriler</h5>
+                    <a href="search-results.html">Emlak</a>
+                    <a href="search-results.html">Vasıta</a>
+                    <a href="search-results.html">Elektronik</a>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5>Hesabım</h5>
+                    <a href="login.html">Giriş Yap</a>
+                    <a href="register.html">Kayıt Ol</a>
+                    <a href="dashboard.html">İlanlarım</a>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5>Yardım</h5>
+                    <a href="#">Nasıl Çalışır?</a>
+                    <a href="#">SSS</a>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <h5>Kurumsal</h5>
+                    <a href="#">Hakkımızda</a>
+                    <a href="#">Gizlilik Politikası</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="mb-0">&copy; 2024 KKTCSatıyorum. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

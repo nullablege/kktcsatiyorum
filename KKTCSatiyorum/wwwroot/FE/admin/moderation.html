@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderasyon | KKTCSatıyorum Admin</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <aside class="admin-sidebar">
+        <div class="sidebar-brand">
+            <h4><i class="bi bi-shop me-2"></i>KKTC Admin</h4>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="index.html" class="nav-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
+            <a href="moderation.html" class="nav-link active"><i class="bi bi-shield-check"></i> Moderasyon <span
+                    class="badge bg-danger ms-auto">12</span></a>
+            <a href="categories.html" class="nav-link"><i class="bi bi-folder"></i> Kategoriler</a>
+            <a href="#" class="nav-link"><i class="bi bi-people"></i> Kullanıcılar</a>
+            <a href="#" class="nav-link"><i class="bi bi-megaphone"></i> İlanlar</a>
+            <hr class="mx-3">
+            <a href="../index.html" class="nav-link"><i class="bi bi-box-arrow-left"></i> Siteye Dön</a>
+        </nav>
+    </aside>
+
+    <main class="admin-content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 mb-1">Moderasyon Havuzu</h1>
+                <p class="text-muted mb-0">AI analizi tamamlanmış, onay bekleyen ilanlar</p>
+            </div>
+            <div class="d-flex gap-2">
+                <select class="form-select form-select-sm" style="width:auto;">
+                    <option>Tüm İlanlar</option>
+                    <option>AI: Güvenli</option>
+                    <option>AI: Riskli</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Pending Listings Table -->
+        <div class="table-custom">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr>
+                        <th>İlan</th>
+                        <th>Kategori</th>
+                        <th>Satıcı</th>
+                        <th>AI Skoru</th>
+                        <th>Tarih</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Item 1 - Safe -->
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=60&h=40&fit=crop"
+                                    class="rounded me-3" style="width:60px;height:40px;object-fit:cover;">
+                                <div>
+                                    <strong>2021 BMW 320i M Sport</strong>
+                                    <div class="small text-muted">1.450.000 ₺</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary">Vasıta</span></td>
+                        <td>
+                            <div>Mehmet Y.</div>
+                            <small class="text-muted">mehmet@email.com</small>
+                        </td>
+                        <td>
+                            <div class="ai-score safe">
+                                <i class="bi bi-check-circle-fill"></i> Güvenli
+                            </div>
+                            <small class="text-muted d-block mt-1">%98 güven skoru</small>
+                        </td>
+                        <td><small>10 dk önce</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveItem(this)" title="Onayla">
+                                <i class="bi bi-check-lg"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#rejectModal"
+                                title="Reddet">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Item 2 - Safe -->
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&h=40&fit=crop"
+                                    class="rounded me-3" style="width:60px;height:40px;object-fit:cover;">
+                                <div>
+                                    <strong>3+1 Deniz Manzaralı Daire</strong>
+                                    <div class="small text-muted">2.850.000 ₺</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-success">Emlak</span></td>
+                        <td>
+                            <div>Ayşe K.</div>
+                            <small class="text-muted">ayse@email.com</small>
+                        </td>
+                        <td>
+                            <div class="ai-score safe">
+                                <i class="bi bi-check-circle-fill"></i> Güvenli
+                            </div>
+                            <small class="text-muted d-block mt-1">%95 güven skoru</small>
+                        </td>
+                        <td><small>25 dk önce</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveItem(this)"><i
+                                    class="bi bi-check-lg"></i></button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectModal"><i class="bi bi-x-lg"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Item 3 - Risky -->
+                    <tr class="table-warning">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=60&h=40&fit=crop"
+                                    class="rounded me-3" style="width:60px;height:40px;object-fit:cover;">
+                                <div>
+                                    <strong>iPhone 15 Pro Max ACIL SATILIK!!!</strong>
+                                    <div class="small text-muted">35.000 ₺</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-warning text-dark">Elektronik</span></td>
+                        <td>
+                            <div>Yeni Kullanıcı</div>
+                            <small class="text-muted">yeni123@email.com</small>
+                        </td>
+                        <td>
+                            <div class="ai-score risky">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Riskli
+                            </div>
+                            <small class="text-danger d-block mt-1">Şüpheli düşük fiyat, acil satış ifadesi</small>
+                        </td>
+                        <td><small>1 saat önce</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info me-1" title="Detay"><i
+                                    class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveItem(this)"><i
+                                    class="bi bi-check-lg"></i></button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectModal"><i class="bi bi-x-lg"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Item 4 - Risky -->
+                    <tr class="table-warning">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=60&h=40&fit=crop"
+                                    class="rounded me-3" style="width:60px;height:40px;object-fit:cover;">
+                                <div>
+                                    <strong>Mercedes C200 - ÖZEL KAMPANYA</strong>
+                                    <div class="small text-muted">500.000 ₺</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-primary">Vasıta</span></td>
+                        <td>
+                            <div>Ali T.</div>
+                            <small class="text-muted">ali_t@email.com</small>
+                        </td>
+                        <td>
+                            <div class="ai-score risky">
+                                <i class="bi bi-exclamation-triangle-fill"></i> Riskli
+                            </div>
+                            <small class="text-danger d-block mt-1">Piyasanın çok altında fiyat</small>
+                        </td>
+                        <td><small>2 saat önce</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-outline-info me-1"><i class="bi bi-eye"></i></button>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveItem(this)"><i
+                                    class="bi bi-check-lg"></i></button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectModal"><i class="bi bi-x-lg"></i></button>
+                        </td>
+                    </tr>
+
+                    <!-- Item 5 - Safe -->
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=60&h=40&fit=crop"
+                                    class="rounded me-3" style="width:60px;height:40px;object-fit:cover;">
+                                <div>
+                                    <strong>Modern L Koltuk Takımı</strong>
+                                    <div class="small text-muted">45.000 ₺</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-secondary">Ev & Yaşam</span></td>
+                        <td>
+                            <div>Fatma S.</div>
+                            <small class="text-muted">fatma@email.com</small>
+                        </td>
+                        <td>
+                            <div class="ai-score safe">
+                                <i class="bi bi-check-circle-fill"></i> Güvenli
+                            </div>
+                            <small class="text-muted d-block mt-1">%92 güven skoru</small>
+                        </td>
+                        <td><small>3 saat önce</small></td>
+                        <td>
+                            <button class="btn btn-sm btn-success me-1" onclick="approveItem(this)"><i
+                                    class="bi bi-check-lg"></i></button>
+                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                data-bs-target="#rejectModal"><i class="bi bi-x-lg"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4">
+            <ul class="pagination pagination-custom justify-content-center">
+                <li class="page-item disabled"><a class="page-link" href="#"><i class="bi bi-chevron-left"></i></a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item"><a class="page-link" href="#"><i class="bi bi-chevron-right"></i></a></li>
+            </ul>
+        </nav>
+    </main>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">İlanı Reddet</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Red Sebebi *</label>
+                        <select class="form-select mb-2">
+                            <option>Sebep Seçin...</option>
+                            <option>Uygunsuz içerik</option>
+                            <option>Sahte/Yanıltıcı ilan</option>
+                            <option>Yasak ürün</option>
+                            <option>Fiyat manipülasyonu</option>
+                            <option>Diğer</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Açıklama</label>
+                        <textarea class="form-control" rows="3"
+                            placeholder="Kullanıcıya gönderilecek açıklama..."></textarea>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="blockUser">
+                        <label class="form-check-label" for="blockUser">Kullanıcıyı da engelle</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Reddet</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function approveItem(btn) {
+            const row = btn.closest('tr');
+            row.style.transition = 'opacity 0.3s';
+            row.style.opacity = '0.3';
+            setTimeout(() => row.remove(), 300);
+        }
+    </script>
+</body>
+
+</html>

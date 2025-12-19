@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PAGE_TITLE_PLACEHOLDER | KKTCSatıyorum</title>
+    <meta name="description" content="PAGE_DESCRIPTION_PLACEHOLDER">
+    <meta name="robots" content="index,follow">
+    <link rel="canonical" href="CANONICAL_URL_PLACEHOLDER">
+
+    <!-- Favicon -->
+    <link rel="icon" href="/assets/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="KKTCSatıyorum">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OG_TITLE_PLACEHOLDER">
+    <meta property="og:description" content="OG_DESCRIPTION_PLACEHOLDER">
+    <meta property="og:url" content="CANONICAL_URL_PLACEHOLDER">
+    <meta property="og:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="TW_TITLE_PLACEHOLDER">
+    <meta name="twitter:description" content="TW_DESCRIPTION_PLACEHOLDER">
+    <meta name="twitter:image" content="OG_IMAGE_URL_PLACEHOLDER">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="css/styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Header / Navigation with Embedded Search -->
+    <nav class="navbar navbar-expand-lg navbar-custom sticky-top">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-shop"></i> KKTCSatıyorum
+            </a>
+
+            <!-- Embedded Search Bar in Header -->
+            <form class="header-search-form d-none d-lg-flex">
+                <input type="text" class="form-control" placeholder="Kelime, ilan no veya mağaza adı ile ara">
+                <select class="form-select">
+                    <option selected>Tüm Kategoriler</option>
+                    <option>Emlak</option>
+                    <option>Vasıta</option>
+                    <option>Elektronik</option>
+                    <option>Ev & Yaşam</option>
+                </select>
+                <button class="btn btn-cta" type="submit">
+                    <i class="bi bi-search"></i> Ara
+                </button>
+            </form>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html"><i class="bi bi-box-arrow-in-right"></i> Giriş Yap</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="register.html"><i class="bi bi-person-plus"></i> Hesap Aç</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn-cta-nav" href="create-listing.html">
+                            <i class="bi bi-plus-circle-fill"></i> Ücretsiz* İlan Ver
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Secondary Nav - Category Quick Links -->
+    <nav class="secondary-nav">
+        <div class="container-fluid px-3">
+            <div class="secondary-nav-inner">
+                <a href="search-results.html" class="secondary-nav-link">Emlak</a>
+                <a href="search-results.html" class="secondary-nav-link">Vasıta</a>
+                <a href="search-results.html" class="secondary-nav-link">Yedek Parça</a>
+                <a href="search-results.html" class="secondary-nav-link">İkinci El</a>
+                <a href="search-results.html" class="secondary-nav-link">Elektronik</a>
+                <a href="search-results.html" class="secondary-nav-link">İş Makineleri</a>
+                <a href="search-results.html" class="secondary-nav-link">Ustalar</a>
+                <a href="search-results.html" class="secondary-nav-link">İş İlanları</a>
+                <span class="secondary-nav-divider"></span>
+                <a href="dashboard.html" class="secondary-nav-link">Favori İlanlarım</a>
+                <a href="dashboard.html" class="secondary-nav-link">Favori Aramalarım</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content with Sidebar Layout -->
+    <main class="main-content">
+        <div class="container-fluid px-3">
+            <div class="row g-2">
+
+                <!-- LEFT SIDEBAR - Category Tree -->
+                <aside class="col-lg-2 col-md-3 d-none d-md-block">
+                    <div class="sidebar-categories">
+                        <!-- Quick Filters -->
+                        <div class="sidebar-section">
+                            <a href="#" class="quick-link"><i class="bi bi-exclamation-circle"></i> Acil Acil</a>
+                            <a href="#" class="quick-link"><i class="bi bi-clock"></i> Son 48 Saat / <span
+                                    class="text-primary">1 Hafta</span> / <span>1 Ay</span></a>
+                        </div>
+
+                        <!-- Emlak Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-house-door"></i>
+                                <a href="search-results.html" class="category-main">Emlak</a>
+                                <span class="category-count">(12.450)</span>
+                            </div>
+                            <ul class="subcategory-list">
+                                <li><a href="search-results.html">Konut <span>(8.540)</span></a></li>
+                                <li><a href="search-results.html">İş Yeri <span>(1.890)</span></a></li>
+                                <li><a href="search-results.html">Arsa <span>(1.250)</span></a></li>
+                                <li><a href="search-results.html">Bina <span>(420)</span></a></li>
+                                <li><a href="search-results.html">Devre Mülk <span>(350)</span></a></li>
+                                <li><a href="#" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Vasıta Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-car-front"></i>
+                                <a href="search-results.html" class="category-main">Vasıta</a>
+                                <span class="category-count">(8.320)</span>
+                            </div>
+                            <ul class="subcategory-list">
+                                <li><a href="search-results.html">Otomobil <span>(5.780)</span></a></li>
+                                <li><a href="search-results.html">Arazi, SUV & Pickup <span>(1.240)</span></a></li>
+                                <li><a href="search-results.html">Motosiklet <span>(680)</span></a></li>
+                                <li><a href="search-results.html">Minivan & Panelvan <span>(420)</span></a></li>
+                                <li><a href="search-results.html">Ticari Araçlar <span>(200)</span></a></li>
+                                <li><a href="#" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Elektronik Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-phone"></i>
+                                <a href="search-results.html" class="category-main">Elektronik</a>
+                                <span class="category-count">(15.780)</span>
+                            </div>
+                            <ul class="subcategory-list">
+                                <li><a href="search-results.html">Cep Telefonu <span>(6.450)</span></a></li>
+                                <li><a href="search-results.html">Bilgisayar <span>(4.320)</span></a></li>
+                                <li><a href="search-results.html">Oyun & Konsol <span>(2.150)</span></a></li>
+                                <li><a href="search-results.html">TV & Ses Sistemleri <span>(1.860)</span></a></li>
+                                <li><a href="search-results.html">Foto & Kamera <span>(1.000)</span></a></li>
+                            </ul>
+                        </div>
+
+                        <!-- Ev & Yaşam Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-lamp"></i>
+                                <a href="search-results.html" class="category-main">Ev & Yaşam</a>
+                                <span class="category-count">(6.940)</span>
+                            </div>
+                            <ul class="subcategory-list">
+                                <li><a href="search-results.html">Mobilya <span>(2.890)</span></a></li>
+                                <li><a href="search-results.html">Beyaz Eşya <span>(1.560)</span></a></li>
+                                <li><a href="search-results.html">Mutfak <span>(1.240)</span></a></li>
+                                <li><a href="search-results.html">Bahçe <span>(750)</span></a></li>
+                                <li><a href="search-results.html">Dekorasyon <span>(500)</span></a></li>
+                            </ul>
+                        </div>
+
+                        <!-- İş Makineleri Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-truck"></i>
+                                <a href="search-results.html" class="category-main">İş Makineleri</a>
+                                <span class="category-count">(2.150)</span>
+                            </div>
+                        </div>
+
+                        <!-- Diğer Category -->
+                        <div class="sidebar-section">
+                            <div class="category-header">
+                                <i class="bi bi-grid-3x3-gap"></i>
+                                <a href="search-results.html" class="category-main">Diğer</a>
+                                <span class="category-count">(4.680)</span>
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- MAIN CONTENT AREA -->
+                <div class="col-lg-10 col-md-9">
+
+                    <!-- Vitrin Section -->
+                    <section class="content-section">
+                        <h1 class="visually-hidden">KKTC'nin Güvenilir İlan Platformu - KKTCSatıyorum</h1>
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-star-fill"></i> Anasayfa Vitrini
+                            </h2>
+                            <a href="search-results.html" class="view-all-link">Tüm vitrin ilanlarını göster <i
+                                    class="bi bi-chevron-right"></i></a>
+                        </div>
+
+                        <!-- Compact Product Grid -->
+                        <div class="row g-2">
+                            <!-- Card 1 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
+                                            alt="Daire">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">3+1 Deniz Manzaralı Daire</div>
+                                        <div class="product-price">2.850.000 TL</div>
+                                        <div class="product-location">Girne / Merkez</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200&h=150&fit=crop"
+                                            alt="Araba">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">2021 BMW 320i M Sport</div>
+                                        <div class="product-price">1.450.000 TL</div>
+                                        <div class="product-location">Lefkoşa / Merkez</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&h=150&fit=crop"
+                                            alt="Telefon">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">iPhone 15 Pro Max 256GB</div>
+                                        <div class="product-price">78.500 TL</div>
+                                        <div class="product-location">Gazimağusa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=150&fit=crop"
+                                            alt="Kanepe">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Modern L Koltuk Takımı</div>
+                                        <div class="product-price">45.000 TL</div>
+                                        <div class="product-location">Güzelyurt</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 5 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop"
+                                            alt="MacBook">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">MacBook Pro M2 14 inç</div>
+                                        <div class="product-price">89.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 6 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Villa">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Havuzlu Müstakil Villa</div>
+                                        <div class="product-price">12.500.000 TL</div>
+                                        <div class="product-location">Girne / Alsancak</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 7 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=200&h=150&fit=crop"
+                                            alt="Motor">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Yamaha MT-07 2022</div>
+                                        <div class="product-price">285.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 8 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=200&h=150&fit=crop"
+                                            alt="PS5">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">PlayStation 5 + 2 Kol</div>
+                                        <div class="product-price">32.500 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 9 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
+                                            alt="Ev">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Bahçeli Müstakil Ev 4+1</div>
+                                        <div class="product-price">4.200.000 TL</div>
+                                        <div class="product-location">İskele</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 10 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1605559424843-9e4c228bf1c2?w=200&h=150&fit=crop"
+                                            alt="Mercedes">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Mercedes C200 AMG</div>
+                                        <div class="product-price">1.750.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 11 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=150&fit=crop"
+                                            alt="Mobilya">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Yatak Odası Takımı Full</div>
+                                        <div class="product-price">55.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 12 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
+                                            alt="Daire">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">2+1 Merkezi Konum Daire</div>
+                                        <div class="product-price">1.950.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Son Eklenenler Section -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-clock"></i> Son Eklenen İlanlar
+                            </h2>
+                            <a href="search-results.html" class="view-all-link">Tümünü göster <i
+                                    class="bi bi-chevron-right"></i></a>
+                        </div>
+
+                        <!-- Compact Product Grid -->
+                        <div class="row g-2">
+                            <!-- Card 1 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop"
+                                            alt="Laptop">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">ASUS ROG Gaming Laptop</div>
+                                        <div class="product-price">65.000 TL</div>
+                                        <div class="product-location">Gazimağusa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Villa">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Denize Sıfır Villa 5+2</div>
+                                        <div class="product-price">18.500.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200&h=150&fit=crop"
+                                            alt="Audi">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Audi Q8 Crt Kompozit</div>
+                                        <div class="product-price">2.350.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 4 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=200&h=150&fit=crop"
+                                            alt="Telefon">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Samsung S24 Ultra</div>
+                                        <div class="product-price">68.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 5 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
+                                            alt="Ev">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Boş 5 Katlı Nitrolu</div>
+                                        <div class="product-price">8.500.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 6 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=200&h=150&fit=crop"
+                                            alt="Koltuk">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Durma Dhgm 3000</div>
+                                        <div class="product-price">125.000 TL</div>
+                                        <div class="product-location">Gazimağusa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 7 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Villa">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Mahmutbey Cadde...</div>
+                                        <div class="product-price">6.750.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 8 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200&h=150&fit=crop"
+                                            alt="Araba">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Ticari Araç 2020</div>
+                                        <div class="product-price">850.000 TL</div>
+                                        <div class="product-location">İskele</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 9 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=200&h=150&fit=crop"
+                                            alt="Konsol">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">300 Ton Metal Balyası</div>
+                                        <div class="product-price">450.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 10 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Ev">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Kocaeli Kartepe Site</div>
+                                        <div class="product-price">3.200.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 11 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=150&fit=crop"
+                                            alt="Laptop">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Sahibinden Garaj...</div>
+                                        <div class="product-price">1.150.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <!-- Card 12 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=200&h=150&fit=crop"
+                                            alt="Araba">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Volkswagen Passat</div>
+                                        <div class="product-price">980.000 TL</div>
+                                        <div class="product-location">Gazimağusa</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Emlak Section -->
+                    <section class="content-section">
+                        <div class="section-header">
+                            <h2 class="section-title">
+                                <i class="bi bi-house-door"></i> Emlak İlanları
+                            </h2>
+                            <a href="search-results.html" class="view-all-link">Tümünü göster <i
+                                    class="bi bi-chevron-right"></i></a>
+                        </div>
+
+                        <div class="row g-2">
+                            <!-- Card 1 -->
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
+                                            alt="Daire">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Sahibinden Temiz Daire</div>
+                                        <div class="product-price">2.100.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Villa">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Bebek Den 2015 Triplex</div>
+                                        <div class="product-price">15.500.000 TL</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
+                                            alt="Ev">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">İvedik Osb De Plaza</div>
+                                        <div class="product-price">4.800.000 TL</div>
+                                        <div class="product-location">Lefkoşa</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
+                                            alt="Daire">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Kiralık Plaza Katı</div>
+                                        <div class="product-price">45.000 TL/Ay</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
+                                            alt="Villa">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Casarent - Kiralık</div>
+                                        <div class="product-price">85.000 TL/Ay</div>
+                                        <div class="product-location">Girne</div>
+                                    </div>
+                                </a>
+                            </div>
+
+                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                <a href="listing-detail.html" class="card card-product-compact">
+                                    <div class="card-img-wrapper">
+                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
+                                            alt="Ev">
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="product-title">Adaklik Koyun Site</div>
+                                        <div class="product-price">3.600.000 TL</div>
+                                        <div class="product-location">İskele</div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-fluid px-3">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <h5><i class="bi bi-shop me-2"></i>KKTCSatıyorum</h5>
+                    <p class="text-muted small">KKTC'nin en güvenilir ilan platformu. Emlak, araç, elektronik ve daha
+                        fazlası için binlerce ilan.</p>
+                    <div class="d-flex gap-1">
+                        <a href="#" class="btn btn-sm btn-outline-light"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="btn btn-sm btn-outline-light"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2 col-md-3">
+                    <h6>Kategoriler</h6>
+                    <a href="search-results.html">Emlak</a>
+                    <a href="search-results.html">Vasıta</a>
+                    <a href="search-results.html">Elektronik</a>
+                    <a href="search-results.html">Ev & Yaşam</a>
+                </div>
+                <div class="col-6 col-lg-2 col-md-3">
+                    <h6>Hesabım</h6>
+                    <a href="login.html">Giriş Yap</a>
+                    <a href="register.html">Kayıt Ol</a>
+                    <a href="dashboard.html">İlanlarım</a>
+                    <a href="dashboard.html">Favorilerim</a>
+                </div>
+                <div class="col-6 col-lg-2 col-md-3">
+                    <h6>Yardım</h6>
+                    <a href="#">Nasıl Çalışır?</a>
+                    <a href="#">SSS</a>
+                    <a href="#">İletişim</a>
+                    <a href="#">Güvenli Alışveriş</a>
+                </div>
+                <div class="col-6 col-lg-2 col-md-3">
+                    <h6>Kurumsal</h6>
+                    <a href="#">Hakkımızda</a>
+                    <a href="#">Kullanım Koşulları</a>
+                    <a href="#">Gizlilik Politikası</a>
+                    <a href="#">KVKK</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="mb-0">&copy; 2024 KKTCSatıyorum. Tüm hakları saklıdır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
