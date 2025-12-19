@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<Context>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-        x => x.MigrationsAssembly("DAL")));
+        x => x.MigrationsAssembly("DataAccessLayer")));
 
 var app = builder.Build();
 
