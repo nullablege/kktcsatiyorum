@@ -17,14 +17,13 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        public async Task DeleteAsync(T entity)
+        public Task DeleteAsync(T entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Silinecek kayıt null olamaz!");
 
             _context.Set<T>().Remove(entity);
-            await _context.SaveChangesAsync();
-
+            return Task.CompletedTask;
         }
 
         public async Task<T> GetByIdAsync(object id)
@@ -61,22 +60,20 @@ namespace DataAccessLayer.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task InsertAsync(T entity)
+        public Task InsertAsync(T entity)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Eklenecek kayıt null olamaz!");
 
-            await _context.Set<T>().AddAsync(entity);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
 
-        public async Task UpdateAsync(T entity)
+        public  Task UpdateAsync(T entity)
         {
             if(entity == null)
                 throw new ArgumentNullException(nameof(entity), "Güncellenecek kayıt null olamaz!");
 
-            _context.Set<T>().Update(entity);
-            await _context.SaveChangesAsync();
+            return Task.CompletedTask;
         }
     }
 }

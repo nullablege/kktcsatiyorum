@@ -14,6 +14,7 @@ builder.Services.AddScoped<IIlanDal, EfIlanDal>();
 builder.Services.AddScoped<IKategoriDal, EfKategoriDal>();
 builder.Services.AddScoped<IFavoriDal, EfFavoriDal>();
 builder.Services.AddScoped<IBildirimDal, EfBildirimDal>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IIlanFotografiDal, EfIlanFotografiDal>();
 builder.Services.AddScoped<IIlanSikayetiDal, EfIlanSikayetiDal>();
@@ -21,6 +22,7 @@ builder.Services.AddScoped<IIlanSorusuDal, EfIlanSorusuDal>();
 builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
 
 builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
+
 
 //Automapper
 builder.Services.AddAutoMapper(
