@@ -1,4 +1,6 @@
 using DataAccessLayer;
+using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using EntityLayer.Entities;
 using KKTCSatiyorum.Mappings;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using System;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// DI
+builder.Services.AddScoped<IIlanDal, EfIlanDal>();
+builder.Services.AddScoped<IKategoriDal, EfKategoriDal>();
+builder.Services.AddScoped<IFavoriDal, EfFavoriDal>();
+builder.Services.AddScoped<IBildirimDal, EfBildirimDal>();
+
+builder.Services.AddScoped<IIlanFotografiDal, EfIlanFotografiDal>();
+builder.Services.AddScoped<IIlanSikayetiDal, EfIlanSikayetiDal>();
+builder.Services.AddScoped<IIlanSorusuDal, EfIlanSorusuDal>();
+builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
+
+builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
 
 //Automapper
 builder.Services.AddAutoMapper(
