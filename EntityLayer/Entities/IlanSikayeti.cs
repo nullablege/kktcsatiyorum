@@ -1,4 +1,4 @@
-﻿using DataAccessLayer.Enums;
+﻿using EntityLayer.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

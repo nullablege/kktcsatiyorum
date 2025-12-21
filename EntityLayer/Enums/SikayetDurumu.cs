@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DataAccessLayer.Enums
+namespace EntityLayer.Enums
 {
     public enum SikayetDurumu : short
     {
