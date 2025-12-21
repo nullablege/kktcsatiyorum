@@ -64,7 +64,7 @@ namespace DataAccessLayer.Repositories
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Eklenecek kayıt null olamaz!");
-
+            _context.Set<T>().Add(entity);
             return Task.CompletedTask;
         }
 
@@ -72,7 +72,7 @@ namespace DataAccessLayer.Repositories
         {
             if(entity == null)
                 throw new ArgumentNullException(nameof(entity), "Güncellenecek kayıt null olamaz!");
-
+            _context.Set<T>().Update(entity);
             return Task.CompletedTask;
         }
     }
