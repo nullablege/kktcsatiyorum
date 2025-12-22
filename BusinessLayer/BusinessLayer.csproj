@@ -16,4 +16,10 @@
     <ProjectReference Include="..\EntityLayer\EntityLayer.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Common\Constants\" />
+    <Folder Include="Common\Exceptions\" />
+    <Folder Include="Features\Ilanlar\" />
+  </ItemGroup>
+
 </Project>

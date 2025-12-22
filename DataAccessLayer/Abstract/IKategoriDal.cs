@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer.Abstract
 {
-    public interface IKategoriDal
+    public interface IKategoriDal:IGenericRepository<Kategori>
     {
         Task<List<Kategori>> GetKategoriListWithSubCategoriesAsync();
 
