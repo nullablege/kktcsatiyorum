@@ -6,8 +6,10 @@ using KKTCSatiyorum.Mappings;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore; 
 using System;
+using BusinessLayer.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddBusinessLayer();
 
 // DI
 builder.Services.AddScoped<IIlanDal, EfIlanDal>();
@@ -115,6 +117,10 @@ app.UseRouting();
 // Authentication middleware (Authorization'dan önce gelmeli!)
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

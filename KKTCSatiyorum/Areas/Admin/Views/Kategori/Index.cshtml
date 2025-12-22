@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewData["Title"] = "Kategoriler";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<h1>Kategoriler</h1>
+
+@if (TempData["SuccessMessage"] is string msg)
+{
+    <div class="alert alert-success">@msg</div>
+}
+
+<p>
+    <a class="btn btn-primary"
+       asp-area="Admin"
+       asp-controller="Categories"
+       asp-action="Create">Yeni Kategori</a>
+</p>
+
+<div class="alert alert-info">
+    Listeleme henüz eklenmedi (şimdilik basit).
+</div>
+
