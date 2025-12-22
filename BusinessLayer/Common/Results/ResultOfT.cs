@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLayer.Common.Constants;
 using FluentValidation.Results;
 
 namespace BusinessLayer.Common.Results
@@ -20,7 +21,7 @@ namespace BusinessLayer.Common.Results
             new()
             {
                 IsSuccess = false,
-                Error = new Error(ErrorType.Validation, "validation_error", "Validation failed"),
+                Error = new Error(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Validation failed"),
                 ValidationErrors = errors.ToList()
             };
 
