@@ -43,7 +43,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            result.AddToModelState(ModelState);
+                result.AddToModelState(ModelState);
             return View(model);
 
 
