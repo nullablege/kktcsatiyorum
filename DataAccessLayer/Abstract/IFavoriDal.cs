@@ -9,7 +9,7 @@ namespace DataAccessLayer.Abstract
 {
     public interface IFavoriDal
     {
-        Task<List<Favori>> GetFavoriListByUserWithIlanAsync(string userId);
+        Task<List<Favori>> GetFavoriListByUserWithIlanAsync(string userId, CancellationToken ct = default);
         Task<int> GetFavoriCountByIlanIdAsync(int ilanId);
         Task<bool> IsIlanFavoritedByUserAsync(int ilanId, string userId);
     }

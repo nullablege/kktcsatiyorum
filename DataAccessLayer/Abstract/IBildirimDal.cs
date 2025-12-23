@@ -9,6 +9,6 @@ namespace DataAccessLayer.Abstract
 {
     public interface IBildirimDal
     {
-        Task<List<Bildirim>> GetOkunmamisBildirimlerByUserIdAsync(string userId);
+        Task<List<Bildirim>> GetOkunmamisBildirimlerByUserIdAsync(string userId, CancellationToken ct = default);
     }
 }

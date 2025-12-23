@@ -23,7 +23,7 @@ namespace DataAccessLayer.Concrete
 
         }
 
-        public async Task<List<Favori>> GetFavoriListByUserWithIlanAsync(string userId)
+        public async Task<List<Favori>> GetFavoriListByUserWithIlanAsync(string userId, CancellationToken ct = default)
         {
             return await _context.Favoriler
                             .Include(x => x.Ilan)
@@ -32,7 +32,7 @@ namespace DataAccessLayer.Concrete
                             .Where(x => x.KullaniciId == userId)
                             .OrderByDescending(x => x.IlanId)       
                             .AsNoTracking()                      
-                            .ToListAsync();
+                            .ToListAsync(ct);
         }
 
         public async Task<bool> IsIlanFavoritedByUserAsync(int ilanId, string userId)

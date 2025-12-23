@@ -9,9 +9,9 @@ namespace DataAccessLayer.Abstract
 {
     public interface IKategoriDal:IGenericRepository<Kategori>
     {
-        Task<List<Kategori>> GetKategoriListWithSubCategoriesAsync();
+        Task<List<Kategori>> GetKategoriListWithSubCategoriesAsync(CancellationToken ct=default);
 
-        Task<Kategori> GetKategoriByIdWithOzelliklerAsync(int id);
+        Task<Kategori> GetKategoriByIdWithOzelliklerAsync(int id, CancellationToken ct = default);
 
     }
 }

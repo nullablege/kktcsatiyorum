@@ -40,7 +40,7 @@ namespace DataAccessLayer.Repositories
                 throw new ArgumentException("Guid ID boş (Empty) olamaz.", nameof(id));
             }
 
-            var element = await _context.Set<T>().FindAsync(id);
+            var element = await _context.Set<T>().FindAsync(id, ct);
             if ( element == null)
             {
                 return null;

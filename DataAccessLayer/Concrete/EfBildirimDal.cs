@@ -16,13 +16,13 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<List<Bildirim>> GetOkunmamisBildirimlerByUserIdAsync(string userId)
+        public async Task<List<Bildirim>> GetOkunmamisBildirimlerByUserIdAsync(string userId, CancellationToken ct = default)
         {
             return await _context.Bildirimler
                             .Where(x => x.KullaniciId == userId && x.OkunduMu == false)
                             .OrderByDescending(x => x.OlusturmaTarihi)
                             .AsNoTracking()
-                            .ToListAsync();
+                            .ToListAsync(ct);
         }
     }
 }

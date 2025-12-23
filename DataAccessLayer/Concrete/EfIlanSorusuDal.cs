@@ -16,7 +16,7 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<List<IlanSorusu>> GetSorularByIlanIdWithCevaplarAsync(int ilanId)
+        public async Task<List<IlanSorusu>> GetSorularByIlanIdWithCevaplarAsync(int ilanId, CancellationToken ct = default)
         {
             return await _context.IlanSorulari
                                  .Include(x => x.SoranKullanici)
@@ -24,7 +24,7 @@ namespace DataAccessLayer.Concrete
                                  .Where(x => x.IlanId == ilanId)
                                  .OrderByDescending(x => x.OlusturmaTarihi)
                                  .AsNoTracking()
-                                 .ToListAsync();
+                                 .ToListAsync(ct);
         }
     }
 }

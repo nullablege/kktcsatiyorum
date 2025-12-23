@@ -10,11 +10,11 @@ namespace DataAccessLayer.Abstract
 {
     public interface IIlanDal:IGenericRepository<Ilan>
     {
-        Task<List<Ilan>> GetIlanListWithCategoryAndPhotosAsync(Expression<Func<Ilan, bool>>? filter = null);
+        Task<List<Ilan>> GetIlanListWithCategoryAndPhotosAsync(Expression<Func<Ilan, bool>>? filter = null, CancellationToken ct = default);
 
-        Task<Ilan> GetIlanByIdWithDetailsAsync(int id);
+        Task<Ilan> GetIlanByIdWithDetailsAsync(int id, CancellationToken ct = default);
 
-        Task<List<Ilan>> GetIlanListByUserIdAsync(string userId);
+        Task<List<Ilan>> GetIlanListByUserIdAsync(string userId, CancellationToken ct = default);
 
     }
 }

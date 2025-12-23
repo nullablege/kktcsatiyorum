@@ -10,6 +10,6 @@ namespace DataAccessLayer.Abstract
 {
     public interface IIlanSikayetiDal
     {
-        Task<List<IlanSikayeti>> GetSikayetListWithIlanAndUserAsync(Expression<Func<IlanSikayeti, bool>>? filter = null);
+        Task<List<IlanSikayeti>> GetSikayetListWithIlanAndUserAsync(Expression<Func<IlanSikayeti, bool>>? filter = null, CancellationToken ct=default);
     }
 }

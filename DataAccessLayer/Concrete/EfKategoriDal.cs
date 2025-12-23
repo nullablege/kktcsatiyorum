@@ -16,24 +16,24 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<Kategori> GetKategoriByIdWithOzelliklerAsync(int id)
+        public async Task<Kategori> GetKategoriByIdWithOzelliklerAsync(int id, CancellationToken ct = default)
         {
             return await _context.Kategoriler
                                  .Include(x => x.UstKategori)
                                  .Include(x => x.AltKategoriler)
                                  .Include(x => x.KategoriAlanlari)
                                  .AsNoTracking()
-                                 .FirstOrDefaultAsync(x => x.Id == id);
+                                 .FirstOrDefaultAsync(x => x.Id == id,ct);
         }
 
-        public async Task<List<Kategori>> GetKategoriListWithSubCategoriesAsync()
+        public async Task<List<Kategori>> GetKategoriListWithSubCategoriesAsync(CancellationToken ct = default)
         {
             return await _context.Kategoriler
                                  .Include(x => x.AltKategoriler)
                                  .Where( x => x.UstKategoriId  == null)
                                  .AsNoTracking()
                                  .OrderByDescending(x => x.Id)
-                                 .ToListAsync();
+                                 .ToListAsync(ct);
         }
     }
 }

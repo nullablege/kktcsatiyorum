@@ -17,7 +17,7 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<Ilan> GetIlanByIdWithDetailsAsync(int id)
+        public async Task<Ilan> GetIlanByIdWithDetailsAsync(int id, CancellationToken ct = default)
         {
             return await _context.Ilanlar
                          .Include(x => x.Kategori)       
@@ -25,10 +25,10 @@ namespace DataAccessLayer.Concrete
                          .Include(x => x.Fotografler)   
                          .Include(x => x.AlanDegerleri)
                          .AsNoTracking()
-                         .FirstOrDefaultAsync(x => x.Id == id) ?? throw new KeyNotFoundException($"Ilan bulunamadı. Id={id}");
+                         .FirstOrDefaultAsync(x => x.Id == id,ct ) ?? throw new KeyNotFoundException($"Ilan bulunamadı. Id={id}");
         }
 
-        public async Task<List<Ilan>> GetIlanListByUserIdAsync(string userId)
+        public async Task<List<Ilan>> GetIlanListByUserIdAsync(string userId, CancellationToken ct = default)
         {
             return await _context.Ilanlar
                         .Include(x => x.Kategori)
@@ -37,10 +37,10 @@ namespace DataAccessLayer.Concrete
                         .Include(x => x.AlanDegerleri)
                         .Where(x => x.SahipKullaniciId == userId)
                         .AsNoTracking()
-                        .ToListAsync();
+                        .ToListAsync(ct);
         }
 
-        public async Task<List<Ilan>> GetIlanListWithCategoryAndPhotosAsync(Expression<Func<Ilan, bool>>? filter = null)
+        public async Task<List<Ilan>> GetIlanListWithCategoryAndPhotosAsync(Expression<Func<Ilan, bool>>? filter = null, CancellationToken ct = default)
         {
             var query = _context.Ilanlar
                          .Include(x => x.Kategori)
@@ -49,7 +49,7 @@ namespace DataAccessLayer.Concrete
             if(filter != null)
                 query = query.Where(filter);
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(ct);
         }
     }
 }

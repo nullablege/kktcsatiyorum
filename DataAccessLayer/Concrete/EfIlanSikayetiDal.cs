@@ -17,7 +17,7 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<List<IlanSikayeti>> GetSikayetListWithIlanAndUserAsync(Expression<Func<IlanSikayeti, bool>>? filter = null)
+        public async Task<List<IlanSikayeti>> GetSikayetListWithIlanAndUserAsync(Expression<Func<IlanSikayeti, bool>>? filter = null, CancellationToken ct = default)
         {
             var query = _context.IlanSikayetleri
                                 .Include(x => x.Ilan)
@@ -28,7 +28,7 @@ namespace DataAccessLayer.Concrete
                 query = query.Where(filter);
             }
             return await query.OrderByDescending(x => x.Id)
-                              .ToListAsync();
+                              .ToListAsync(ct);
         }
     }
 }

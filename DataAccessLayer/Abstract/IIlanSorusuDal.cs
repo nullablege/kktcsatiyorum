@@ -9,7 +9,7 @@ namespace DataAccessLayer.Abstract
 {
     public interface IIlanSorusuDal
     {
-        Task<List<IlanSorusu>> GetSorularByIlanIdWithCevaplarAsync(int ilanId);
+        Task<List<IlanSorusu>> GetSorularByIlanIdWithCevaplarAsync(int ilanId, CancellationToken ct=default);
 
     }
 }
