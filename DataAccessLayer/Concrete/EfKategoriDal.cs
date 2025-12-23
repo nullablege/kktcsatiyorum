@@ -22,7 +22,6 @@ namespace DataAccessLayer.Concrete
                                  .Include(x => x.UstKategori)
                                  .Include(x => x.AltKategoriler)
                                  .Include(x => x.KategoriAlanlari)
-                                 .Where(x => x.Id == id)
                                  .AsNoTracking()
                                  .FirstOrDefaultAsync(x => x.Id == id);
         }

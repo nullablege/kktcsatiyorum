@@ -31,7 +31,7 @@ namespace KKTCSatiyorum.Extensions
                     modelState.AddModelError("SeoSlug", result.Error.Message);
                     break;
                 case ErrorCodes.Kategori.ParentNotFound:
-                    modelState.AddModelError("UsetKategoriId", result.Error.Message);
+                    modelState.AddModelError("UstKategoriId", result.Error.Message);
                     break;
                 default:
                     modelState.AddModelError(string.Empty, result.Error.Message);

@@ -14,5 +14,6 @@ namespace DataAccessLayer.Abstract
         Task UpdateAsync(T entity);
         Task<T?> GetByIdAsync(object id);
         Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null);
+        Task<bool> AnyAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default);
     }
 }

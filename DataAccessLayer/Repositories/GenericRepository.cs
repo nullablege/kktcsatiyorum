@@ -75,5 +75,11 @@ namespace DataAccessLayer.Repositories
             _context.Set<T>().Update(entity);
             return Task.CompletedTask;
         }
+    
+    
+        public Task<bool> AnyAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default)
+        {
+            return _context.Set<T>().AsNoTracking().AnyAsync(filter, ct);
+        }
     }
 }
