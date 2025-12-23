@@ -17,13 +17,9 @@
         <span asp-validation-for="Ad" class="text-danger"></span>
     </div>
 
-    <div class="mb-3">
-        <label asp-for="SeoSlug" class="form-label"></label>
-        <input asp-for="SeoSlug" class="form-control" />
-        <span asp-validation-for="SeoSlug" class="text-danger"></span>
-    </div>
 
     <div class="mb-3">
+        @* Burası dropdown olacak *@
         <label asp-for="UstKategoriId" class="form-label"></label>
         <input asp-for="UstKategoriId" class="form-control" />
         <span asp-validation-for="UstKategoriId" class="text-danger"></span>
@@ -36,7 +32,7 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Kaydet</button>
-    <a asp-area="Admin" asp-controller="Categories" asp-action="Index" class="btn btn-secondary">İptal</a>
+    <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="btn btn-secondary">İptal</a>
 </form>
 
 @section Scripts {

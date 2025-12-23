@@ -17,10 +17,7 @@ namespace BusinessLayer.Features.Kategoriler.Validators
                 .MinimumLength(2).WithMessage("Ad en az 2 karakter olmalı.")
                 .MaximumLength(100).WithMessage("Ad en fazla 100 karakter olmalı.");
 
-            RuleFor(x => x.SeoSlug)
-                .NotEmpty().WithMessage("SeoSlug boş olamaz.")
-                .MinimumLength(2).WithMessage("SeoSlug en az 2 karakter olmalı.")
-                .MaximumLength(150).WithMessage("SeoSlug en fazla 150 karakter olmalı.");
+
 
             RuleFor(x => x.SiraNo)
                 .GreaterThanOrEqualTo(0).WithMessage("SiraNo 0 veya daha büyük olmalı.");

@@ -17,7 +17,7 @@ namespace DataAccessLayer.Repositories
             _context = context;
         }
 
-        public Task DeleteAsync(T entity)
+        public Task DeleteAsync(T entity, CancellationToken ct = default)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Silinecek kayıt null olamaz!");
@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<T> GetByIdAsync(object id)
+        public async Task<T> GetByIdAsync(object id, CancellationToken ct = default)
         {
             if( id == null)
                 throw new ArgumentNullException(nameof(id), "id parametresi null olamaz!");
@@ -50,7 +50,7 @@ namespace DataAccessLayer.Repositories
 
         }
 
-        public async Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null)
+        public async Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null, CancellationToken ct = default)
         {
             var query = _context.Set<T>().AsNoTracking();
             if(filter != null)
@@ -60,7 +60,7 @@ namespace DataAccessLayer.Repositories
             return await query.ToListAsync();
         }
 
-        public Task InsertAsync(T entity)
+        public Task InsertAsync(T entity, CancellationToken ct = default)
         {
             if (entity == null)
                 throw new ArgumentNullException(nameof(entity), "Eklenecek kayıt null olamaz!");
@@ -68,7 +68,7 @@ namespace DataAccessLayer.Repositories
             return Task.CompletedTask;
         }
 
-        public  Task UpdateAsync(T entity)
+        public  Task UpdateAsync(T entity, CancellationToken ct = default)
         {
             if(entity == null)
                 throw new ArgumentNullException(nameof(entity), "Güncellenecek kayıt null olamaz!");

@@ -9,11 +9,11 @@ namespace DataAccessLayer.Abstract
 {
     public interface IGenericRepository<T>  where T :class
     {
-        Task InsertAsync(T entity);
-        Task DeleteAsync(T entity);
-        Task UpdateAsync(T entity);
-        Task<T?> GetByIdAsync(object id);
-        Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null);
+        Task InsertAsync(T entity, CancellationToken ct = default);
+        Task DeleteAsync(T entity, CancellationToken ct = default);
+        Task UpdateAsync(T entity, CancellationToken ct = default);
+        Task<T?> GetByIdAsync(object id, CancellationToken ct = default);
+        Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null, CancellationToken ct = default);
         Task<bool> AnyAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default);
     }
 }

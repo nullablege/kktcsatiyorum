@@ -29,8 +29,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
         public async Task<IActionResult> Create(CreateKategoriViewModel model, CancellationToken ct)
         {
             var req = new CreateKategoriRequest(
-                model.Ad ?? "",
-                model.SeoSlug ?? "",
+                model.Ad.Trim(),
                 model.UstKategoriId,
                 model.SiraNo
                 );

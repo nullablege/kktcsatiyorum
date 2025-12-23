@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Common.Text
 {
-    public class SlugHelper
+    public static class SlugHelper
     {
         public static string Slugify(string input)
         {

@@ -24,7 +24,7 @@ namespace BusinessLayer.Features.Kategoriler.Services
             if (string.IsNullOrEmpty(baseSlug))
                 baseSlug = Guid.NewGuid().ToString("n")[..8];
 
-            if (!await _kategoriDal.AnyAsync(x => x.SeoSlug == baseSlug))
+            if (!await _kategoriDal.AnyAsync(x => x.SeoSlug == baseSlug, ct))
                 return baseSlug;
 
             for(var i = 2; i <= 100; i++)

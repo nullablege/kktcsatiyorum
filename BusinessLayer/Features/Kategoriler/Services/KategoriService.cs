@@ -63,7 +63,7 @@ namespace BusinessLayer.Features.Kategoriler.Services
                 AktifMi = true
             };
 
-            await _kategoriDal.InsertAsync(kategori);
+            await _kategoriDal.InsertAsync(kategori, ct);
 
             try
             {

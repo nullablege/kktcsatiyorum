@@ -9,7 +9,6 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
     public sealed record CreateKategoriRequest
     (
     string Ad,
-    string? SeoSlug,
     int? UstKategoriId,
     int SiraNo
     );
