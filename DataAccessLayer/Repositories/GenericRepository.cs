@@ -28,7 +28,7 @@ namespace DataAccessLayer.Repositories
 
         public async Task<T> GetByIdAsync(object id, CancellationToken ct = default)
         {
-            if( id == null)
+            if (id == null)
                 throw new ArgumentNullException(nameof(id), "id parametresi null olamaz!");
             if (id is int intId && intId <= 0)
             {
@@ -40,7 +40,7 @@ namespace DataAccessLayer.Repositories
                 throw new ArgumentException("Guid ID boş (Empty) olamaz.", nameof(id));
             }
 
-            var element = await _context.Set<T>().FindAsync(id, ct);
+            var element = await _context.Set<T>().FindAsync(new object[] { id }, ct); // tek PK yokas problem çıkmaması için
             if ( element == null)
             {
                 return null;
@@ -57,7 +57,7 @@ namespace DataAccessLayer.Repositories
             {
                 query = query.Where(filter);
             }
-            return await query.ToListAsync();
+            return await query.ToListAsync(ct);
         }
 
         public Task InsertAsync(T entity, CancellationToken ct = default)

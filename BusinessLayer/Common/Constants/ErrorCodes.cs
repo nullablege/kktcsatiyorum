@@ -13,6 +13,7 @@ namespace BusinessLayer.Common.Constants
             public const string SlugExists = "kategori_slug_exists";
             public const string ParentNotFound = "kategori_parent_not_found";
             public const string NotFound = "kategori_not_found";
+            public const string ParentConflict = "parent_conflict";
         }
 
         public static class Ilan
@@ -25,6 +26,7 @@ namespace BusinessLayer.Common.Constants
         {
             public const string ValidationError = "validation_error";
             public const string Unexpected = "unexpected_error";
+            public const string CommitFail = "commit_failed";
         }
     }
 }

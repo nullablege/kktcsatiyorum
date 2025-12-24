@@ -32,8 +32,28 @@ namespace DataAccessLayer.Concrete
                                  .Include(x => x.AltKategoriler)
                                  .Where( x => x.UstKategoriId  == null)
                                  .AsNoTracking()
-                                 .OrderByDescending(x => x.Id)
+                                 .OrderByDescending(x => x.SiraNo)
                                  .ToListAsync(ct);
         }
+
+        public async Task<List<Kategori>> GetChildrenAsync(int ustKategoriId, CancellationToken ct = default)
+        {
+            return await _context.Kategoriler
+                    .AsNoTracking()
+                    .Where(x => x.UstKategoriId == ustKategoriId && (!x.SilindiMi || x.AktifMi))
+                    .OrderBy(x => x.SiraNo)
+                    .ThenBy(x => x.Ad)
+                    .ToListAsync(ct);
+        }
+        public async Task<List<Kategori>> GetRootAsync(CancellationToken ct = default)
+        {
+            return await _context.Kategoriler
+                    .AsNoTracking()
+                    .Where(x => x.UstKategoriId == null && (!x.SilindiMi || x.AktifMi))
+                    .OrderBy(x => x.SiraNo)
+                    .ThenBy(x => x.Ad)
+                    .ToListAsync(ct);
+        }
+
     }
 }

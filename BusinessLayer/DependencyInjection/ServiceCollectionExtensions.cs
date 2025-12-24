@@ -1,4 +1,5 @@
-﻿using BusinessLayer.Features.Kategoriler.DTOs;
+﻿using AutoMapper;
+using BusinessLayer.Features.Kategoriler.DTOs;
 using BusinessLayer.Features.Kategoriler.Services;
 using BusinessLayer.Features.Kategoriler.Validators;
 using FluentValidation;
@@ -8,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BusinessLayer.Features.Kategoriler.Mappings;
 
 namespace BusinessLayer.DependencyInjection
 {
@@ -15,6 +17,7 @@ namespace BusinessLayer.DependencyInjection
     {
         public static IServiceCollection AddBusinessLayer(this IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(KategoriProfile).Assembly);
             services.AddScoped<IKategoriService, KategoriService>();
             services.AddScoped<IKategoriSlugService, KategoriSlugService>();
             services.AddScoped<IValidator<CreateKategoriRequest>, CreateKategoriValidator>();
