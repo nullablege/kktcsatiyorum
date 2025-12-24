@@ -1,6 +1,5 @@
 ﻿using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Kategoriler.DTOs;
-using BusinessLayer.Features.Kategoriler.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;

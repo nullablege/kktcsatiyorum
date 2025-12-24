@@ -55,7 +55,7 @@ namespace DataAccessLayer.Concrete
                     .ToListAsync(ct);
         }
 
-        public async Task<bool> HasChildren(int id, CancellationToken ct = default)
+        public async Task<bool> HasChildrenAsync(int id, CancellationToken ct = default)
         {
             return await _context.Kategoriler
                             .AsNoTracking()
