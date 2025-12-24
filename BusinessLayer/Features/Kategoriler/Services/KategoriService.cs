@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Azure.Core;
 using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Kategoriler.DTOs;
@@ -21,12 +22,16 @@ namespace BusinessLayer.Features.Kategoriler.Services
     {
         private readonly IKategoriDal _kategoriDal;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IValidator<CreateKategoriRequest> _validator;
+        private readonly IValidator<UpdateKategoriRequest> _validatorUpdate;
+        private readonly IValidator<SoftDeleteKategoriRequest> _validatorDelete;
+        private readonly IValidator<CreateKategoriRequest> _validatorCreate;
         private readonly IKategoriSlugService _kategoriSlugService;
         private readonly IMapper _mapper;
         public KategoriService(IKategoriDal kategoriDal, 
                                IUnitOfWork unitOfWork,
-                               IValidator<CreateKategoriRequest> validator,
+                               IValidator<SoftDeleteKategoriRequest> validatorDelete,
+                               IValidator<UpdateKategoriRequest> validatorUpdate,
+                               IValidator<CreateKategoriRequest> validatorCreate,
                                IKategoriSlugService kategoriSlugService,
                                IMapper mapper
         )
@@ -34,13 +39,15 @@ namespace BusinessLayer.Features.Kategoriler.Services
             _kategoriSlugService = kategoriSlugService;
             _kategoriDal = kategoriDal;
             _unitOfWork = unitOfWork;
-            _validator = validator;
+            _validatorDelete = validatorDelete;
+            _validatorCreate = validatorCreate;
+            _validatorUpdate = validatorUpdate;
             _mapper = mapper;
         }
 
         public async Task<Result<CreateKategoriResponse>> CreateAsync(CreateKategoriRequest request, CancellationToken ct =  default)
         {
-            var validation = await _validator.ValidateAsync(request, ct);
+            var validation = await _validatorCreate.ValidateAsync(request, ct);
             if(!validation.IsValid)
                 return Result<CreateKategoriResponse>.FromValidation(validation);
 
@@ -132,7 +139,14 @@ namespace BusinessLayer.Features.Kategoriler.Services
         }
         public async Task<Result<UpdateKategoriResponse>> UpdateAsync(UpdateKategoriRequest request, CancellationToken ct = default)
         {
-            if(request.Id == request.UstKategoriId)
+            var validation = await _validatorUpdate.ValidateAsync(request, ct);
+            if (!validation.IsValid)
+            {
+                return Result<UpdateKategoriResponse>.FromValidation(validation);
+            }
+
+
+            if (request.Id == request.UstKategoriId)
             {
                 return Result<UpdateKategoriResponse>.Fail(ErrorType.Conflict, ErrorCodes.Kategori.ParentConflict, "Kategori, kendi UstKategorisi olamaz.");
             }
@@ -141,12 +155,39 @@ namespace BusinessLayer.Features.Kategoriler.Services
             {
                 return Result<UpdateKategoriResponse>.Fail(ErrorType.NotFound, ErrorCodes.Kategori.NotFound , "Kategori bulunamadı");
             }
-            if (request.UstKategoriId != null)
+            if (request.UstKategoriId.HasValue)
             {
-                var ustKategori = await _kategoriDal.GetByIdAsync(request.UstKategoriId, ct);
-                if (ustKategori == null)
-                    return Result<UpdateKategoriResponse>.Fail(ErrorType.NotFound, ErrorCodes.Kategori.ParentNotFound, "Ust Kategorisi Null");
+                var guncel = request.UstKategoriId.Value; 
+                int derinlik = 0;
+
+                while (derinlik++ < 50)
+                {
+                    if (guncel == request.Id)
+                        return Result<UpdateKategoriResponse>.Fail(
+                            ErrorType.Conflict,
+                            ErrorCodes.Kategori.CycleDetected,
+                            "Kategori hiyerarşisinde döngü tespit edildi.");
+
+                    var parent = await _kategoriDal.GetByIdAsync(guncel, ct); 
+                    if (parent == null)
+                        return Result<UpdateKategoriResponse>.Fail(
+                            ErrorType.NotFound,
+                            ErrorCodes.Kategori.ParentNotFound,
+                            "Üst kategori bulunamadı");
+
+                    if (!parent.UstKategoriId.HasValue)
+                        break;
+
+                    guncel = parent.UstKategoriId.Value;
+                }
+
+                if (derinlik >= 50)
+                    return Result<UpdateKategoriResponse>.Fail(
+                        ErrorType.Conflict,
+                        ErrorCodes.Kategori.CycleDetected,
+                        "Kategori ağacı çok derin / döngü şüphesi ");
             }
+
 
             kategori.Ad = request.Ad;
             kategori.UstKategoriId = request.UstKategoriId;
@@ -165,16 +206,27 @@ namespace BusinessLayer.Features.Kategoriler.Services
 
 
         }
-        public async Task<Result<SoftDeleteKategoriResponse>> SoftDeleteAsync(int id, CancellationToken ct = default)
+        public async Task<Result<SoftDeleteKategoriResponse>> SoftDeleteAsync(SoftDeleteKategoriRequest request, CancellationToken ct = default)
         {
-            if(id <= 0)
+            var validation = await _validatorDelete.ValidateAsync(request, ct);
+
+            if (!validation.IsValid)
             {
-                return Result<SoftDeleteKategoriResponse>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Girilen ID Geçersiz.");
+                return Result<SoftDeleteKategoriResponse>.FromValidation(validation);
             }
-            var kategori = await _kategoriDal.GetByIdAsync(id, ct);
+
+            var kategori = await _kategoriDal.GetByIdAsync(request.Id, ct);
             if(kategori == null)
             {
                 return Result<SoftDeleteKategoriResponse>.Fail(ErrorType.NotFound, ErrorCodes.Kategori.NotFound, "Kategori bulunamadı.");
+            }
+
+            if (kategori.SilindiMi) 
+                return Result<SoftDeleteKategoriResponse>.Success(new SoftDeleteKategoriResponse { Id = kategori.Id });
+
+            if(await _kategoriDal.HasChildrenAsync(kategori.Id, ct))
+            {
+                return Result<SoftDeleteKategoriResponse>.Fail(ErrorType.Conflict, ErrorCodes.Kategori.HasChildren, "Alt kategorisi olan kategori silinemez.");
             }
 
             kategori.AktifMi = false;

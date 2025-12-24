@@ -55,5 +55,12 @@ namespace DataAccessLayer.Concrete
                     .ToListAsync(ct);
         }
 
+        public async Task<bool> HasChildren(int id, CancellationToken ct = default)
+        {
+            return await _context.Kategoriler
+                            .AsNoTracking()
+                            .AnyAsync(x => x.UstKategoriId == id && !x.SilindiMi, ct);
+        }
+
     }
 }

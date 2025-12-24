@@ -14,6 +14,8 @@ namespace BusinessLayer.Common.Constants
             public const string ParentNotFound = "kategori_parent_not_found";
             public const string NotFound = "kategori_not_found";
             public const string ParentConflict = "parent_conflict";
+            public const string HasChildren = "has_children";
+            public const string CycleDetected = "cycle_conflict_detected";
         }
 
         public static class Ilan

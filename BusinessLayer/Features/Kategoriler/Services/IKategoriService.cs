@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Kategoriler.DTOs;
+using BusinessLayer.Features.Kategoriler.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace BusinessLayer.Features.Kategoriler.Services
         Task<Result<IReadOnlyList<KategoriDropdownItemDto>>> GetForDropdownAsync(CancellationToken ct = default);
         Task<Result<KategoriDetailDto>> GetByIdAsync(int id, CancellationToken ct = default);
         Task<Result<UpdateKategoriResponse>> UpdateAsync(UpdateKategoriRequest request, CancellationToken ct = default);
-        Task<Result<SoftDeleteKategoriResponse>> SoftDeleteAsync(int id, CancellationToken ct = default);
+        Task<Result<SoftDeleteKategoriResponse>> SoftDeleteAsync(SoftDeleteKategoriRequest request, CancellationToken ct = default);
         Task<Result<IReadOnlyList<KategoriListItemDto>>> GetChildrensAsync(int UstKategorıId, CancellationToken ct = default);
 
     }

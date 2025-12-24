@@ -21,6 +21,8 @@ namespace BusinessLayer.DependencyInjection
             services.AddScoped<IKategoriService, KategoriService>();
             services.AddScoped<IKategoriSlugService, KategoriSlugService>();
             services.AddScoped<IValidator<CreateKategoriRequest>, CreateKategoriValidator>();
+            services.AddScoped<IValidator<SoftDeleteKategoriRequest>, KategoriSoftDeleteValidator>();
+            services.AddScoped<IValidator<UpdateKategoriRequest>, UpdateKategoriValidator>();
 
             return services;
         }

@@ -34,7 +34,6 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
 
         public bool SilindiMi { get; set; }
 
-        public Kategori? UstKategori { get; set; }
 
     }
 }

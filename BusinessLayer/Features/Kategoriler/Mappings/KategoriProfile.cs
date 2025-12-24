@@ -13,7 +13,7 @@ namespace BusinessLayer.Features.Kategoriler.Mappings
     {
         public KategoriProfile()
         {
-            CreateMap<KategoriDetailDto, Kategori>()
+            CreateMap <Kategori , KategoriDetailDto>()
                         .ForMember(dest => dest.Id,
                     opt => opt.MapFrom(src => src.Id))
                         .ForMember(dest => dest.UstKategoriId,
@@ -29,9 +29,7 @@ namespace BusinessLayer.Features.Kategoriler.Mappings
                         .ForMember(dest => dest.GuncellemeTarihi,
                     opt => opt.MapFrom(src => src.GuncellemeTarihi))
                         .ForMember(dest => dest.SilindiMi,
-                    opt => opt.MapFrom(src => src.SilindiMi))
-                        .ForMember(dest => dest.UstKategori,
-                    opt => opt.MapFrom(src => src.UstKategori));
+                    opt => opt.MapFrom(src => src.SilindiMi));
         }
     }
 }

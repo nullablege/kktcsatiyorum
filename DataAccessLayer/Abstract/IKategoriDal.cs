@@ -16,5 +16,9 @@ namespace DataAccessLayer.Abstract
         Task<List<Kategori>> GetChildrenAsync(int ustKategoriId, CancellationToken ct = default);
         Task<List<Kategori>> GetRootAsync(CancellationToken ct= default);
 
+        Task<bool> HasChildrenAsync(int id, CancellationToken ct = default);
+
+
+
     }
 }
