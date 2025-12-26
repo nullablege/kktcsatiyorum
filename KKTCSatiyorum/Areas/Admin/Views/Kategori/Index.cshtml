@@ -1,23 +1,94 @@
-﻿
+﻿@using BusinessLayer.Features.Kategoriler.DTOs
+@model IReadOnlyList<KategoriListItemDto>
+
 @{
-    ViewData["Title"] = "Kategoriler";
+    ViewData["Title"] = "Kategori Yönetimi";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<h1>Kategoriler</h1>
 
-@if (TempData["SuccessMessage"] is string msg)
-{
-    <div class="alert alert-success">@msg</div>
-}
+<main class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Kategori Yönetimi</h1>
+            <p class="text-muted mb-0">Kategorileri yönetin</p>
+        </div>
 
-<p>
-    <a class="btn btn-primary"
-       asp-area="Admin"
-       asp-controller="Kategori"
-       asp-action="Create">Yeni Kategori</a>
-</p>
+        <a class="btn btn-primary"
+           asp-area="Admin"
+           asp-controller="Kategori"
+           asp-action="Create">
+            <i class="bi bi-plus-lg me-1"></i> Yeni Kategori
+        </a>
+    </div>
 
-<div class="alert alert-info">
-    Listeleme henüz eklenmedi (şimdilik basit).
-</div>
+    @if (TempData["SuccessMessage"] is string ok)
+    {
+        <div class="alert alert-success">@ok</div>
+    }
+    @if (TempData["ErrorMessage"] is string err)
+    {
+        <div class="alert alert-danger">@err</div>
+    }
 
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Kategoriler</h5>
+                </div>
+
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        @if (Model.Count == 0)
+                        {
+                            <div class="list-group-item text-muted">
+                                Henüz kategori yok.
+                            </div>
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="bi bi-folder text-primary me-2"></i>
+                                        <strong>@item.Ad</strong>
+
+                                        <span class="badge bg-light text-dark ms-2">@item.SeoSlug</span>
+
+                                        <div class="small text-muted mt-1">
+                                            Id: @item.Id • Parent: @(item.UstKategoriId?.ToString() ?? "-") • Sıra: @item.SiraNo
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-column align-items-end">
+                                        <span class="badge-status @(item.AktifMi ? "badge-success" : "badge-danger")">
+                                            @(item.AktifMi ? "Aktif" : "Pasif")
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="mb-0">Kategori Detay</h5>
+                        <small class="text-muted">Kategori Detayları</small>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-0">
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+    </div>
+</main>

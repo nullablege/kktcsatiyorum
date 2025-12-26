@@ -14,9 +14,18 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
         {
             _kategoriService = kategoriService;
         }
-        public IActionResult Index()
+        [HttpGet]
+        public async Task<IActionResult> Index(CancellationToken ct)
         {
-            return View();
+            var result = await _kategoriService.GetListAsync(ct); 
+
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Error?.Message ?? "Kategoriler yüklenemedi.";
+                return View(Array.Empty<KategoriListItemDto>());
+            }
+
+            return View(result.Data ?? Array.Empty<KategoriListItemDto>());
         }
 
         [HttpGet]
