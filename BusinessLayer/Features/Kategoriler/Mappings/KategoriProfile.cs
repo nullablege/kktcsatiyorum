@@ -29,7 +29,9 @@ namespace BusinessLayer.Features.Kategoriler.Mappings
                         .ForMember(dest => dest.GuncellemeTarihi,
                     opt => opt.MapFrom(src => src.GuncellemeTarihi))
                         .ForMember(dest => dest.SilindiMi,
-                    opt => opt.MapFrom(src => src.SilindiMi));
+                    opt => opt.MapFrom(src => src.SilindiMi))
+                        .ForMember(dest => dest.SiraNo,
+                    opt => opt.MapFrom(src => src.SiraNo));
         }
     }
 }

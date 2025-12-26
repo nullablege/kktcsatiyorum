@@ -1,5 +1,5 @@
-﻿@using BusinessLayer.Features.Kategoriler.DTOs
-@model IReadOnlyList<KategoriListItemDto>
+﻿@model KKTCSatiyorum.Areas.Admin.Models.KategoriIndexViewModel
+
 
 @{
     ViewData["Title"] = "Kategori Yönetimi";
@@ -39,7 +39,7 @@
 
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
-                        @if (Model.Count == 0)
+                        @if (Model.Items.Count == 0)
                         {
                             <div class="list-group-item text-muted">
                                 Henüz kategori yok.
@@ -47,7 +47,7 @@
                         }
                         else
                         {
-                            foreach (var item in Model)
+                            foreach (var item in Model.Items)
                             {
                                 <div class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
@@ -70,7 +70,7 @@
                                             <a class="btn btn-sm btn-outline-secondary"
                                                asp-area="Admin"
                                                asp-controller="Kategori"
-                                               asp-action="Update"
+                                               asp-action="Index"
                                                asp-route-id="@item.Id">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
@@ -107,10 +107,64 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="alert alert-info mb-0">
-                    </div>
+                    @if (Model.Selected == null)
+                    {
+                        <div class="alert alert-info mb-0">
+                            Düzenlemek için soldan bir kategori seç.
+                        </div>
+                    }
+                    else
+                    {
+                        <form asp-area="Admin" asp-controller="Kategori" asp-action="Update" method="post" novalidate>
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" asp-for="Selected.Id" />
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                            <div class="mb-3">
+                                <label asp-for="Selected.Ad" class="form-label"></label>
+                                <input asp-for="Selected.Ad" class="form-control" />
+                                <span asp-validation-for="Selected.Ad" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Selected.UstKategoriId" class="form-label"></label>
+                                <select asp-for="Selected.UstKategoriId" asp-items="Model.Selected.UstKategoriOptions" class="form-select"></select>
+                                <span asp-validation-for="Selected.UstKategoriId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Selected.SiraNo" class="form-label"></label>
+                                <input asp-for="Selected.SiraNo" class="form-control" type="number" min="1" />
+                                <span asp-validation-for="Selected.SiraNo" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" asp-for="Selected.AktifMi" />
+                                <label class="form-check-label" asp-for="Selected.AktifMi"></label>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-lg me-1"></i> Güncelle
+                                </button>
+                                <a class="btn btn-secondary"
+                                   asp-area="Admin"
+                                   asp-controller="Kategori"
+                                   asp-action="Index">
+                                    Temizle
+                                </a>
+                            </div>
+                        </form>
+                    }
+
                 </div>
             </div>
         </div>
     </div>
 </main>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

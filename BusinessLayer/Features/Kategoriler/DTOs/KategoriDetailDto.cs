@@ -24,7 +24,7 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
 
         public bool AktifMi { get; init; } = true;
 
-
+        public int SiraNo { get; init; } 
 
         public DateTime OlusturmaTarihi { get; init; } = DateTime.UtcNow;
 
