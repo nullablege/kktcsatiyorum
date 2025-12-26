@@ -12,27 +12,27 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
     public sealed record KategoriDetailDto
     {
 
-        public int Id { get; set; }
+        public int Id { get; init; }
 
-        public int? UstKategoriId { get; set; }
-
-
-        public string Ad { get; set; } = default!;
+        public int? UstKategoriId { get; init; }
 
 
-        public string SeoSlug { get; set; } = default!;
-
-        public bool AktifMi { get; set; } = true;
+        public string Ad { get; init; } = default!;
 
 
+        public string SeoSlug { get; init; } = default!;
 
-        public DateTime OlusturmaTarihi { get; set; } = DateTime.UtcNow;
-
-
-        public DateTime? GuncellemeTarihi { get; set; }
+        public bool AktifMi { get; init; } = true;
 
 
-        public bool SilindiMi { get; set; }
+
+        public DateTime OlusturmaTarihi { get; init; } = DateTime.UtcNow;
+
+
+        public DateTime? GuncellemeTarihi { get; init; }
+
+
+        public bool SilindiMi { get; init; }
 
 
     }

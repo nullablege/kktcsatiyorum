@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure.Core;
 using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Kategoriler.DTOs;

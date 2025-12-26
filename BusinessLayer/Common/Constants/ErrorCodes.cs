@@ -13,9 +13,9 @@ namespace BusinessLayer.Common.Constants
             public const string SlugExists = "kategori_slug_exists";
             public const string ParentNotFound = "kategori_parent_not_found";
             public const string NotFound = "kategori_not_found";
-            public const string ParentConflict = "parent_conflict";
-            public const string HasChildren = "has_children";
-            public const string CycleDetected = "cycle_conflict_detected";
+            public const string ParentConflict = "kategori_parent_conflict";
+            public const string HasChildren = "kategori_has_children";
+            public const string CycleDetected = "kategori_cycle_conflict_detected";
         }
 
         public static class Ilan

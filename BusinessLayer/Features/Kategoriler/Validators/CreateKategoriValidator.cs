@@ -20,7 +20,8 @@ namespace BusinessLayer.Features.Kategoriler.Validators
 
 
             RuleFor(x => x.SiraNo)
-                .GreaterThanOrEqualTo(0).WithMessage("SiraNo 0 veya daha büyük olmalı.");
+                .NotEmpty().WithMessage("SıraNo Boş olamaz.")
+                .GreaterThan(0).WithMessage("SıraNo'nun 0'dan büyük olması gerekiyor.");
         }
     }
 }
