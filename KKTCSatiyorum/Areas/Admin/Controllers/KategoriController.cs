@@ -56,5 +56,25 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
 
 
         }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SoftDelete(int id, CancellationToken ct)
+        {
+            var result = await _kategoriService.SoftDeleteAsync(new SoftDeleteKategoriRequest { Id = id }, ct);
+
+            if (result.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "Kategori pasife çekildi.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            TempData["ErrorMessage"] = result.Error?.Message ?? "Silme işlemi başarısız.";
+            return RedirectToAction(nameof(Index));
+        }
+
+
+
     }
 }
