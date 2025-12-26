@@ -8,6 +8,6 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
 {
     public sealed record SoftDeleteKategoriResponse
     {
-        public int Id { get; set; }
+        public int Id { get; init; }
     }
 }

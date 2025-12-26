@@ -3,6 +3,7 @@ using BusinessLayer.Features.Kategoriler.Services;
 using KKTCSatiyorum.Areas.Admin.Models;
 using KKTCSatiyorum.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KKTCSatiyorum.Areas.Admin.Controllers
 {
@@ -29,9 +30,13 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create(CancellationToken ct)
         {
-            return View(new CreateKategoriViewModel());
+            var model = new CreateKategoriViewModel
+            {
+                UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct)
+            };
+            return View(model);
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,6 +57,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
             }
 
                 result.AddToModelState(ModelState);
+            model.UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct);
             return View(model);
 
 
@@ -73,6 +79,28 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
             TempData["ErrorMessage"] = result.Error?.Message ?? "Silme işlemi başarısız.";
             return RedirectToAction(nameof(Index));
         }
+
+        private async Task<IReadOnlyList<SelectListItem>> BuildUstKategoriOptionsAsync(CancellationToken ct)
+        {
+            var result = await _kategoriService.GetForDropdownAsync(ct);
+
+            var items = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "", Text = "-- Ana Kategori --" }
+    };
+
+            if (result.IsSuccess && result.Data != null)
+            {
+                items.AddRange(result.Data.Select(x => new SelectListItem
+                {
+                    Value = x.Id.ToString(),
+                    Text = x.Ad
+                }));
+            }
+
+            return items;
+        }
+
 
 
 
