@@ -18,17 +18,21 @@
             <h4><i class="bi bi-shop me-2"></i>KKTC Admin</h4>
         </div>
         <nav class="sidebar-nav">
-            <a href="index.html" class="nav-link active"><i class="bi bi-speedometer2"></i> Dashboard</a>
-            <a href="moderation.html" class="nav-link">
-                <i class="bi bi-shield-check"></i> Moderasyon <span class="badge bg-danger ms-auto">12</span>
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link">
+                <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a href="categories.html" class="nav-link"><i class="bi bi-folder"></i> Kategoriler</a>
-            <a href="#" class="nav-link"><i class="bi bi-people"></i> Kullanıcılar</a>
+            <a href="#" class="nav-link"><i class="bi bi-shield-check"></i> Moderasyon</a>
+
+            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link">
+                <i class="bi bi-folder"></i> Kategoriler
+            </a>            <a href="#" class="nav-link"><i class="bi bi-people"></i> Kullanıcılar</a>
             <a href="#" class="nav-link"><i class="bi bi-megaphone"></i> İlanlar</a>
             <a href="#" class="nav-link"><i class="bi bi-bar-chart"></i> Raporlar</a>
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Ayarlar</a>
             <hr class="mx-3">
-            <a href="../index.html" class="nav-link"><i class="bi bi-box-arrow-left"></i> Siteye Dön</a>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">
+                <i class="bi bi-box-arrow-left"></i> Siteye Dön
+            </a>
         </nav>
     </aside>
 
@@ -36,53 +40,7 @@
     @RenderBody()
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        // Stats Line Chart
-        new Chart(document.getElementById('statsChart'), {
-            type: 'line',
-            data: {
-                labels: ['1 Ara', '5 Ara', '10 Ara', '15 Ara', '20 Ara', '25 Ara', '30 Ara'],
-                datasets: [{
-                    label: 'Yeni İlanlar',
-                    data: [120, 190, 150, 220, 180, 250, 342],
-                    borderColor: '#0D6EFD',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Yeni Kullanıcılar',
-                    data: [40, 55, 45, 70, 60, 85, 124],
-                    borderColor: '#198754',
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-
-        // Category Doughnut Chart
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Emlak', 'Vasıta', 'Elektronik', 'Ev & Yaşam', 'Diğer'],
-                datasets: [{
-                    data: [12450, 8320, 15780, 6940, 2402],
-                    backgroundColor: ['#0D6EFD', '#198754', '#FFC107', '#DC3545', '#6C757D']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-    </script>
+   
     
     @await RenderSectionAsync("Scripts", required: false)
 
