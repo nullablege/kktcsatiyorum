@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using EntityLayer.Constants;
 
 namespace DataAccessLayer
 {
@@ -14,14 +15,17 @@ namespace DataAccessLayer
             var userManager = serviceProvider.GetRequiredService<UserManager<UygulamaKullanicisi>>();
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // Role
-            if (!await roleManager.RoleExistsAsync("Admin"))
+            var roles = new[] { RoleNames.Admin, RoleNames.User, RoleNames.Moderator };
+
+            foreach (var role in roles)
             {
-                await roleManager.CreateAsync(new IdentityRole("Admin"));
+                if (!await roleManager.RoleExistsAsync(role))
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
             }
 
-            // User
-            var adminEmail = "admin@site.com";
+            var adminEmail = "admin@admin.com";
 
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
@@ -39,11 +43,10 @@ namespace DataAccessLayer
 
                 if (!result.Succeeded)
                 {
-                    throw new Exception(string.Join(" | ",
-                        result.Errors.Select(e => e.Description)));
+                    throw new Exception(string.Join(" | ", result.Errors.Select(e => e.Description)));
                 }
 
-                await userManager.AddToRoleAsync(adminUser, "Admin");
+                await userManager.AddToRoleAsync(adminUser, RoleNames.Admin);
             }
         }
     }

@@ -46,7 +46,7 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-logo">
-                <a href="index.html" class="text-decoration-none">
+                <a href="/Home/Index" class="text-decoration-none">
                     <i class="bi bi-shop"></i> KKTCSatıyorum
                 </a>
             </div>
@@ -54,7 +54,7 @@
             <h1 class="h2">Giriş Yap</h1>
             <p class="text-muted text-center mb-4">Hesabınıza giriş yaparak ilanlara erişin</p>
 
-            <form asp-action="Login" asp-asp-controller="Account" method="post">
+            <form asp-action="Login" asp-asp-controller="Account" asp-route-returnUrl="@(ViewData["ReturnUrl"] as string)"  method="post">
                 <div class="mb-3">
                     <label for="email" class="form-label">E-posta Adresi</label>
                     <div class="input-group">
@@ -63,7 +63,7 @@
                                autocomplete="email">
                     </div>
                 </div>
-                <div style="color:red; text-align:center" asp-asp-validation-summary="all"></div>
+                <div style="color:red; text-align:center" asp-validation-summary="All"></div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Şifre</label>
                     <div class="input-group">
@@ -78,7 +78,7 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="remember">
+                        <input class="form-check-input" asp-for="RememberMe" id="remember">
                         <label class="form-check-label" for="remember">Beni hatırla</label>
                     </div>
                     <a href="#" class="text-primary small">Şifremi unuttum?</a>

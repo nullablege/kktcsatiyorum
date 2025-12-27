@@ -1,4 +1,5 @@
 using AutoMapper;
+using EntityLayer.Constants;
 using EntityLayer.Entities;
 using KKTCSatiyorum.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -31,7 +32,7 @@ namespace KKTCSatiyorum.Controllers
         public IActionResult Login(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            return View(new LoginViewModel());
         }
 
         [HttpPost]
@@ -59,8 +60,15 @@ namespace KKTCSatiyorum.Controllers
                 ModelState.AddModelError(string.Empty, $"Hesabýnýz {user.AskidaBitisTarihi.Value:dd.MM.yyyy} tarihine kadar askýda.");
                 return View(model);
             }
+            else if (user.AskidaMi && user.AskidaBitisTarihi.HasValue && user.AskidaBitisTarihi.Value <= DateTime.UtcNow)
+            {
+                user.AskidaMi = false;
+                user.AskidaBitisTarihi = null;
+                await _userManager.UpdateAsync(user);
+            }
 
-            var result = await _signInManager.PasswordSignInAsync(user.UserName!, model.Password, model.RememberMe, lockoutOnFailure: true);
+            var username = user.UserName ?? user.Email;
+            var result = await _signInManager.PasswordSignInAsync(username!, model.Password, model.RememberMe, lockoutOnFailure: true);
 
             if (result.Succeeded)
             {
@@ -95,7 +103,7 @@ namespace KKTCSatiyorum.Controllers
         [AllowAnonymous]
         public IActionResult Register()
         {
-            return View();
+            return View(new RegisterViewModel());
         }
 
 
@@ -112,12 +120,14 @@ namespace KKTCSatiyorum.Controllers
 
             var user = _mapper.Map<UygulamaKullanicisi>(model); // Automapper 
 
+            user.UserName ??= model.Email;
+            user.EmailConfirmed = true; //Email doðrulamasý 
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
             if (result.Succeeded)
             {
-                await _userManager.AddToRoleAsync(user, "User");
+                await _userManager.AddToRoleAsync(user, RoleNames.User );
 
                 _logger.LogInformation("Yeni kullanýcý oluþturuldu: {Email}", user.Email);
 

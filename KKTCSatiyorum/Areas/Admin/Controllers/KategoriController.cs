@@ -4,9 +4,11 @@ using KKTCSatiyorum.Areas.Admin.Models;
 using KKTCSatiyorum.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-
+using Microsoft.AspNetCore.Authorization;
+using EntityLayer.Constants;
 namespace KKTCSatiyorum.Areas.Admin.Controllers
 {
+    [Authorize(Roles = RoleNames.Admin)]
     [Area("Admin")]
     public class KategoriController : Controller
     {
