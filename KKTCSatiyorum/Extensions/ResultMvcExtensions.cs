@@ -7,15 +7,20 @@ namespace KKTCSatiyorum.Extensions
     public static class ResultMvcExtensions
     {
 
-        public static void AddToModelState(this Result result, ModelStateDictionary modelState)
+        public static void AddToModelState(this Result result, ModelStateDictionary modelState, string? prefix=null)
         {
             if (result.IsSuccess) return;
+
+            static string Key(string? p, string field)
+            {
+                return string.IsNullOrWhiteSpace(p) ? field : $"{p}.{field}";
+            }
 
             if(result.Error?.Type == ErrorType.Validation)
             {
                 foreach(var ve in result.ValidationErrors)
                 {
-                    modelState.AddModelError(ve.Field, ve.Message);
+                    modelState.AddModelError(Key(prefix, ve.Field), ve.Message);
                 }
                 return;
             }
@@ -25,11 +30,19 @@ namespace KKTCSatiyorum.Extensions
                 modelState.AddModelError(string.Empty, "Beklenmeyen bir hata oluştu.");
                 return;
             }
+
             switch (result.Error.Code)
             {
-                case ErrorCodes.Kategori.ParentNotFound:
-                    modelState.AddModelError("UstKategoriId", result.Error.Message);
+                case ErrorCodes.Kategori.SlugExists:
+                    modelState.AddModelError(Key(prefix, "Ad"), result.Error.Message);
                     break;
+
+                case ErrorCodes.Kategori.ParentNotFound:
+                case ErrorCodes.Kategori.ParentConflict:
+                case ErrorCodes.Kategori.CycleDetected:
+                    modelState.AddModelError(Key(prefix, "UstKategoriId"), result.Error.Message);
+                    break;
+
                 default:
                     modelState.AddModelError(string.Empty, result.Error.Message);
                     break;

@@ -43,7 +43,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
                         UstKategoriId = detail.Data.UstKategoriId,
                         SiraNo = detail.Data.SiraNo,
                         AktifMi = detail.Data.AktifMi,
-                        UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct)
+                        UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct, excludeId: detail.Data.Id)
                     };
                 }
                 else
@@ -110,7 +110,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index), new { id = model.Id });
             }
 
-            result.AddToModelState(ModelState);
+            result.AddToModelState(ModelState, "Selected");
 
             var categories = await _kategoriService.GetListAsync(ct);
 
@@ -120,7 +120,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
                 Selected = model
             };
 
-            vm.Selected.UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct);
+            vm.Selected.UstKategoriOptions = await BuildUstKategoriOptionsAsync(ct, excludeId: model.Id);
 
             return View("Index", vm);
         }
@@ -143,7 +143,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private async Task<IReadOnlyList<SelectListItem>> BuildUstKategoriOptionsAsync(CancellationToken ct)
+        private async Task<IReadOnlyList<SelectListItem>> BuildUstKategoriOptionsAsync(CancellationToken ct, int? excludeId = null)
         {
             var result = await _kategoriService.GetForDropdownAsync(ct);
 
@@ -154,7 +154,11 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
 
             if (result.IsSuccess && result.Data != null)
             {
-                items.AddRange(result.Data.Select(x => new SelectListItem
+                var filtered = excludeId.HasValue
+                ? result.Data.Where(x => x.Id != excludeId.Value)
+                : result.Data;
+
+                items.AddRange(filtered.Select(x => new SelectListItem
                 {
                     Value = x.Id.ToString(),
                     Text = x.Ad
