@@ -8,9 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using EntityLayer.Constants;
 namespace KKTCSatiyorum.Areas.Admin.Controllers
 {
-    [Authorize(Roles = RoleNames.Admin)]
-    [Area("Admin")]
-    public class KategoriController : Controller
+    public class KategoriController : AdminBaseController
     {
         private readonly IKategoriService _kategoriService;
         public KategoriController(IKategoriService kategoriService)

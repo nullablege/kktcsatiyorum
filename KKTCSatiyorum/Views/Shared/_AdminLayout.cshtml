@@ -18,17 +18,28 @@
             <h4><i class="bi bi-shop me-2"></i>KKTC Admin</h4>
         </div>
         <nav class="sidebar-nav">
-            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index" class="nav-link">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a href="#" class="nav-link"><i class="bi bi-shield-check"></i> Moderasyon</a>
+            <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="nav-link">
+                <i class="bi bi-shield-check"></i> Moderasyon
+            </a>
 
             <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link">
                 <i class="bi bi-folder"></i> Kategoriler
-            </a>            <a href="#" class="nav-link"><i class="bi bi-people"></i> Kullanıcılar</a>
-            <a href="#" class="nav-link"><i class="bi bi-megaphone"></i> İlanlar</a>
-            <a href="#" class="nav-link"><i class="bi bi-bar-chart"></i> Raporlar</a>
-            <a href="#" class="nav-link"><i class="bi bi-gear"></i> Ayarlar</a>
+            </a>            
+            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link">
+                <i class="bi bi-people"></i> Kullanıcılar
+            </a>
+            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link">
+                <i class="bi bi-megaphone"></i> İlanlar
+            </a>
+            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link">
+                <i class="bi bi-bar-chart"></i> Raporlar
+            </a>
+            <a href="#" class="nav-link">
+                <i class="bi bi-gear"></i> Ayarlar
+            </a>
             <hr class="mx-3">
             <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">
                 <i class="bi bi-box-arrow-left"></i> Siteye Dön
