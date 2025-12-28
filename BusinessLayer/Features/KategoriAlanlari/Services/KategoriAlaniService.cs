@@ -1,4 +1,5 @@
 using AutoMapper;
+using BusinessLayer.Common;
 using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.KategoriAlanlari.DTOs;
@@ -17,8 +18,11 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
         private readonly IKategoriDal _kategoriDal;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cache;
         private readonly IValidator<CreateKategoriAlaniRequest> _createValidator;
         private readonly IValidator<UpdateKategoriAlaniRequest> _updateValidator;
+
+        private const string CacheKeyPrefix = "category_attrs:";
 
         public KategoriAlaniService(
             IKategoriAlaniDal kategoriAlaniDal,
@@ -26,6 +30,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             IKategoriDal kategoriDal,
             IUnitOfWork unitOfWork,
             IMapper mapper,
+            ICacheService cache,
             IValidator<CreateKategoriAlaniRequest> createValidator,
             IValidator<UpdateKategoriAlaniRequest> updateValidator)
         {
@@ -34,6 +39,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             _kategoriDal = kategoriDal;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _cache = cache;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
         }
@@ -84,6 +90,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
             }
 
+            InvalidateCache(request.KategoriId);
             return Result<int>.Success(entity.Id);
         }
 
@@ -114,6 +121,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return Result.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
             }
 
+            InvalidateCache(entity.KategoriId);
             return Result.Success();
         }
 
@@ -140,6 +148,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return Result.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
             }
 
+            InvalidateCache(entity.KategoriId);
             return Result.Success();
         }
 
@@ -148,8 +157,16 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             if (kategoriId <= 0)
                 return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz kategori ID.");
 
+            var cacheKey = CacheKeyPrefix + kategoriId;
+            var cached = _cache.Get<List<KategoriAlaniListItemDto>>(cacheKey);
+            if (cached != null)
+                return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Success(cached);
+
             var list = await _kategoriAlaniDal.GetListByKategoriAsync(kategoriId, includeSecenekler: true, ct);
             var dtos = _mapper.Map<List<KategoriAlaniListItemDto>>(list);
+            
+            _cache.Set(cacheKey, dtos, TimeSpan.FromHours(1));
+            
             return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Success(dtos);
         }
 
@@ -191,7 +208,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 AktifMi = true
             };
 
-            attribute.Secenekler.Add(option);
+            await _secenegiDal.InsertAsync(option, ct);
 
             try
             {
@@ -202,6 +219,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return Result<int>.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
             }
 
+            InvalidateCache(attribute.KategoriId);
             return Result<int>.Success(option.Id);
         }
 
@@ -212,11 +230,13 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
 
             var option = await _secenegiDal.GetByIdAsync(optionId, ct);
             if (option == null)
-                return Result.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Seçenek bulunamadı.");
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.OptionNotFound, "Seçenek bulunamadı.");
 
             if (!option.AktifMi)
                 return Result.Success();
 
+            var attribute = await _kategoriAlaniDal.GetByIdAsync(option.KategoriAlaniId, ct);
+            
             option.AktifMi = false;
 
             try
@@ -228,6 +248,9 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return Result.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
             }
 
+            if (attribute != null)
+                InvalidateCache(attribute.KategoriId);
+                
             return Result.Success();
         }
 
@@ -238,6 +261,11 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 return sqlEx.Number == 2601 || sqlEx.Number == 2627;
             }
             return false;
+        }
+
+        private void InvalidateCache(int kategoriId)
+        {
+            _cache.Remove(CacheKeyPrefix + kategoriId);
         }
     }
 }

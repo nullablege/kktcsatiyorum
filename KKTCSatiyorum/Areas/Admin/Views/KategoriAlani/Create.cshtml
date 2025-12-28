@@ -89,16 +89,17 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
+        const tekSecimValue = '@((int)VeriTipi.TekSecim)';
         document.getElementById('veriTipiSelect').addEventListener('change', function() {
             var seceneklerDiv = document.getElementById('seceneklerDiv');
-            if (this.value === '6') { // TekSecim
+            if (this.value === tekSecimValue) {
                 seceneklerDiv.style.display = 'block';
             } else {
                 seceneklerDiv.style.display = 'none';
             }
         });
         // Initial check
-        if (document.getElementById('veriTipiSelect').value === '6') {
+        if (document.getElementById('veriTipiSelect').value === tekSecimValue) {
             document.getElementById('seceneklerDiv').style.display = 'block';
         }
     </script>
