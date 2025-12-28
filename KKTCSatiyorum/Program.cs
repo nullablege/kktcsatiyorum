@@ -2,13 +2,12 @@
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using BusinessLayer.Common;
-using DataAccessLayer.Abstract;
-using DataAccessLayer.Concrete;
-using BusinessLayer.Common;
+using BusinessLayer.Features.Ilanlar.Services;
 using EntityLayer.Entities;
+using KKTCSatiyorum.Extensions;
 using KKTCSatiyorum.Mappings;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore; 
+using Microsoft.EntityFrameworkCore;
 using System;
 using BusinessLayer.DependencyInjection;
 
@@ -30,6 +29,10 @@ builder.Services.AddScoped<IIlanSorusuDal, EfIlanSorusuDal>();
 builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
 
 builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
+
+// Servisler
+builder.Services.AddScoped<IIlanService, IlanService>();
+builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 
 //Automapper
