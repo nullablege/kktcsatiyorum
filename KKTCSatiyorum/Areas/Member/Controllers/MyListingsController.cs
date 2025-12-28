@@ -59,8 +59,16 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                 return Unauthorized();
             }
 
-            // Fotoğraf yükle
             var photoPaths = new List<string>();
+            
+            void CleanupPhotos()
+            {
+                foreach (var path in photoPaths)
+                {
+                    _fileStorage.Delete(path);
+                }
+            }
+
             try
             {
                 foreach (var photo in photos)
@@ -75,9 +83,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                 if (photoPaths.Count == 0)
                 {
                     ModelState.AddModelError("photos", "En az bir geçerli fotoğraf yükleyiniz.");
-                    model.KategoriOptions = await BuildKategoriOptionsAsync(ct);
-                    model.ParaBirimiOptions = BuildParaBirimiOptions();
-                    return View(model);
+                    return await ReturnViewWithData(model, ct);
                 }
 
                 var request = new CreateIlanRequest(
@@ -99,22 +105,24 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
+                // Validation/service fail: fotoğrafları temizle
+                CleanupPhotos();
                 result.AddToModelState(ModelState);
             }
             catch
             {
-                // Hata durumunda yüklenen fotoları sil
-                foreach (var path in photoPaths)
-                {
-                    _fileStorage.Delete(path);
-                }
+                CleanupPhotos();
                 throw;
             }
 
+            return await ReturnViewWithData(model, ct);
+        }
+
+        private async Task<IActionResult> ReturnViewWithData(CreateIlanViewModel model, CancellationToken ct)
+        {
             model.KategoriOptions = await BuildKategoriOptionsAsync(ct);
             model.ParaBirimiOptions = BuildParaBirimiOptions();
 
-            // Kategori alanlarını tekrar yükle
             if (model.KategoriId > 0)
             {
                 var attrs = await _kategoriAlaniService.GetListByKategoriAsync(model.KategoriId, ct);
@@ -130,7 +138,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAttributesForCategory(int kategoriId, CancellationToken ct)
         {
-            var result = await _kategoriAlaniService.GetListByKategoriAsync(kategoriId, ct);
+            var result = await _kategoriAlaniService.GetListForFormAsync(kategoriId, ct);
             if (!result.IsSuccess)
             {
                 return Json(new List<KategoriAttributesDto>());

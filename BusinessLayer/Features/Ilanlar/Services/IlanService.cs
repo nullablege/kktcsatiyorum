@@ -9,7 +9,6 @@ using FluentValidation;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Features.Ilanlar.Services
@@ -44,6 +43,14 @@ namespace BusinessLayer.Features.Ilanlar.Services
 
             // EAV alanlarını çek ve doğrula
             var kategoriAlanlari = await _kategoriAlaniDal.GetListByKategoriAsync(request.KategoriId, includeSecenekler: true, ct);
+            
+            // Duplicate attribute kontrolü
+            var duplicateAttr = request.Attributes
+                .GroupBy(x => x.KategoriAlaniId)
+                .FirstOrDefault(g => g.Count() > 1);
+            if (duplicateAttr != null)
+                return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Ilan.DuplicateAttribute, "Aynı alan birden fazla kez gönderilemez.");
+
             var eavValidation = ValidateEavAttributes(kategoriAlanlari, request.Attributes);
             if (!eavValidation.IsSuccess)
                 return Result<int>.Fail(eavValidation.Error!.Type, eavValidation.Error.Code, eavValidation.Error.Message);
@@ -100,7 +107,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             }
             catch (DbUpdateException ex) when (IsUniqueViolation(ex))
             {
-                return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.Ilan.NotFound, "Slug çakışması oluştu.");
+                return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.Ilan.DuplicateSlug, "Slug çakışması oluştu.");
             }
 
             return Result<int>.Success(ilan.Id);
@@ -151,33 +158,48 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 KategoriAlaniId = alan.Id
             };
 
+            bool parsed = false;
             switch (alan.VeriTipi)
             {
                 case VeriTipi.Metin:
                     deger.MetinDeger = value.Trim();
+                    parsed = true;
                     break;
                 case VeriTipi.TamSayi:
                     if (long.TryParse(value, out var tamSayi))
+                    {
                         deger.TamSayiDeger = tamSayi;
+                        parsed = true;
+                    }
                     break;
                 case VeriTipi.Ondalik:
                     if (decimal.TryParse(value, NumberStyles.Any, CultureInfo.InvariantCulture, out var ondalik))
+                    {
                         deger.OndalikDeger = ondalik;
+                        parsed = true;
+                    }
                     break;
                 case VeriTipi.DogruYanlis:
                     deger.DogruYanlisDeger = value.Equals("true", StringComparison.OrdinalIgnoreCase) || value == "1";
+                    parsed = true;
                     break;
                 case VeriTipi.Tarih:
                     if (DateTime.TryParse(value, out var tarih))
+                    {
                         deger.TarihDeger = tarih;
+                        parsed = true;
+                    }
                     break;
                 case VeriTipi.TekSecim:
                     if (int.TryParse(value, out var secenekId))
+                    {
                         deger.SecenekId = secenekId;
+                        parsed = true;
+                    }
                     break;
             }
 
-            return deger;
+            return parsed ? deger : null;
         }
 
         private static string GenerateSlug(string title)

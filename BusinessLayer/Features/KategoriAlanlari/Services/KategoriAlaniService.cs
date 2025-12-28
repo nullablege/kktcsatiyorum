@@ -170,6 +170,16 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Success(dtos);
         }
 
+        public async Task<Result<IReadOnlyList<KategoriAlaniDetailDto>>> GetListForFormAsync(int kategoriId, CancellationToken ct = default)
+        {
+            if (kategoriId <= 0)
+                return Result<IReadOnlyList<KategoriAlaniDetailDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz kategori ID.");
+
+            var list = await _kategoriAlaniDal.GetListByKategoriAsync(kategoriId, includeSecenekler: true, ct);
+            var dtos = _mapper.Map<List<KategoriAlaniDetailDto>>(list);
+            return Result<IReadOnlyList<KategoriAlaniDetailDto>>.Success(dtos);
+        }
+
         public async Task<Result<KategoriAlaniDetailDto>> GetByIdAsync(int id, CancellationToken ct = default)
         {
             if (id <= 0)

@@ -95,14 +95,14 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        // VeriTipi enum values
+        // VeriTipi enum values - Razor generated
         const VeriTipi = {
-            Metin: 1,
-            TamSayi: 2,
-            Ondalik: 3,
-            DogruYanlis: 4,
-            Tarih: 5,
-            TekSecim: 6
+            Metin: @((int)VeriTipi.Metin),
+            TamSayi: @((int)VeriTipi.TamSayi),
+            Ondalik: @((int)VeriTipi.Ondalik),
+            DogruYanlis: @((int)VeriTipi.DogruYanlis),
+            Tarih: @((int)VeriTipi.Tarih),
+            TekSecim: @((int)VeriTipi.TekSecim)
         };
 
         document.getElementById('kategoriSelect').addEventListener('change', async function() {

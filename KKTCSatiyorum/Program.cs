@@ -30,8 +30,7 @@ builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
 
 builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
 
-// Servisler
-builder.Services.AddScoped<IIlanService, IlanService>();
+// Presentation Layer Services
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 
