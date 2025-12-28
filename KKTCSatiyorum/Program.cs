@@ -1,8 +1,10 @@
 ﻿using DataAccessLayer;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
+using BusinessLayer.Common;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
+using BusinessLayer.Common;
 using EntityLayer.Entities;
 using KKTCSatiyorum.Mappings;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +19,7 @@ builder.Services.AddBusinessLayer();
 builder.Services.AddScoped<IIlanDal, EfIlanDal>();
 builder.Services.AddScoped<IKategoriDal, EfKategoriDal>();
 builder.Services.AddScoped<IKategoriAlaniDal, EfKategoriAlaniDal>();
+builder.Services.AddScoped<IKategoriAlaniSecenegiDal, EfKategoriAlaniSecenegiDal>();
 builder.Services.AddScoped<IFavoriDal, EfFavoriDal>();
 builder.Services.AddScoped<IBildirimDal, EfBildirimDal>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -38,6 +41,9 @@ builder.Services.AddAutoMapper(
 builder.Services.AddControllersWithViews();
 
 // DbContext konfigürasyonu
+builder.Services.AddMemoryCache();
+builder.Services.AddSingleton<ICacheService, KKTCSatiyorum.Extensions.MemoryCacheService>();
+
 builder.Services.AddDbContext<Context>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         x => x.MigrationsAssembly("DataAccessLayer")));
@@ -130,5 +136,9 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
+
+
 
 

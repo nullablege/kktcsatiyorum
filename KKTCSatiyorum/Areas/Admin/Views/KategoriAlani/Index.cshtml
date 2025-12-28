@@ -1,0 +1,145 @@
+@model KKTCSatiyorum.Areas.Admin.Models.KategoriAlaniIndexViewModel
+
+@{
+    ViewData["Title"] = "Kategori Alanları Yönetimi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Kategori Alanları</h1>
+            <p class="text-muted mb-0">EAV (Entity-Attribute-Value) alanlarını yönetin</p>
+        </div>
+    </div>
+
+    @if (TempData["SuccessMessage"] is string ok)
+    {
+        <div class="alert alert-success">@ok</div>
+    }
+    @if (TempData["ErrorMessage"] is string err)
+    {
+        <div class="alert alert-danger">@err</div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header bg-white">
+            <h5 class="mb-0">Kategori Seçin</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="form-label">Kategori</label>
+                    <select name="kategoriId" class="form-select" onchange="this.form.submit()">
+                        @foreach (var item in Model.KategoriOptions)
+                        {
+                            <option value="@item.Value" selected="@(item.Value == Model.SelectedKategoriId?.ToString())">@item.Text</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    @if (Model.SelectedKategoriId.HasValue)
+                    {
+                        <a class="btn btn-primary"
+                           asp-action="Create"
+                           asp-route-kategoriId="@Model.SelectedKategoriId">
+                            <i class="bi bi-plus-lg me-1"></i> Yeni Alan
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @if (Model.SelectedKategoriId.HasValue)
+    {
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">@Model.KategoriAdi - Alanlar</h5>
+                <span class="badge bg-primary">@Model.Items.Count alan</span>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Items.Count == 0)
+                {
+                    <div class="p-4 text-muted text-center">
+                        Bu kategoride henüz alan tanımlanmamış.
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Ad</th>
+                                    <th>Anahtar</th>
+                                    <th>Veri Tipi</th>
+                                    <th>Zorunlu</th>
+                                    <th>Filtrelenebilir</th>
+                                    <th>Seçenek</th>
+                                    <th>Sıra</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Items)
+                                {
+                                    <tr>
+                                        <td><strong>@item.Ad</strong></td>
+                                        <td><code>@item.Anahtar</code></td>
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                @item.VeriTipi
+                                            </span>
+                                        </td>
+                                        <td>
+                                            @if (item.ZorunluMu)
+                                            {
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-x-circle text-muted"></i>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.FiltrelenebilirMi)
+                                            {
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-x-circle text-muted"></i>
+                                            }
+                                        </td>
+                                        <td>@item.SecenekSayisi</td>
+                                        <td>@item.SiraNo</td>
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                <a class="btn btn-sm btn-outline-secondary"
+                                                   asp-action="Edit"
+                                                   asp-route-id="@item.Id">
+                                                    <i class="bi bi-pencil"></i>
+                                                </a>
+                                                <form asp-action="Deactivate" method="post" class="d-inline">
+                                                    @Html.AntiForgeryToken()
+                                                    <input type="hidden" name="id" value="@item.Id" />
+                                                    <input type="hidden" name="kategoriId" value="@Model.SelectedKategoriId" />
+                                                    <button type="submit"
+                                                            class="btn btn-sm btn-outline-danger"
+                                                            onclick="return confirm('Alan pasife çekilsin mi?');">
+                                                        <i class="bi bi-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+</main>

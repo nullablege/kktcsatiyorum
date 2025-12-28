@@ -13,6 +13,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
     public sealed class KategoriAlaniService : IKategoriAlaniService
     {
         private readonly IKategoriAlaniDal _kategoriAlaniDal;
+        private readonly IKategoriAlaniSecenegiDal _secenegiDal;
         private readonly IKategoriDal _kategoriDal;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -21,6 +22,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
 
         public KategoriAlaniService(
             IKategoriAlaniDal kategoriAlaniDal,
+            IKategoriAlaniSecenegiDal secenegiDal,
             IKategoriDal kategoriDal,
             IUnitOfWork unitOfWork,
             IMapper mapper,
@@ -28,6 +30,7 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             IValidator<UpdateKategoriAlaniRequest> updateValidator)
         {
             _kategoriAlaniDal = kategoriAlaniDal;
+            _secenegiDal = secenegiDal;
             _kategoriDal = kategoriDal;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -161,6 +164,71 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
 
             var dto = _mapper.Map<KategoriAlaniDetailDto>(entity);
             return Result<KategoriAlaniDetailDto>.Success(dto);
+        }
+
+        public async Task<Result<int>> AddOptionAsync(int attributeId, string deger, CancellationToken ct = default)
+        {
+            if (attributeId <= 0)
+                return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz alan ID.");
+
+            if (string.IsNullOrWhiteSpace(deger))
+                return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Seçenek değeri boş olamaz.");
+
+            var attribute = await _kategoriAlaniDal.GetByIdWithSeceneklerAsync(attributeId, ct);
+            if (attribute == null)
+                return Result<int>.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Alan bulunamadı.");
+
+            if (attribute.VeriTipi != EntityLayer.Enums.VeriTipi.TekSecim)
+                return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.InvalidOptionForDataType, "Sadece Tek Seçim alanlarına seçenek eklenebilir.");
+
+            var maxSiraNo = attribute.Secenekler.Any() ? attribute.Secenekler.Max(s => s.SiraNo) : 0;
+
+            var option = new KategoriAlaniSecenegi
+            {
+                KategoriAlaniId = attributeId,
+                Deger = deger.Trim(),
+                SiraNo = maxSiraNo + 1,
+                AktifMi = true
+            };
+
+            attribute.Secenekler.Add(option);
+
+            try
+            {
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (Exception)
+            {
+                return Result<int>.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
+            }
+
+            return Result<int>.Success(option.Id);
+        }
+
+        public async Task<Result> DeactivateOptionAsync(int optionId, CancellationToken ct = default)
+        {
+            if (optionId <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz seçenek ID.");
+
+            var option = await _secenegiDal.GetByIdAsync(optionId, ct);
+            if (option == null)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Seçenek bulunamadı.");
+
+            if (!option.AktifMi)
+                return Result.Success();
+
+            option.AktifMi = false;
+
+            try
+            {
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (Exception)
+            {
+                return Result.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
+            }
+
+            return Result.Success();
         }
 
         private static bool IsUniqueViolation(DbUpdateException ex)

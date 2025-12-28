@@ -1,0 +1,105 @@
+@model KKTCSatiyorum.Areas.Admin.Models.CreateKategoriAlaniViewModel
+
+@{
+    ViewData["Title"] = "Yeni Alan Oluştur";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<main class="admin-content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="h3 mb-1">Yeni Alan Oluştur</h1>
+            <p class="text-muted mb-0">@Model.KategoriAdi kategorisine yeni alan ekle</p>
+        </div>
+        <a class="btn btn-outline-secondary"
+           asp-action="Index"
+           asp-route-kategoriId="@Model.KategoriId">
+            <i class="bi bi-arrow-left me-1"></i> Geri
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form asp-action="Create" method="post" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="KategoriId" />
+
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Ad" class="form-label"></label>
+                        <input asp-for="Ad" class="form-control" placeholder="örn: Marka" />
+                        <span asp-validation-for="Ad" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label asp-for="Anahtar" class="form-label"></label>
+                        <input asp-for="Anahtar" class="form-control" placeholder="örn: marka" />
+                        <small class="text-muted">Sadece küçük harf, rakam ve alt çizgi</small>
+                        <span asp-validation-for="Anahtar" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="VeriTipi" class="form-label"></label>
+                        <select asp-for="VeriTipi" asp-items="Model.VeriTipiOptions" class="form-select" id="veriTipiSelect"></select>
+                        <span asp-validation-for="VeriTipi" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label asp-for="SiraNo" class="form-label"></label>
+                        <input asp-for="SiraNo" class="form-control" type="number" min="0" />
+                        <span asp-validation-for="SiraNo" class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-4 mb-3 d-flex align-items-end gap-4">
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="ZorunluMu" />
+                            <label class="form-check-label" asp-for="ZorunluMu"></label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" asp-for="FiltrelenebilirMi" />
+                            <label class="form-check-label" asp-for="FiltrelenebilirMi"></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-3" id="seceneklerDiv" style="display:none;">
+                    <label asp-for="SeceneklerText" class="form-label"></label>
+                    <textarea asp-for="SeceneklerText" class="form-control" rows="3" placeholder="Kırmızı, Mavi, Yeşil, Siyah"></textarea>
+                    <small class="text-muted">Her seçeneği virgülle ayırın</small>
+                    <span asp-validation-for="SeceneklerText" class="text-danger"></span>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-lg me-1"></i> Oluştur
+                    </button>
+                    <a class="btn btn-secondary" asp-action="Index" asp-route-kategoriId="@Model.KategoriId">
+                        İptal
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('veriTipiSelect').addEventListener('change', function() {
+            var seceneklerDiv = document.getElementById('seceneklerDiv');
+            if (this.value === '6') { // TekSecim
+                seceneklerDiv.style.display = 'block';
+            } else {
+                seceneklerDiv.style.display = 'none';
+            }
+        });
+        // Initial check
+        if (document.getElementById('veriTipiSelect').value === '6') {
+            document.getElementById('seceneklerDiv').style.display = 'block';
+        }
+    </script>
+}

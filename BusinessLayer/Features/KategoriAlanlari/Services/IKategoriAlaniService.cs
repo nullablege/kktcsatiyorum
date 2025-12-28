@@ -10,5 +10,8 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
         Task<Result> DeactivateAsync(int id, CancellationToken ct = default);
         Task<Result<IReadOnlyList<KategoriAlaniListItemDto>>> GetListByKategoriAsync(int kategoriId, CancellationToken ct = default);
         Task<Result<KategoriAlaniDetailDto>> GetByIdAsync(int id, CancellationToken ct = default);
+        
+        Task<Result<int>> AddOptionAsync(int attributeId, string deger, CancellationToken ct = default);
+        Task<Result> DeactivateOptionAsync(int optionId, CancellationToken ct = default);
     }
 }
