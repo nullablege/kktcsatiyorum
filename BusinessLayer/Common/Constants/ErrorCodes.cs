@@ -24,6 +24,13 @@ namespace BusinessLayer.Common.Constants
             public const string NotActive = "ilan_not_active";
         }
 
+        public static class KategoriAlani
+        {
+            public const string NotFound = "kategori_alani_not_found";
+            public const string DuplicateKey = "kategori_alani_duplicate_key";
+            public const string InvalidOptionForDataType = "kategori_alani_invalid_option";
+        }
+
         public static class Common
         {
             public const string ValidationError = "validation_error";
