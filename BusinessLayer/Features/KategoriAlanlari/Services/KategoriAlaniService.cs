@@ -2,27 +2,34 @@ using AutoMapper;
 using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.KategoriAlanlari.DTOs;
-using DataAccessLayer;
+using DataAccessLayer.Abstract;
 using EntityLayer.Entities;
 using FluentValidation;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace BusinessLayer.Features.KategoriAlanlari.Services
 {
     public sealed class KategoriAlaniService : IKategoriAlaniService
     {
-        private readonly Context _context;
+        private readonly IKategoriAlaniDal _kategoriAlaniDal;
+        private readonly IKategoriDal _kategoriDal;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<CreateKategoriAlaniRequest> _createValidator;
         private readonly IValidator<UpdateKategoriAlaniRequest> _updateValidator;
 
         public KategoriAlaniService(
-            Context context,
+            IKategoriAlaniDal kategoriAlaniDal,
+            IKategoriDal kategoriDal,
+            IUnitOfWork unitOfWork,
             IMapper mapper,
             IValidator<CreateKategoriAlaniRequest> createValidator,
             IValidator<UpdateKategoriAlaniRequest> updateValidator)
         {
-            _context = context;
+            _kategoriAlaniDal = kategoriAlaniDal;
+            _kategoriDal = kategoriDal;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
             _createValidator = createValidator;
             _updateValidator = updateValidator;
@@ -34,21 +41,15 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             if (!validationResult.IsValid)
                 return Result<int>.FromValidation(validationResult);
 
-            var kategoriExists = await _context.Kategoriler
-                .AnyAsync(k => k.Id == request.KategoriId && !k.SilindiMi, ct);
-            if (!kategoriExists)
+            var kategori = await _kategoriDal.GetByIdAsync(request.KategoriId, ct);
+            if (kategori == null || kategori.SilindiMi)
                 return Result<int>.Fail(ErrorType.NotFound, ErrorCodes.Kategori.NotFound, "Kategori bulunamadı.");
-
-            var keyExists = await _context.KategoriAlanlari
-                .AnyAsync(a => a.KategoriId == request.KategoriId && a.Anahtar == request.Anahtar, ct);
-            if (keyExists)
-                return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
 
             var entity = new KategoriAlani
             {
                 KategoriId = request.KategoriId,
-                Ad = request.Ad,
-                Anahtar = request.Anahtar,
+                Ad = request.Ad.Trim(),
+                Anahtar = request.Anahtar.Trim().ToLowerInvariant(),
                 VeriTipi = request.VeriTipi,
                 ZorunluMu = request.ZorunluMu,
                 FiltrelenebilirMi = request.FiltrelenebilirMi,
@@ -62,15 +63,23 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
                 {
                     entity.Secenekler.Add(new KategoriAlaniSecenegi
                     {
-                        Deger = request.Secenekler[i],
+                        Deger = request.Secenekler[i].Trim(),
                         SiraNo = i + 1,
                         AktifMi = true
                     });
                 }
             }
 
-            _context.KategoriAlanlari.Add(entity);
-            await _context.SaveChangesAsync(ct);
+            await _kategoriAlaniDal.InsertAsync(entity, ct);
+
+            try
+            {
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+            {
+                return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
+            }
 
             return Result<int>.Success(entity.Id);
         }
@@ -81,68 +90,86 @@ namespace BusinessLayer.Features.KategoriAlanlari.Services
             if (!validationResult.IsValid)
                 return Result.FromValidation(validationResult);
 
-            var entity = await _context.KategoriAlanlari
-                .FirstOrDefaultAsync(a => a.Id == request.Id, ct);
-            if (entity == null)
+            var entity = await _kategoriAlaniDal.GetByIdAsync(request.Id, ct);
+            if (entity == null || !entity.AktifMi)
                 return Result.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Alan bulunamadı.");
 
-            var keyExists = await _context.KategoriAlanlari
-                .AnyAsync(a => a.KategoriId == entity.KategoriId && a.Anahtar == request.Anahtar && a.Id != request.Id, ct);
-            if (keyExists)
-                return Result.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
-
-            entity.Ad = request.Ad;
-            entity.Anahtar = request.Anahtar;
+            entity.Ad = request.Ad.Trim();
+            entity.Anahtar = request.Anahtar.Trim().ToLowerInvariant();
             entity.VeriTipi = request.VeriTipi;
             entity.ZorunluMu = request.ZorunluMu;
             entity.FiltrelenebilirMi = request.FiltrelenebilirMi;
             entity.SiraNo = request.SiraNo;
             entity.AktifMi = request.AktifMi;
 
-            await _context.SaveChangesAsync(ct);
+            try
+            {
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+            {
+                return Result.Fail(ErrorType.Conflict, ErrorCodes.KategoriAlani.DuplicateKey, "Bu anahtar bu kategoride zaten kullanılıyor.");
+            }
 
             return Result.Success();
         }
 
-        public async Task<Result> SoftDeleteAsync(int id, CancellationToken ct = default)
+        public async Task<Result> DeactivateAsync(int id, CancellationToken ct = default)
         {
-            var entity = await _context.KategoriAlanlari
-                .FirstOrDefaultAsync(a => a.Id == id, ct);
+            if (id <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ID.");
+
+            var entity = await _kategoriAlaniDal.GetByIdAsync(id, ct);
             if (entity == null)
                 return Result.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Alan bulunamadı.");
 
+            if (!entity.AktifMi)
+                return Result.Success();
+
             entity.AktifMi = false;
-            await _context.SaveChangesAsync(ct);
+
+            try
+            {
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (Exception)
+            {
+                return Result.Fail(ErrorType.Failure, ErrorCodes.Common.CommitFail, "Commit sırasında hata.");
+            }
 
             return Result.Success();
         }
 
         public async Task<Result<IReadOnlyList<KategoriAlaniListItemDto>>> GetListByKategoriAsync(int kategoriId, CancellationToken ct = default)
         {
-            var list = await _context.KategoriAlanlari
-                .AsNoTracking()
-                .Include(a => a.Secenekler)
-                .Where(a => a.KategoriId == kategoriId)
-                .OrderBy(a => a.SiraNo)
-                .ToListAsync(ct);
+            if (kategoriId <= 0)
+                return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz kategori ID.");
 
+            var list = await _kategoriAlaniDal.GetListByKategoriAsync(kategoriId, includeSecenekler: true, ct);
             var dtos = _mapper.Map<List<KategoriAlaniListItemDto>>(list);
             return Result<IReadOnlyList<KategoriAlaniListItemDto>>.Success(dtos);
         }
 
         public async Task<Result<KategoriAlaniDetailDto>> GetByIdAsync(int id, CancellationToken ct = default)
         {
-            var entity = await _context.KategoriAlanlari
-                .AsNoTracking()
-                .Include(a => a.Kategori)
-                .Include(a => a.Secenekler.OrderBy(s => s.SiraNo))
-                .FirstOrDefaultAsync(a => a.Id == id, ct);
+            if (id <= 0)
+                return Result<KategoriAlaniDetailDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ID.");
 
+            var entity = await _kategoriAlaniDal.GetByIdWithSeceneklerAsync(id, ct);
             if (entity == null)
                 return Result<KategoriAlaniDetailDto>.Fail(ErrorType.NotFound, ErrorCodes.KategoriAlani.NotFound, "Alan bulunamadı.");
 
             var dto = _mapper.Map<KategoriAlaniDetailDto>(entity);
             return Result<KategoriAlaniDetailDto>.Success(dto);
+        }
+
+        private static bool IsUniqueViolation(DbUpdateException ex)
+        {
+            if (ex.InnerException is SqlException sqlEx)
+            {
+                return sqlEx.Number == 2601 || sqlEx.Number == 2627;
+            }
+            return false;
         }
     }
 }

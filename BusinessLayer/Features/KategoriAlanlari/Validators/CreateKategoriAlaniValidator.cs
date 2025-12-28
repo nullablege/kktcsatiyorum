@@ -31,6 +31,11 @@ namespace BusinessLayer.Features.KategoriAlanlari.Validators
             RuleFor(x => x.Secenekler)
                 .NotEmpty().WithMessage("Tek Seçim veri tipi için en az bir seçenek gereklidir.")
                 .When(x => x.VeriTipi == VeriTipi.TekSecim);
+
+            RuleFor(x => x.Secenekler)
+                .Must(s => s == null || s.Count == 0)
+                .WithMessage("Sadece Tek Seçim veri tipi için seçenek tanımlanabilir.")
+                .When(x => x.VeriTipi != VeriTipi.TekSecim);
         }
     }
 }

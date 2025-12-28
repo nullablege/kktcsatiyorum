@@ -1,4 +1,6 @@
-using DataAccessLayer;
+ï»¿using DataAccessLayer;
+using DataAccessLayer.Abstract;
+using DataAccessLayer.Concrete;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using EntityLayer.Entities;
@@ -14,6 +16,7 @@ builder.Services.AddBusinessLayer();
 // DI
 builder.Services.AddScoped<IIlanDal, EfIlanDal>();
 builder.Services.AddScoped<IKategoriDal, EfKategoriDal>();
+builder.Services.AddScoped<IKategoriAlaniDal, EfKategoriAlaniDal>();
 builder.Services.AddScoped<IFavoriDal, EfFavoriDal>();
 builder.Services.AddScoped<IBildirimDal, EfBildirimDal>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -34,7 +37,7 @@ builder.Services.AddAutoMapper(
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// DbContext konfigürasyonu
+// DbContext konfigÃ¼rasyonu
 builder.Services.AddDbContext<Context>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         x => x.MigrationsAssembly("DataAccessLayer")));
@@ -49,22 +52,22 @@ builder.Services.AddIdentity<UygulamaKullanicisi, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
     
-    // Kullanýcý ayarlarý
+    // KullanÄ±cÄ± ayarlarÄ±
     options.User.RequireUniqueEmail = true;
     
-    // Lockout ayarlarý
+    // Lockout ayarlarÄ±
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
     
-    // Sign-in ayarlarý
+    // Sign-in ayarlarÄ±
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
 .AddEntityFrameworkStores<Context>()
 .AddDefaultTokenProviders();
 
-// Cookie ayarlarý
+// Cookie ayarlarÄ±
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -86,7 +89,7 @@ builder.Services.AddAuthorization(options =>
 
 var app = builder.Build();
 
-// Uygulama baþlarken Role ve Admin kullanýcýsýný seed et
+// Uygulama baÅŸlarken Role ve Admin kullanÄ±cÄ±sÄ±nÄ± seed et
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -97,7 +100,7 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Seed iþlemi sýrasýnda bir hata oluþtu.");
+        logger.LogError(ex, "Seed iÅŸlemi sÄ±rasÄ±nda bir hata oluÅŸtu.");
     }
 }
 
@@ -114,7 +117,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-// Authentication middleware (Authorization'dan önce gelmeli!)
+// Authentication middleware (Authorization'dan Ã¶nce gelmeli!)
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -127,3 +130,5 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+
