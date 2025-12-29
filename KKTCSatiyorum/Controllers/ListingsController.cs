@@ -3,6 +3,7 @@ using BusinessLayer.Features.KategoriAlanlari.Services;
 using BusinessLayer.Features.Kategoriler.DTOs;
 using BusinessLayer.Features.Kategoriler.Services;
 using EntityLayer.DTOs.Public;
+using KKTCSatiyorum.Models.Listings;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KKTCSatiyorum.Controllers
@@ -86,13 +87,6 @@ namespace KKTCSatiyorum.Controllers
             return Json(filterableAttrs);
         }
     }
-
-    public class ListingsIndexViewModel
-    {
-        public ListingSearchQuery Query { get; set; } = new();
-        public PagedResult<ListingCardDto> Listings { get; set; } = null!;
-        public IReadOnlyList<KategoriDropdownItemDto> Kategoriler { get; set; } 
-            = new List<KategoriDropdownItemDto>();
-    }
 }
+
 

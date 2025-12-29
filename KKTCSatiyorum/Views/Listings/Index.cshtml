@@ -22,7 +22,8 @@
                         <option value="">Tüm Kategoriler</option>
                         @foreach (var kat in Model.Kategoriler)
                         {
-                            <option value="@kat.Id" selected="@(Model.Query.KategoriId == kat.Id)">@kat.Ad</option>
+                            var sel = Model.Query.KategoriId == kat.Id ? " selected" : "";
+                            @Html.Raw($"<option value=\"{kat.Id}\"{sel}>{System.Net.WebUtility.HtmlEncode(kat.Ad)}</option>")
                         }
                     </select>
                 </div>
@@ -105,10 +106,13 @@
                             <input type="hidden" name="MinFiyat" value="@Model.Query.MinFiyat">
                             <input type="hidden" name="MaxFiyat" value="@Model.Query.MaxFiyat">
                             <select name="Sort" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
-                                <option value="" selected="@string.IsNullOrEmpty(Model.Query.Sort)">Tarih: Yeniden Eskiye</option>
-                                <option value="eski" selected="@(Model.Query.Sort == "eski")">Tarih: Eskiden Yeniye</option>
-                                <option value="fiyat_artan" selected="@(Model.Query.Sort == "fiyat_artan")">Fiyat: Artan</option>
-                                <option value="fiyat_azalan" selected="@(Model.Query.Sort == "fiyat_azalan")">Fiyat: Azalan</option>
+                                @{
+                                    var sort = Model.Query.Sort ?? "";
+                                }
+                                @Html.Raw($"<option value=\"\"{(sort == "" ? " selected" : "")}>Tarih: Yeniden Eskiye</option>")
+                                @Html.Raw($"<option value=\"eski\"{(sort == "eski" ? " selected" : "")}>Tarih: Eskiden Yeniye</option>")
+                                @Html.Raw($"<option value=\"fiyat_artan\"{(sort == "fiyat_artan" ? " selected" : "")}>Fiyat: Artan</option>")
+                                @Html.Raw($"<option value=\"fiyat_azalan\"{(sort == "fiyat_azalan" ? " selected" : "")}>Fiyat: Azalan</option>")
                             </select>
                         </form>
                     </div>
@@ -235,7 +239,8 @@
                     <option value="">Tüm Kategoriler</option>
                     @foreach (var kat in Model.Kategoriler)
                     {
-                        <option value="@kat.Id" selected="@(Model.Query.KategoriId == kat.Id)">@kat.Ad</option>
+                        var sel = Model.Query.KategoriId == kat.Id ? " selected" : "";
+                        @Html.Raw($"<option value=\"{kat.Id}\"{sel}>{System.Net.WebUtility.HtmlEncode(kat.Ad)}</option>")
                     }
                 </select>
             </div>

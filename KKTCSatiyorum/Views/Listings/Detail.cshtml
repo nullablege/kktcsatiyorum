@@ -115,8 +115,9 @@
                         {
                             <!-- Description -->
                             <h5 class="mb-3">Açıklama</h5>
-                            <div class="mb-4">
-                                @Html.Raw(Model.Aciklama.Replace("\n", "<br>"))
+                            <div class="mb-4 listing-description">
+                                @* XSS-safe: encode first, then add line breaks *@
+                                @Html.Raw(System.Net.WebUtility.HtmlEncode(Model.Aciklama).Replace("\n", "<br>"))
                             </div>
                         }
                     </div>
