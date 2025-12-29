@@ -1,0 +1,297 @@
+@model ListingsIndexViewModel
+
+@{
+    ViewData["Title"] = string.IsNullOrEmpty(Model.Query.Q) ? "İlanlar" : $"\"{Model.Query.Q}\" için Arama Sonuçları";
+    Layout = "~/Views/Shared/_FeLayout.cshtml";
+}
+
+<!-- Search Bar -->
+<div class="bg-white py-3 border-bottom">
+    <div class="container">
+        <form method="get" asp-controller="Listings" asp-action="Index">
+            <div class="row g-2 align-items-center">
+                <div class="col-lg-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                        <input type="text" name="Q" class="form-control border-start-0" placeholder="Araba, telefon, ev..."
+                               value="@Model.Query.Q">
+                    </div>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <select name="KategoriId" class="form-select" id="kategoriSelect">
+                        <option value="">Tüm Kategoriler</option>
+                        @foreach (var kat in Model.Kategoriler)
+                        {
+                            <option value="@kat.Id" selected="@(Model.Query.KategoriId == kat.Id)">@kat.Ad</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-6 col-lg-2">
+                    <input type="text" name="Sehir" class="form-control" placeholder="Şehir" value="@Model.Query.Sehir">
+                </div>
+                <div class="col-lg-2">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="bi bi-search me-1"></i> Ara
+                    </button>
+                </div>
+                <div class="col-lg-1">
+                    <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#filterOffcanvas">
+                        <i class="bi bi-funnel"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Hidden inputs for current filters -->
+            <input type="hidden" name="Sort" value="@Model.Query.Sort">
+        </form>
+    </div>
+</div>
+
+<!-- Main Content -->
+<main class="py-4">
+    <div class="container">
+        <div class="row">
+            <!-- Filters Sidebar - Desktop -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="filter-sidebar">
+                    <form method="get" asp-controller="Listings" asp-action="Index">
+                        <input type="hidden" name="Q" value="@Model.Query.Q">
+                        <input type="hidden" name="KategoriId" value="@Model.Query.KategoriId">
+                        <input type="hidden" name="Sehir" value="@Model.Query.Sehir">
+                        <input type="hidden" name="Sort" value="@Model.Query.Sort">
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Filtreler</h5>
+                            <a asp-controller="Listings" asp-action="Index" class="btn btn-link btn-sm text-muted p-0">Temizle</a>
+                        </div>
+
+                        <!-- Price Filter -->
+                        <div class="filter-section">
+                            <h6>Fiyat Aralığı</h6>
+                            <div class="row g-2 mb-2">
+                                <div class="col-6">
+                                    <input type="number" name="MinFiyat" class="form-control form-control-sm" placeholder="Min" value="@Model.Query.MinFiyat">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" name="MaxFiyat" class="form-control form-control-sm" placeholder="Max" value="@Model.Query.MaxFiyat">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dynamic EAV Filters -->
+                        <div id="dynamicFilters"></div>
+
+                        <button class="btn btn-primary w-100" type="submit">
+                            <i class="bi bi-funnel me-1"></i> Filtrele
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="col-lg-9">
+                <!-- Results Header -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h1 class="h5 mb-1">@ViewData["Title"]</h1>
+                        <span class="text-muted">@Model.Listings.TotalCount.ToString("N0") ilan bulundu</span>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <form method="get" id="sortForm">
+                            <input type="hidden" name="Q" value="@Model.Query.Q">
+                            <input type="hidden" name="KategoriId" value="@Model.Query.KategoriId">
+                            <input type="hidden" name="Sehir" value="@Model.Query.Sehir">
+                            <input type="hidden" name="MinFiyat" value="@Model.Query.MinFiyat">
+                            <input type="hidden" name="MaxFiyat" value="@Model.Query.MaxFiyat">
+                            <select name="Sort" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+                                <option value="" selected="@string.IsNullOrEmpty(Model.Query.Sort)">Tarih: Yeniden Eskiye</option>
+                                <option value="eski" selected="@(Model.Query.Sort == "eski")">Tarih: Eskiden Yeniye</option>
+                                <option value="fiyat_artan" selected="@(Model.Query.Sort == "fiyat_artan")">Fiyat: Artan</option>
+                                <option value="fiyat_azalan" selected="@(Model.Query.Sort == "fiyat_azalan")">Fiyat: Azalan</option>
+                            </select>
+                        </form>
+                    </div>
+                </div>
+
+                @if (Model.Listings.Items.Count == 0)
+                {
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Arama kriterlerinize uygun ilan bulunamadı.
+                    </div>
+                }
+                else
+                {
+                    <!-- Product Grid -->
+                    <div class="row g-3">
+                        @foreach (var item in Model.Listings.Items)
+                        {
+                            <div class="col-6 col-md-4">
+                                <a asp-action="Detail" asp-route-slug="@item.Slug" class="text-decoration-none">
+                                    <div class="card card-product">
+                                        <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                        @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
+                                        {
+                                            <img src="@item.KapakFotoUrl" class="card-img-top" alt="@item.Baslik" style="height: 200px; object-fit: cover;">
+                                        }
+                                        else
+                                        {
+                                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                                            </div>
+                                        }
+                                        <div class="card-body">
+                                            <h5 class="product-title">@item.Baslik</h5>
+                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
+                                            <div class="product-location">
+                                                <i class="bi bi-geo-alt"></i> @(item.Sehir ?? "KKTC")
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                                <span class="product-date">@item.OlusturmaTarihi.ToString("dd MMM yyyy")</span>
+                                                @if (!string.IsNullOrEmpty(item.KategoriAd))
+                                                {
+                                                    <small class="text-muted">@item.KategoriAd</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+
+                    <!-- Pagination -->
+                    @if (Model.Listings.TotalPages > 1)
+                    {
+                        <nav class="mt-5">
+                            <ul class="pagination pagination-custom justify-content-center">
+                                <li class="page-item @(!Model.Listings.HasPreviousPage ? "disabled" : "")">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-Q="@Model.Query.Q" 
+                                       asp-route-KategoriId="@Model.Query.KategoriId"
+                                       asp-route-Sehir="@Model.Query.Sehir"
+                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                       asp-route-Sort="@Model.Query.Sort"
+                                       asp-route-Page="@(Model.Listings.Page - 1)">
+                                        <i class="bi bi-chevron-left"></i>
+                                    </a>
+                                </li>
+                                @for (int i = 1; i <= Model.Listings.TotalPages && i <= 5; i++)
+                                {
+                                    var pageNum = i;
+                                    if (Model.Listings.TotalPages > 5 && Model.Listings.Page > 3)
+                                    {
+                                        pageNum = Model.Listings.Page - 3 + i;
+                                        if (pageNum > Model.Listings.TotalPages) continue;
+                                    }
+                                    <li class="page-item @(pageNum == Model.Listings.Page ? "active" : "")">
+                                        <a class="page-link" asp-action="Index" 
+                                           asp-route-Q="@Model.Query.Q" 
+                                           asp-route-KategoriId="@Model.Query.KategoriId"
+                                           asp-route-Sehir="@Model.Query.Sehir"
+                                           asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                           asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                           asp-route-Sort="@Model.Query.Sort"
+                                           asp-route-Page="@pageNum">@pageNum</a>
+                                    </li>
+                                }
+                                <li class="page-item @(!Model.Listings.HasNextPage ? "disabled" : "")">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-Q="@Model.Query.Q" 
+                                       asp-route-KategoriId="@Model.Query.KategoriId"
+                                       asp-route-Sehir="@Model.Query.Sehir"
+                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                       asp-route-Sort="@Model.Query.Sort"
+                                       asp-route-Page="@(Model.Listings.Page + 1)">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Mobile Filter Offcanvas -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title">Filtreler</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body">
+        <form method="get" asp-controller="Listings" asp-action="Index">
+            <input type="hidden" name="Q" value="@Model.Query.Q">
+            <input type="hidden" name="Sort" value="@Model.Query.Sort">
+            
+            <div class="filter-section">
+                <h6>Kategori</h6>
+                <select name="KategoriId" class="form-select form-select-sm">
+                    <option value="">Tüm Kategoriler</option>
+                    @foreach (var kat in Model.Kategoriler)
+                    {
+                        <option value="@kat.Id" selected="@(Model.Query.KategoriId == kat.Id)">@kat.Ad</option>
+                    }
+                </select>
+            </div>
+
+            <div class="filter-section">
+                <h6>Fiyat Aralığı</h6>
+                <div class="row g-2 mb-2">
+                    <div class="col-6">
+                        <input type="number" name="MinFiyat" class="form-control form-control-sm" placeholder="Min" value="@Model.Query.MinFiyat">
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="MaxFiyat" class="form-control form-control-sm" placeholder="Max" value="@Model.Query.MaxFiyat">
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h6>Şehir</h6>
+                <input type="text" name="Sehir" class="form-control form-control-sm" placeholder="Şehir" value="@Model.Query.Sehir">
+            </div>
+
+            <button class="btn btn-primary w-100 mt-3" type="submit" data-bs-dismiss="offcanvas">
+                <i class="bi bi-funnel me-1"></i> Filtrele (@Model.Listings.TotalCount sonuç)
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.getElementById('kategoriSelect')?.addEventListener('change', function() {
+        const kategoriId = this.value;
+        if (!kategoriId) {
+            document.getElementById('dynamicFilters').innerHTML = '';
+            return;
+        }
+        
+        fetch(`/ilanlar/filters?kategoriId=${kategoriId}`)
+            .then(res => res.json())
+            .then(attrs => {
+                let html = '';
+                attrs.forEach((attr, i) => {
+                    html += `<div class="filter-section"><h6>${attr.ad}</h6>`;
+                    if (attr.secenekler && attr.secenekler.length > 0) {
+                        html += `<select name="EavFilters[${attr.id}]" class="form-select form-select-sm"><option value="">Seçiniz</option>`;
+                        attr.secenekler.forEach(s => {
+                            html += `<option value="${s.id}">${s.deger}</option>`;
+                        });
+                        html += '</select>';
+                    } else {
+                        html += `<input type="text" name="EavFilters[${attr.id}]" class="form-control form-control-sm" placeholder="${attr.ad}">`;
+                    }
+                    html += '</div>';
+                });
+                document.getElementById('dynamicFilters').innerHTML = html;
+            });
+    });
+</script>
+}

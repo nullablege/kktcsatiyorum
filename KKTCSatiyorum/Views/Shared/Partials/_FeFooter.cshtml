@@ -1,0 +1,37 @@
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <h5><i class="bi bi-shop me-2"></i>KKTCSatıyorum</h5>
+                <p class="text-muted">KKTC'nin en güvenilir ilan platformu.</p>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h5>Kategoriler</h5>
+                <a asp-controller="Listings" asp-action="Index">Emlak</a>
+                <a asp-controller="Listings" asp-action="Index">Vasıta</a>
+                <a asp-controller="Listings" asp-action="Index">Elektronik</a>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h5>Hesabım</h5>
+                <a asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                <a asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                <a asp-area="Member" asp-controller="MyListings" asp-action="Index">İlanlarım</a>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h5>Yardım</h5>
+                <a href="#">Nasıl Çalışır?</a>
+                <a href="#">SSS</a>
+                <a href="#">İletişim</a>
+            </div>
+            <div class="col-6 col-lg-2">
+                <h5>Kurumsal</h5>
+                <a href="#">Hakkımızda</a>
+                <a href="#">Gizlilik Politikası</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p class="mb-0">&copy; @DateTime.Now.Year KKTCSatıyorum. Tüm hakları saklıdır.</p>
+        </div>
+    </div>
+</footer>

@@ -3,6 +3,7 @@ using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Ilanlar.DTOs;
 using DataAccessLayer.Abstract;
+using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
 using FluentValidation;
@@ -15,21 +16,27 @@ namespace BusinessLayer.Features.Ilanlar.Services
 {
     public sealed class IlanService : IIlanService
     {
+        private const string DetailCacheKeyPrefix = "listing:detail:";
+        private static readonly TimeSpan DetailCacheTtl = TimeSpan.FromMinutes(5);
+
         private readonly IIlanDal _ilanDal;
         private readonly IKategoriAlaniDal _kategoriAlaniDal;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<CreateIlanRequest> _createValidator;
+        private readonly ICacheService _cache;
 
         public IlanService(
             IIlanDal ilanDal,
             IKategoriAlaniDal kategoriAlaniDal,
             IUnitOfWork unitOfWork,
-            IValidator<CreateIlanRequest> createValidator)
+            IValidator<CreateIlanRequest> createValidator,
+            ICacheService cache)
         {
             _ilanDal = ilanDal;
             _kategoriAlaniDal = kategoriAlaniDal;
             _unitOfWork = unitOfWork;
             _createValidator = createValidator;
+            _cache = cache;
         }
 
         public async Task<Result<int>> CreateAsync(CreateIlanRequest request, string userId, CancellationToken ct = default)
@@ -232,6 +239,31 @@ namespace BusinessLayer.Features.Ilanlar.Services
             if (ex.InnerException is SqlException sqlEx)
                 return sqlEx.Number == 2601 || sqlEx.Number == 2627;
             return false;
+        }
+
+        public async Task<Result<PagedResult<ListingCardDto>>> SearchAsync(ListingSearchQuery query, CancellationToken ct = default)
+        {
+            var result = await _ilanDal.SearchPublicAsync(query, ct);
+            return Result<PagedResult<ListingCardDto>>.Success(result);
+        }
+
+        public async Task<Result<ListingDetailDto>> GetPublicDetailBySlugAsync(string slug, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(slug))
+                return Result<ListingDetailDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Slug boş olamaz.");
+
+            // Cache-aside pattern
+            var cacheKey = DetailCacheKeyPrefix + slug;
+            var cached = _cache.Get<ListingDetailDto>(cacheKey);
+            if (cached != null)
+                return Result<ListingDetailDto>.Success(cached);
+
+            var detail = await _ilanDal.GetPublicDetailBySlugAsync(slug, ct);
+            if (detail == null)
+                return Result<ListingDetailDto>.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            _cache.Set(cacheKey, detail, DetailCacheTtl);
+            return Result<ListingDetailDto>.Success(detail);
         }
     }
 }
