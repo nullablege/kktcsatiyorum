@@ -1,3 +1,4 @@
+using AutoMapper;
 using BusinessLayer.Common;
 using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
@@ -26,6 +27,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<CreateIlanRequest> _createValidator;
         private readonly ICacheService _cache;
+        private readonly IMapper _mapper;
 
         public IlanService(
             IIlanDal ilanDal,
@@ -33,7 +35,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
             IKategoriAlaniDal kategoriAlaniDal,
             IUnitOfWork unitOfWork,
             IValidator<CreateIlanRequest> createValidator,
-            ICacheService cache)
+            ICacheService cache,
+            IMapper mapper)
         {
             _ilanDal = ilanDal;
             _bildirimDal = bildirimDal;
@@ -41,6 +44,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             _unitOfWork = unitOfWork;
             _createValidator = createValidator;
             _cache = cache;
+            _mapper = mapper;
         }
 
         public async Task<Result<int>> CreateAsync(CreateIlanRequest request, string userId, CancellationToken ct = default)
@@ -276,22 +280,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             pageSize = Math.Clamp(pageSize, 1, 50);
 
             var projectionResult = await _ilanDal.GetPendingApprovalsAsync(page, pageSize, ct);
-
-            var dtoItems = projectionResult.Items.Select(p => new PendingListingDto(
-                p.Id,
-                p.Baslik,
-                p.SeoSlug,
-                p.Fiyat,
-                p.ParaBirimi,
-                p.Sehir,
-                p.OlusturmaTarihi,
-                p.KategoriAdi,
-                p.SahipKullaniciId,
-                p.SahipAdSoyad,
-                p.SahipEmail,
-                p.KapakFotoUrl
-            )).ToList();
-
+            var dtoItems = _mapper.Map<List<PendingListingDto>>(projectionResult.Items);
             var result = new PagedResult<PendingListingDto>(dtoItems, projectionResult.TotalCount, projectionResult.Page, projectionResult.PageSize);
             return Result<PagedResult<PendingListingDto>>.Success(result);
         }
