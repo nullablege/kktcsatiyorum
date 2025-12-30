@@ -87,9 +87,14 @@
                                     <span><i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd MMMM yyyy")</span>
                                 </div>
                             </div>
-                            <button class="btn btn-outline-secondary">
-                                <i class="bi bi-heart"></i> Favorilere Ekle
+                            </div>
+                            @{
+                                bool isFavorite = ViewBag.IsFavorite as bool? ?? false;
+                            }
+                            <button id="btn-toggle-favorite" class="btn @(isFavorite ? "btn-danger" : "btn-outline-secondary")" data-id="@Model.Id">
+                                <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>
                             </button>
+                            @Html.AntiForgeryToken()
                         </div>
 
                         <div class="product-price display-5 text-primary fw-bold mb-4">
@@ -207,6 +212,77 @@
             carousel.addEventListener('slid.bs.carousel', function (e) {
                 thumbs.forEach(t => t.classList.remove('active'));
                 if (thumbs[e.to]) thumbs[e.to].classList.add('active');
+            });
+        }
+
+        // Favorite Toggle
+        const btnFav = document.getElementById('btn-toggle-favorite');
+        if(btnFav) {
+            btnFav.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const icon = this.querySelector('i');
+                const textSpan = document.getElementById('fav-text');
+                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+
+                // Optimistic UI update
+                const wasFavorite = this.classList.contains('btn-danger');
+                
+                // Toggle UI
+                // We'll revert if error
+                if(!wasFavorite) {
+                    this.classList.remove('btn-outline-secondary');
+                    this.classList.add('btn-danger');
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                    textSpan.textContent = "Favorilerden Çıkar";
+                } else {
+                    this.classList.remove('btn-danger');
+                    this.classList.add('btn-outline-secondary');
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                    textSpan.textContent = "Favorilere Ekle";
+                }
+
+                // Send Request
+                fetch('/Favorites/Toggle', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'RequestVerificationToken': token
+                    },
+                    body: `ilanId=${id}`
+                })
+                .then(response => {
+                    if(response.status === 401) {
+                         window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                         throw new Error('Unauthorized');
+                    }
+                    if(!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    // Ideally sync state with data.isFavorite
+                    if(data.isFavorite) {
+                        this.classList.remove('btn-outline-secondary');
+                        this.classList.add('btn-danger');
+                        icon.classList.remove('bi-heart');
+                        icon.classList.add('bi-heart-fill');
+                        textSpan.textContent = "Favorilerden Çıkar";
+                    } else {
+                        this.classList.remove('btn-danger');
+                        this.classList.add('btn-outline-secondary');
+                        icon.classList.remove('bi-heart-fill');
+                        icon.classList.add('bi-heart');
+                        textSpan.textContent = "Favorilere Ekle";
+                    }
+                })
+                .catch(error => {
+                    if(error.message !== 'Unauthorized') {
+                        alert('İşlem sırasında bir hata oluştu');
+                        // Revert UI if needed (simple reload or logical revert)
+                        location.reload(); 
+                    }
+                });
             });
         }
     });

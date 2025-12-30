@@ -1,10 +1,12 @@
 using BusinessLayer.Features.Ilanlar.Services;
 using BusinessLayer.Features.KategoriAlanlari.Services;
 using BusinessLayer.Features.Kategoriler.Services;
+using BusinessLayer.Features.Favoriler.Services;
 using EntityLayer.DTOs.Public;
 using KKTCSatiyorum.Models.Listings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace KKTCSatiyorum.Controllers
 {
@@ -14,6 +16,8 @@ namespace KKTCSatiyorum.Controllers
         private readonly IIlanService _ilanService;
         private readonly IKategoriService _kategoriService;
         private readonly IKategoriAlaniService _kategoriAlaniService;
+
+        private readonly IFavoriService _favoriService;
 
         // Static sort options - no need to recreate every request
         private static readonly IEnumerable<SelectListItem> _sortOptions = new List<SelectListItem>
@@ -27,11 +31,13 @@ namespace KKTCSatiyorum.Controllers
         public ListingsController(
             IIlanService ilanService,
             IKategoriService kategoriService,
-            IKategoriAlaniService kategoriAlaniService)
+            IKategoriAlaniService kategoriAlaniService,
+            IFavoriService favoriService)
         {
             _ilanService = ilanService;
             _kategoriService = kategoriService;
             _kategoriAlaniService = kategoriAlaniService;
+            _favoriService = favoriService;
         }
 
         [HttpGet("")]
@@ -73,6 +79,20 @@ namespace KKTCSatiyorum.Controllers
             {
                 return NotFound();
             }
+
+            bool isFavorite = false;
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var userId = System.Security.Claims.ClaimsPrincipal.Current?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
+                             ?? User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+                
+                if (!string.IsNullOrEmpty(userId))
+                {
+                     var favResult = await _favoriService.IsFavoriteAsync(result.Data.Id, userId, ct);
+                     isFavorite = favResult.IsSuccess && favResult.Data;
+                }
+            }
+            ViewBag.IsFavorite = isFavorite;
 
             return View(result.Data);
         }

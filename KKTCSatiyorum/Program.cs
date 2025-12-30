@@ -23,6 +23,7 @@ builder.Services.AddScoped<IKategoriAlaniSecenegiDal, EfKategoriAlaniSecenegiDal
 builder.Services.AddScoped<IFavoriDal, EfFavoriDal>();
 builder.Services.AddScoped<IBildirimDal, EfBildirimDal>();
 builder.Services.AddScoped<IBildirimService, BusinessLayer.Features.Bildirimler.Services.BildirimService>();
+builder.Services.AddScoped<BusinessLayer.Features.Favoriler.Services.IFavoriService, BusinessLayer.Features.Favoriler.Services.FavoriService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IIlanFotografiDal, EfIlanFotografiDal>();

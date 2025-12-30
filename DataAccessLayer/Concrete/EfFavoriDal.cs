@@ -41,7 +41,39 @@ namespace DataAccessLayer.Concrete
                          .AnyAsync(x => x.IlanId == ilanId && x.KullaniciId == userId);
         }
 
+        public async Task<Favori?> GetByUserAndListingAsync(string userId, int ilanId, CancellationToken ct)
+        {
+            return await _context.Favoriler
+                .FirstOrDefaultAsync(x => x.KullaniciId == userId && x.IlanId == ilanId, ct);
+        }
 
-            // Note: Projection requested "OlusturmaTarihi" in plan under "IlanId, Baslik...". It likely refers to listing creation date.
+        public async Task<bool> ExistsAsync(string userId, int ilanId, CancellationToken ct)
+        {
+            return await _context.Favoriler
+                .AnyAsync(x => x.KullaniciId == userId && x.IlanId == ilanId, ct);
+        }
+        public async Task<EntityLayer.DTOs.Public.PagedResult<DataAccessLayer.Projections.FavoriteListingProjection>> GetUserFavoritesAsync(string userId, int page, int pageSize, CancellationToken ct)
+        {
+            var query = _context.Favoriler
+                .AsNoTracking()
+                .Where(x => x.KullaniciId == userId && !x.Ilan.SilindiMi && x.Ilan.Durum == EntityLayer.Enums.IlanDurumu.Yayinda)
+                .Select(x => new DataAccessLayer.Projections.FavoriteListingProjection
+                {
+                    IlanId = x.Ilan.Id,
+                    Baslik = x.Ilan.Baslik,
+                    SeoSlug = x.Ilan.SeoSlug,
+                    Fiyat = x.Ilan.Fiyat,
+                    Sehir = x.Ilan.Sehir,
+                    OlusturmaTarihi = x.Ilan.OlusturmaTarihi,
+                    KapakFotoUrl = x.Ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault(),
+                    KategoriAdi = x.Ilan.Kategori.Ad
+                });
+
+            
+            var totalCount = await query.CountAsync(ct);
+            var items = await query.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync(ct);
+
+            return new EntityLayer.DTOs.Public.PagedResult<DataAccessLayer.Projections.FavoriteListingProjection>(items, totalCount, page, pageSize);
+        }
     }
 }
