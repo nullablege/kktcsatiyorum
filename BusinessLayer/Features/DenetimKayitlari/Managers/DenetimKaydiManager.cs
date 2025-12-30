@@ -3,7 +3,7 @@ using BusinessLayer.Common.Results;
 using BusinessLayer.Features.DenetimKayitlari.DTOs;
 using BusinessLayer.Features.DenetimKayitlari.Services;
 using DataAccessLayer.Abstract;
-using EntityLayer.DTOs.Admin;
+
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using System.Collections.Generic;
@@ -16,20 +16,33 @@ namespace BusinessLayer.Features.DenetimKayitlari.Managers
     public class DenetimKaydiManager : IDenetimKaydiService
     {
         private readonly IDenetimKaydiDal _dal;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public DenetimKaydiManager(IDenetimKaydiDal dal)
+        public DenetimKaydiManager(IDenetimKaydiDal dal, IUnitOfWork unitOfWork)
         {
             _dal = dal;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result<PagedResult<DenetimKaydiListItemDto>>> GetPagedAsync(DenetimKaydiQuery query, CancellationToken ct)
         {
-            // Validation
-            if (query.Page < 1) query.Page = 1;
-            if (query.PageSize < 1) query.PageSize = 25;
-            if (query.PageSize > 100) query.PageSize = 100;
+            if (query.Page < 1) 
+                 return Result<PagedResult<DenetimKaydiListItemDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Sayfa numarası 1'den küçük olamaz.");
+            if (query.PageSize < 1 || query.PageSize > 100) 
+                 return Result<PagedResult<DenetimKaydiListItemDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Sayfa boyutu 1-100 arasında olmalıdır.");
 
-            var pagedProjection = await _dal.GetPagedAsync(query, ct);
+            var request = new DataAccessLayer.Requests.DenetimKaydiDalRequest
+            {
+                Page = query.Page,
+                PageSize = query.PageSize,
+                BaslangicTarihi = query.BaslangicTarihi,
+                BitisTarihi = query.BitisTarihi,
+                Eylem = query.Eylem,
+                VarlikAdi = query.VarlikAdi,
+                KullaniciId = query.KullaniciId
+            };
+
+            var pagedProjection = await _dal.GetPagedAsync(request, ct);
 
             // Mapping
             var dtos = pagedProjection.Items.Select(x => new DenetimKaydiListItemDto
@@ -50,6 +63,13 @@ namespace BusinessLayer.Features.DenetimKayitlari.Managers
 
         public async Task<Result> LogAsync(string eylem, string varlikAdi, string varlikId, string? detayJson, string? ipAdresi, string? kullaniciId, CancellationToken ct)
         {
+            if (string.IsNullOrWhiteSpace(eylem)) 
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Eylem boş olamaz.");
+            if (string.IsNullOrWhiteSpace(varlikAdi)) 
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Varlık adı boş olamaz.");
+            if (string.IsNullOrWhiteSpace(varlikId)) 
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Varlık ID boş olamaz.");
+
             var entity = new DenetimKaydi
             {
                 Eylem = eylem,
@@ -62,6 +82,8 @@ namespace BusinessLayer.Features.DenetimKayitlari.Managers
             };
 
             await _dal.AddAsync(entity, ct);
+            await _unitOfWork.CommitAsync(ct);
+            
             return Result.Success();
         }
     }

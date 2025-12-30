@@ -1,6 +1,6 @@
 using BusinessLayer.Features.DenetimKayitlari.DTOs;
 using BusinessLayer.Features.DenetimKayitlari.Services;
-using EntityLayer.DTOs.Admin;
+
 using KKTCSatiyorum.Areas.Admin.Models.Logs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;

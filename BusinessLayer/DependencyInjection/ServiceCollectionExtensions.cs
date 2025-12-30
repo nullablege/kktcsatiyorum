@@ -11,6 +11,8 @@ using BusinessLayer.Features.Ilanlar.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using BusinessLayer.Features.Kategoriler.Mappings;
+using BusinessLayer.Features.DenetimKayitlari.Services;
+using BusinessLayer.Features.DenetimKayitlari.Managers;
 
 namespace BusinessLayer.DependencyInjection
 {
@@ -37,7 +39,7 @@ namespace BusinessLayer.DependencyInjection
             services.AddScoped<IValidator<CreateIlanRequest>, CreateIlanValidator>();
 
             // DenetimKayitlari
-            services.AddScoped<BusinessLayer.Features.DenetimKayitlari.Services.IDenetimKaydiService, BusinessLayer.Features.DenetimKayitlari.Managers.DenetimKaydiManager>();
+            services.AddScoped<IDenetimKaydiService, DenetimKaydiManager>();
 
             return services;
         }

@@ -1,7 +1,7 @@
 using DataAccessLayer.Abstract;
 using DataAccessLayer;
 using DataAccessLayer.Projections;
-using EntityLayer.DTOs.Admin;
+using DataAccessLayer.Requests;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -24,42 +24,42 @@ namespace DataAccessLayer.Concrete
         public async Task AddAsync(DenetimKaydi entity, CancellationToken ct)
         {
             await _context.DenetimKayitlari.AddAsync(entity, ct);
-            await _context.SaveChangesAsync(ct);
         }
 
-        public async Task<PagedResult<DenetimKaydiListProjection>> GetPagedAsync(DenetimKaydiQuery query, CancellationToken ct)
+        public async Task<PagedResult<DenetimKaydiListProjection>> GetPagedAsync(DenetimKaydiDalRequest request, CancellationToken ct)
         {
             var dbQuery = _context.DenetimKayitlari.AsNoTracking().AsQueryable();
 
             // Filtering
-            if (query.BaslangicTarihi.HasValue)
+            if (request.BaslangicTarihi.HasValue)
             {
-                dbQuery = dbQuery.Where(x => x.OlusturmaTarihi >= query.BaslangicTarihi.Value);
+                dbQuery = dbQuery.Where(x => x.OlusturmaTarihi >= request.BaslangicTarihi.Value);
             }
-            if (query.BitisTarihi.HasValue)
+            if (request.BitisTarihi.HasValue)
             {
-                dbQuery = dbQuery.Where(x => x.OlusturmaTarihi <= query.BitisTarihi.Value);
+                dbQuery = dbQuery.Where(x => x.OlusturmaTarihi <= request.BitisTarihi.Value);
             }
-            if (!string.IsNullOrEmpty(query.Eylem))
+            if (!string.IsNullOrEmpty(request.Eylem))
             {
-                dbQuery = dbQuery.Where(x => x.Eylem == query.Eylem);
+                dbQuery = dbQuery.Where(x => x.Eylem == request.Eylem);
             }
-            if (!string.IsNullOrEmpty(query.VarlikAdi))
+            if (!string.IsNullOrEmpty(request.VarlikAdi))
             {
-                dbQuery = dbQuery.Where(x => x.VarlikAdi == query.VarlikAdi);
+                dbQuery = dbQuery.Where(x => x.VarlikAdi == request.VarlikAdi);
             }
-            if (!string.IsNullOrEmpty(query.KullaniciId))
+            if (!string.IsNullOrEmpty(request.KullaniciId))
             {
-                dbQuery = dbQuery.Where(x => x.KullaniciId == query.KullaniciId);
+                dbQuery = dbQuery.Where(x => x.KullaniciId == request.KullaniciId);
             }
 
+            // Ordering
             dbQuery = dbQuery.OrderByDescending(x => x.OlusturmaTarihi);
 
             var totalCount = await dbQuery.CountAsync(ct);
 
             var items = await dbQuery
-                .Skip((query.Page - 1) * query.PageSize)
-                .Take(query.PageSize)
+                .Skip((request.Page - 1) * request.PageSize)
+                .Take(request.PageSize)
                 .Select(x => new DenetimKaydiListProjection
                 {
                     Id = x.Id,
@@ -73,7 +73,7 @@ namespace DataAccessLayer.Concrete
                 })
                 .ToListAsync(ct);
 
-            return new PagedResult<DenetimKaydiListProjection>(items, totalCount, query.Page, query.PageSize);
+            return new PagedResult<DenetimKaydiListProjection>(items, totalCount, request.Page, request.PageSize);
         }
     }
 }

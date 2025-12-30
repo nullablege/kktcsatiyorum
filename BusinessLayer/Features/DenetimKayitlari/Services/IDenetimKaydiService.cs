@@ -1,6 +1,6 @@
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.DenetimKayitlari.DTOs;
-using EntityLayer.DTOs.Admin;
+
 using EntityLayer.DTOs.Public;
 using System.Threading;
 using System.Threading.Tasks;
