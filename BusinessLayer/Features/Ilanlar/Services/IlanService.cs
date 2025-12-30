@@ -363,6 +363,43 @@ namespace BusinessLayer.Features.Ilanlar.Services
             return Result.Success();
         }
 
+        public async Task<Result<PagedResult<MyListingDto>>> GetMyListingsAsync(string userId, int page, int pageSize, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result<PagedResult<MyListingDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+
+            var projectionResult = await _ilanDal.GetUserListingsAsync(userId, page, pageSize, ct);
+            var dtoItems = _mapper.Map<List<MyListingDto>>(projectionResult.Items);
+            var result = new PagedResult<MyListingDto>(dtoItems, projectionResult.TotalCount, projectionResult.Page, projectionResult.PageSize);
+            return Result<PagedResult<MyListingDto>>.Success(result);
+        }
+
+        public async Task<Result> DeleteMyListingAsync(int listingId, string userId, CancellationToken ct = default)
+        {
+            if (listingId <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            var ilan = await _ilanDal.GetByIdAsync(listingId, ct);
+            if (ilan == null)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            if (ilan.SahipKullaniciId != userId)
+                return Result.Fail(ErrorType.Forbidden, ErrorCodes.Common.Forbidden, "Bu ilana erişim yetkiniz yok.");
+
+            ilan.SilindiMi = true;
+            await _ilanDal.UpdateAsync(ilan, ct);
+            await _unitOfWork.CommitAsync(ct);
+
+            InvalidateListingCaches(ilan.SeoSlug);
+
+            return Result.Success();
+        }
+
         private void InvalidateListingCaches(string slug)
         {
             _cache.Remove(DetailCacheKeyPrefix + slug);

@@ -234,6 +234,41 @@ namespace DataAccessLayer.Concrete
 
             return new PagedResult<PendingListingProjection>(items, totalCount, page, pageSize);
         }
+
+        public async Task<PagedResult<MyListingProjection>> GetUserListingsAsync(string userId, int page, int pageSize, CancellationToken ct = default)
+        {
+            var baseQuery = _context.Ilanlar
+                .Where(x => x.SahipKullaniciId == userId && !x.SilindiMi)
+                .AsNoTracking();
+
+            var totalCount = await baseQuery.CountAsync(ct);
+
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+            var skip = (page - 1) * pageSize;
+
+            var items = await baseQuery
+                .OrderByDescending(x => x.OlusturmaTarihi)
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(x => new MyListingProjection(
+                    x.Id,
+                    x.Baslik,
+                    x.SeoSlug,
+                    x.Fiyat,
+                    x.ParaBirimi,
+                    x.Durum,
+                    x.RedNedeni,
+                    x.OlusturmaTarihi,
+                    x.YayinTarihi,
+                    x.Kategori.Ad,
+                    x.Fotografler.Where(f => f.KapakMi).Select(f => f.DosyaYolu).FirstOrDefault()
+                        ?? x.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault()
+                ))
+                .ToListAsync(ct);
+
+            return new PagedResult<MyListingProjection>(items, totalCount, page, pageSize);
+        }
     }
 }
 

@@ -14,5 +14,6 @@ namespace DataAccessLayer.Abstract
         Task<PagedResult<ListingCardDto>> SearchPublicAsync(ListingSearchQuery query, CancellationToken ct = default);
         Task<ListingDetailDto?> GetPublicDetailBySlugAsync(string slug, CancellationToken ct = default);
         Task<PagedResult<PendingListingProjection>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default);
+        Task<PagedResult<MyListingProjection>> GetUserListingsAsync(string userId, int page, int pageSize, CancellationToken ct = default);
     }
 }

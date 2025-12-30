@@ -31,10 +31,58 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index(CancellationToken ct)
+        public async Task<IActionResult> Index(int page = 1, CancellationToken ct = default)
         {
-            // TODO: İlanları listele
-            return View();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            const int pageSize = 10;
+            var result = await _ilanService.GetMyListingsAsync(userId, page, pageSize, ct);
+
+            var vm = new MyListingsIndexViewModel();
+            if (result.IsSuccess && result.Data != null)
+            {
+                vm.Listings = new EntityLayer.DTOs.Public.PagedResult<MyListingRowViewModel>(
+                    result.Data.Items.Select(x => new MyListingRowViewModel
+                    {
+                        Id = x.Id,
+                        Baslik = x.Baslik,
+                        SeoSlug = x.SeoSlug,
+                        Fiyat = x.Fiyat,
+                        ParaBirimi = x.ParaBirimi,
+                        Durum = x.Durum,
+                        RedNedeni = x.RedNedeni,
+                        OlusturmaTarihi = x.OlusturmaTarihi,
+                        YayinTarihi = x.YayinTarihi,
+                        KategoriAdi = x.KategoriAdi,
+                        KapakFotoUrl = x.KapakFotoUrl
+                    }).ToList(),
+                    result.Data.TotalCount,
+                    result.Data.Page,
+                    result.Data.PageSize
+                );
+            }
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(int id, CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized();
+
+            var result = await _ilanService.DeleteMyListingAsync(id, userId, ct);
+
+            if (result.IsSuccess)
+                TempData["SuccessMessage"] = "İlan silindi.";
+            else
+                TempData["ErrorMessage"] = result.Error?.Message ?? "İlan silinirken bir hata oluştu.";
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]

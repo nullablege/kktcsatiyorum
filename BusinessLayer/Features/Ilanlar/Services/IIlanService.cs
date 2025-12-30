@@ -13,5 +13,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
         Task<Result<PagedResult<PendingListingDto>>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default);
         Task<Result> ApproveAsync(int listingId, string adminUserId, CancellationToken ct = default);
         Task<Result> RejectAsync(int listingId, string adminUserId, string redNedeni, CancellationToken ct = default);
+        
+        Task<Result<PagedResult<MyListingDto>>> GetMyListingsAsync(string userId, int page, int pageSize, CancellationToken ct = default);
+        Task<Result> DeleteMyListingAsync(int listingId, string userId, CancellationToken ct = default);
     }
 }

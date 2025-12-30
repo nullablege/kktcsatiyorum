@@ -9,6 +9,7 @@ namespace BusinessLayer.Features.Ilanlar.Mappings
         public IlanProfile()
         {
             CreateMap<PendingListingProjection, PendingListingDto>();
+            CreateMap<MyListingProjection, MyListingDto>();
         }
     }
 }

@@ -40,6 +40,7 @@ namespace BusinessLayer.Common.Constants
             public const string ValidationError = "validation_error";
             public const string Unexpected = "unexpected_error";
             public const string CommitFail = "commit_failed";
+            public const string Forbidden = "forbidden";
         }
     }
 }
