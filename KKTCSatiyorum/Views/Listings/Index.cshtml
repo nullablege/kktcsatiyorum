@@ -256,29 +256,53 @@
 <script>
     document.getElementById('kategoriSelect')?.addEventListener('change', function() {
         const kategoriId = this.value;
-        if (!kategoriId) {
-            document.getElementById('dynamicFilters').innerHTML = '';
-            return;
-        }
+        const container = document.getElementById('dynamicFilters');
+        
+        // Clear existing content
+        container.innerHTML = '';
+        
+        if (!kategoriId) return;
         
         fetch(`/ilanlar/filters?kategoriId=${kategoriId}`)
             .then(res => res.json())
             .then(attrs => {
-                let html = '';
-                attrs.forEach((attr, i) => {
-                    html += `<div class="filter-section"><h6>${attr.ad}</h6>`;
+                attrs.forEach(attr => {
+                    const section = document.createElement('div');
+                    section.className = 'filter-section';
+                    
+                    const heading = document.createElement('h6');
+                    heading.textContent = attr.ad;
+                    section.appendChild(heading);
+                    
                     if (attr.secenekler && attr.secenekler.length > 0) {
-                        html += `<select name="EavFilters[${attr.id}]" class="form-select form-select-sm"><option value="">Seçiniz</option>`;
+                        const select = document.createElement('select');
+                        select.name = `Query.EavFilters[${attr.id}]`;
+                        select.className = 'form-select form-select-sm';
+                        
+                        const defaultOpt = document.createElement('option');
+                        defaultOpt.value = '';
+                        defaultOpt.textContent = 'Seçiniz';
+                        select.appendChild(defaultOpt);
+                        
                         attr.secenekler.forEach(s => {
-                            html += `<option value="${s.id}">${s.deger}</option>`;
+                            const opt = document.createElement('option');
+                            opt.value = s.id;
+                            opt.textContent = s.deger;
+                            select.appendChild(opt);
                         });
-                        html += '</select>';
+                        
+                        section.appendChild(select);
                     } else {
-                        html += `<input type="text" name="EavFilters[${attr.id}]" class="form-control form-control-sm" placeholder="${attr.ad}">`;
+                        const input = document.createElement('input');
+                        input.type = 'text';
+                        input.name = `Query.EavFilters[${attr.id}]`;
+                        input.className = 'form-control form-control-sm';
+                        input.placeholder = attr.ad;
+                        section.appendChild(input);
                     }
-                    html += '</div>';
+                    
+                    container.appendChild(section);
                 });
-                document.getElementById('dynamicFilters').innerHTML = html;
             });
     });
 </script>
