@@ -55,10 +55,12 @@ namespace BusinessLayer.Features.Favoriler.Services
             if (string.IsNullOrWhiteSpace(userId))
                 return Result<bool>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID gereklidir.");
 
-            // Ilan existence check
-            var ilanExists = await _ilanDal.AnyAsync(x => x.Id == ilanId && !x.SilindiMi && x.Durum == IlanDurumu.Yayinda, ct);
-            if (!ilanExists)
+            var ilan = await _ilanDal.GetByIdAsync(ilanId, ct);
+            if (ilan == null || ilan.SilindiMi)
                 return Result<bool>.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            if (ilan.Durum != IlanDurumu.Yayinda)
+                return Result<bool>.Fail(ErrorType.Conflict, ErrorCodes.Ilan.InvalidState, "Sadece yayındaki ilanlar favoriye eklenebilir.");
 
             var exists = await _favoriDal.ExistsAsync(userId, ilanId, ct);
             return Result<bool>.Success(exists);

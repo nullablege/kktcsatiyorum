@@ -89,7 +89,7 @@
                             </div>
                             
                             @{
-                                var isFavorite = (bool)(ViewBag.IsFavorite ?? false);
+                                var isFavorite = ViewBag.IsFavorite is bool b && b;
                             }
                             <button id="btn-toggle-favorite" class="btn @(isFavorite ? "btn-danger" : "btn-outline-secondary")" data-id="@Model.Id">
                                 <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>
