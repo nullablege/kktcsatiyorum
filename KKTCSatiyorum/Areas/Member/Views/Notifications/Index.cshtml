@@ -1,3 +1,4 @@
+@using EntityLayer.Enums
 @model KKTCSatiyorum.Areas.Member.Models.Notifications.MyNotificationsIndexViewModel
 @{
     ViewData["Title"] = "Bildirimlerim";
@@ -94,13 +95,13 @@
 </div>
 
 @functions {
-    string GetNotificationTitle(EntityLayer.Enums.BildirimTuru tur)
+    string GetNotificationTitle(BildirimTuru tur)
     {
         return tur switch
         {
-            EntityLayer.Enums.BildirimTuru.IlanOnaylandi => "İlan Onaylandı",
-            EntityLayer.Enums.BildirimTuru.IlanReddedildi => "İlan Reddedildi",
-            EntityLayer.Enums.BildirimTuru.Sistem => "Sistem", 
+            BildirimTuru.IlanOnaylandi => "İlan Onaylandı",
+            BildirimTuru.IlanReddedildi => "İlan Reddedildi",
+            BildirimTuru.Sistem => "Sistem", 
             _ => "Bildirim"
         };
     }
