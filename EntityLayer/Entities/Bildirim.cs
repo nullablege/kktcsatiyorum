@@ -25,6 +25,9 @@ namespace EntityLayer.Entities
         [Column("VeriJson")]
         public string? VeriJson { get; set; }
 
+        [Column("Mesaj")]
+        public string Mesaj { get; set; } = "";
+
         [Column("OkunduMu")]
         public bool OkunduMu { get; set; }
 

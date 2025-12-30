@@ -1,5 +1,3 @@
-@using BusinessLayer.Features.Bildirimler.DTOs
-@using EntityLayer.Enums
 @model KKTCSatiyorum.Areas.Member.Models.Notifications.MyNotificationsIndexViewModel
 @{
     ViewData["Title"] = "Bildirimlerim";
@@ -48,7 +46,7 @@
                                     </h5>
                                     <small class="text-muted ms-2">@item.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</small>
                                 </div>
-                                <p class="mb-1 text-break">@GetNotificationMessage(item)</p>
+                                <p class="mb-1 text-break">@item.Mesaj</p>
                             </div>
                             
                             @if (!item.OkunduMu)
@@ -96,33 +94,14 @@
 </div>
 
 @functions {
-    string GetNotificationTitle(BildirimTuru tur)
+    string GetNotificationTitle(EntityLayer.Enums.BildirimTuru tur)
     {
         return tur switch
         {
-            BildirimTuru.IlanOnaylandi => "İlan Onaylandı",
-            BildirimTuru.IlanReddedildi => "İlan Reddedildi",
-            BildirimTuru.Sistem => "Sistem Bildirimi",
+            EntityLayer.Enums.BildirimTuru.IlanOnaylandi => "İlan Onaylandı",
+            EntityLayer.Enums.BildirimTuru.IlanReddedildi => "İlan Reddedildi",
+            EntityLayer.Enums.BildirimTuru.Sistem => "Sistem", 
             _ => "Bildirim"
         };
-    }
-
-    string GetNotificationMessage(KKTCSatiyorum.Areas.Member.Models.Notifications.MyNotificationRowViewModel item)
-    {
-        if (string.IsNullOrEmpty(item.VeriJson)) return "";
-
-        try
-        {
-             if (item.Tur == BildirimTuru.IlanReddedildi)
-             {
-                 return item.VeriJson.Replace("{", "").Replace("}", "").Replace("\"", ""); 
-             }
-             
-             return "İlan durumunuz güncellendi.";
-        }
-        catch
-        {
-            return "";
-        }
     }
 }

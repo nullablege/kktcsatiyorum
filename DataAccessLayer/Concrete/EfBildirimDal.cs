@@ -35,6 +35,7 @@ namespace DataAccessLayer.Concrete
                 {
                     Id = x.Id,
                     Tur = x.Tur,
+                    Mesaj = x.Mesaj,
                     VeriJson = x.VeriJson,
                     OkunduMu = x.OkunduMu,
                     OlusturmaTarihi = x.OlusturmaTarihi

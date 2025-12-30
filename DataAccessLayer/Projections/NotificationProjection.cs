@@ -6,6 +6,7 @@ namespace DataAccessLayer.Projections
     {
         public int Id { get; set; }
         public BildirimTuru Tur { get; set; }
+        public string Mesaj { get; set; } = "";
         public string? VeriJson { get; set; }
         public bool OkunduMu { get; set; }
         public DateTime OlusturmaTarihi { get; set; }

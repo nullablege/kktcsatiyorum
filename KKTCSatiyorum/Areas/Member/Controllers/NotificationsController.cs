@@ -44,6 +44,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                     {
                         Id = x.Id,
                         Tur = x.Tur,
+                        Mesaj = x.Mesaj,
                         VeriJson = x.VeriJson,
                         OkunduMu = x.OkunduMu,
                         OlusturmaTarihi = x.OlusturmaTarihi
@@ -69,13 +70,11 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
 
             if (!result.IsSuccess)
             {
-                // Silently fail or return JSON error if AJAX
-                // For now, redirecting back
+                TempData["ErrorMessage"] = result.Error?.Message ?? "Bildirim güncellenemedi.";
             }
 
-            // Redirect back to the same page or referer
             var referer = Request.Headers["Referer"].ToString();
-            return !string.IsNullOrEmpty(referer) ? Redirect(referer) : RedirectToAction(nameof(Index));
+            return Url.IsLocalUrl(referer) ? Redirect(referer) : RedirectToAction(nameof(Index));
         }
     }
 }
