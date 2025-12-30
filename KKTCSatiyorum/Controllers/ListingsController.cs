@@ -83,8 +83,7 @@ namespace KKTCSatiyorum.Controllers
             bool isFavorite = false;
             if (User.Identity?.IsAuthenticated == true)
             {
-                var userId = System.Security.Claims.ClaimsPrincipal.Current?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value 
-                             ?? User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
+                var userId = User.FindFirstValue(System.Security.Claims.ClaimTypes.NameIdentifier);
                 
                 if (!string.IsNullOrEmpty(userId))
                 {

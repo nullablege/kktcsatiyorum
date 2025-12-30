@@ -87,9 +87,9 @@
                                     <span><i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd MMMM yyyy")</span>
                                 </div>
                             </div>
-                            </div>
+                            
                             @{
-                                bool isFavorite = ViewBag.IsFavorite as bool? ?? false;
+                                var isFavorite = (bool)(ViewBag.IsFavorite ?? false);
                             }
                             <button id="btn-toggle-favorite" class="btn @(isFavorite ? "btn-danger" : "btn-outline-secondary")" data-id="@Model.Id">
                                 <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>

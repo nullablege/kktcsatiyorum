@@ -1,6 +1,6 @@
+@model KKTCSatiyorum.Areas.Member.Models.Favorites.FavoritesIndexViewModel
 @{
     ViewData["Title"] = "Favorilerim";
-    Layout = "~/Views/Shared/_FeLayout.cshtml";
 }
 
 <div class="container py-5">
@@ -37,12 +37,12 @@
                         <img src="@(string.IsNullOrEmpty(item.KapakFotoUrl) ? "/images/no-image.png" : item.KapakFotoUrl)" class="card-img-top" alt="@item.Baslik" style="height: 200px; object-fit: cover;">
                         <div class="card-body">
                             <h5 class="card-title text-truncate">@item.Baslik</h5>
-                            <p class="card-text text-primary fw-bold">@item.Fiyat.ToString("N0") @* Currency could be added if in projection/DTO *@</p>
+                            <p class="card-text text-primary fw-bold">@item.Fiyat.ToString("N0")</p>
                             <p class="card-text text-muted small"><i class="bi bi-geo-alt"></i> @item.Sehir</p>
                             <p class="card-text text-muted small"><i class="bi bi-tag"></i> @item.KategoriAdi</p>
                         </div>
                         <div class="card-footer bg-white border-top-0 d-flex justify-content-between align-items-center">
-                            <a asp-controller="Listings" asp-action="Details" asp-route-slug="@item.SeoSlug" target="_blank" class="btn btn-sm btn-outline-primary">İlanı Gör</a>
+                            <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.SeoSlug" target="_blank" class="btn btn-sm btn-outline-primary">İlanı Gör</a>
                             
                             <button class="btn btn-sm btn-outline-danger btn-remove-fav" data-id="@item.IlanId">
                                 <i class="bi bi-trash"></i> Kaldır
@@ -81,37 +81,45 @@
 
 @section Scripts {
     <script>
-        $(document).ready(function() {
-            $('.btn-remove-fav').click(function() {
-                var btn = $(this);
-                var id = btn.data('id');
-                var card = btn.closest('.col');
+        document.addEventListener('DOMContentLoaded', function() {
+            const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
-                if(!confirm('Favorilerden kaldırmak istediğinize emin misiniz?')) return;
+            document.querySelectorAll('.btn-remove-fav').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.dataset.id;
+                    const card = this.closest('.col');
 
-                $.ajax({
-                    url: '/Favorites/Toggle', 
-                    type: 'POST',
-                    data: { 
-                        ilanId: id,
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() 
-                    },
-                    success: function(response) {
-                        if (!response.isFavorite) {
-                            // Successfully removed (toggled off)
-                            card.fadeOut(function() { $(this).remove(); });
+                    if(!confirm('Favorilerden kaldırmak istediğinize emin misiniz?')) return;
+
+                    fetch('/Favorites/Toggle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `ilanId=${id}`
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error(response.statusText);
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!data.isFavorite) {
+                            // Successfully removed
+                            card.style.transition = 'opacity 0.5s';
+                            card.style.opacity = '0';
+                            setTimeout(() => card.remove(), 500);
                         } else {
-                            // Unexpected state (toggled on?)
                             console.error('Unexpected toggle state');
                         }
-                    },
-                    error: function(xhr) {
-                        alert('İşlem başarısız: ' + (xhr.responseJSON ? xhr.responseJSON.message : xhr.statusText));
-                    }
+                    })
+                    .catch(error => {
+                        alert('İşlem başarısız.');
+                        console.error(error);
+                    });
                 });
             });
         });
     </script>
 }
-<!-- Need AntiForgeryToken for AJAX -->
 @Html.AntiForgeryToken()

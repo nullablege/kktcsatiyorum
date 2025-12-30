@@ -5,7 +5,7 @@ using System.Security.Claims;
 
 namespace KKTCSatiyorum.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = EntityLayer.Constants.RoleNames.User)]
     public class FavoritesController : Controller
     {
         private readonly IFavoriService _favoriService;
@@ -27,7 +27,14 @@ namespace KKTCSatiyorum.Controllers
 
             if (!result.IsSuccess)
             {
-                return BadRequest(new { message = result.Error?.Message ?? "İşlem başarısız." });
+                var error = result.Error;
+                return error?.Type switch
+                {
+                    BusinessLayer.Common.Results.ErrorType.Validation => BadRequest(new { message = error.Message }),
+                    BusinessLayer.Common.Results.ErrorType.NotFound => NotFound(new { message = error.Message }),
+                    BusinessLayer.Common.Results.ErrorType.Conflict => Conflict(new { message = error.Message }),
+                    _ => StatusCode(500, new { message = error?.Message ?? "İşlem başarısız." })
+                };
             }
 
             return Ok(new { isFavorite = result.Data!.IsFavorite });

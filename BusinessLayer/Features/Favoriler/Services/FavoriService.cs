@@ -49,11 +49,19 @@ namespace BusinessLayer.Features.Favoriler.Services
 
         public async Task<Result<bool>> IsFavoriteAsync(int ilanId, string userId, CancellationToken ct = default)
         {
-             if (ilanId <= 0 || string.IsNullOrWhiteSpace(userId))
-                return Result<bool>.Success(false);
+            if (ilanId <= 0)
+                return Result<bool>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
 
-             var exists = await _favoriDal.ExistsAsync(userId, ilanId, ct);
-             return Result<bool>.Success(exists);
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result<bool>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID gereklidir.");
+
+            // Ilan existence check
+            var ilanExists = await _ilanDal.AnyAsync(x => x.Id == ilanId && !x.SilindiMi && x.Durum == IlanDurumu.Yayinda, ct);
+            if (!ilanExists)
+                return Result<bool>.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            var exists = await _favoriDal.ExistsAsync(userId, ilanId, ct);
+            return Result<bool>.Success(exists);
         }
 
         public async Task<Result<FavoriteToggleResultDto>> ToggleAsync(int ilanId, string userId, CancellationToken ct = default)

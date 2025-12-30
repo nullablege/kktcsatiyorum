@@ -57,6 +57,7 @@ namespace DataAccessLayer.Concrete
             var query = _context.Favoriler
                 .AsNoTracking()
                 .Where(x => x.KullaniciId == userId && !x.Ilan.SilindiMi && x.Ilan.Durum == EntityLayer.Enums.IlanDurumu.Yayinda)
+                .OrderByDescending(x => x.OlusturmaTarihi)
                 .Select(x => new DataAccessLayer.Projections.FavoriteListingProjection
                 {
                     IlanId = x.Ilan.Id,
