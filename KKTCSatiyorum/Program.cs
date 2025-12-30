@@ -32,6 +32,7 @@ builder.Services.AddScoped<IIlanSorusuDal, EfIlanSorusuDal>();
 builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
 
 builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
+builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
 
 // Presentation Layer Services
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();

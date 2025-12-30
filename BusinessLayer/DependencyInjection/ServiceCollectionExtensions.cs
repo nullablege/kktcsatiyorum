@@ -36,6 +36,9 @@ namespace BusinessLayer.DependencyInjection
             services.AddScoped<IIlanService, IlanService>();
             services.AddScoped<IValidator<CreateIlanRequest>, CreateIlanValidator>();
 
+            // DenetimKayitlari
+            services.AddScoped<BusinessLayer.Features.DenetimKayitlari.Services.IDenetimKaydiService, BusinessLayer.Features.DenetimKayitlari.Managers.DenetimKaydiManager>();
+
             return services;
         }
     }

@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Features.Ilanlar.Services;
+using BusinessLayer.Features.DenetimKayitlari.Services;
 using KKTCSatiyorum.Areas.Admin.Models.Moderasyon;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,9 +10,12 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
     {
         private readonly IIlanService _ilanService;
 
-        public ModerasyonController(IIlanService ilanService)
+        private readonly IDenetimKaydiService _auditService;
+
+        public ModerasyonController(IIlanService ilanService, IDenetimKaydiService auditService)
         {
             _ilanService = ilanService;
+            _auditService = auditService;
         }
 
         [HttpGet]
@@ -61,7 +65,10 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
             var result = await _ilanService.ApproveAsync(id, userId, ct);
 
             if (result.IsSuccess)
+            {
                 TempData["SuccessMessage"] = "İlan onaylandı ve yayına alındı.";
+                await _auditService.LogAsync("ListingApproved", "Ilan", id.ToString(), null, HttpContext.Connection.RemoteIpAddress?.ToString(), userId, ct);
+            }
             else
                 TempData["ErrorMessage"] = result.Error?.Message ?? "İlan onaylanırken bir hata oluştu.";
 
@@ -82,7 +89,11 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
             var result = await _ilanService.RejectAsync(model.ListingId, userId, model.RedNedeni, ct);
 
             if (result.IsSuccess)
+            {
                 TempData["SuccessMessage"] = "İlan reddedildi.";
+                var detay = System.Text.Json.JsonSerializer.Serialize(new { RedNedeni = model.RedNedeni });
+                await _auditService.LogAsync("ListingRejected", "Ilan", model.ListingId.ToString(), detay, HttpContext.Connection.RemoteIpAddress?.ToString(), userId, ct);
+            }
             else
                 TempData["ErrorMessage"] = result.Error?.Message ?? "İlan reddedilirken bir hata oluştu.";
 
