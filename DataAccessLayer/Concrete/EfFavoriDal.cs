@@ -40,5 +40,8 @@ namespace DataAccessLayer.Concrete
             return await _context.Favoriler
                          .AnyAsync(x => x.IlanId == ilanId && x.KullaniciId == userId);
         }
+
+
+            // Note: Projection requested "OlusturmaTarihi" in plan under "IlanId, Baslik...". It likely refers to listing creation date.
     }
 }
