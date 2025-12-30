@@ -13,6 +13,8 @@ using Microsoft.Extensions.DependencyInjection;
 using BusinessLayer.Features.Kategoriler.Mappings;
 using BusinessLayer.Features.DenetimKayitlari.Services;
 using BusinessLayer.Features.DenetimKayitlari.Managers;
+using BusinessLayer.Features.Favoriler.Services;
+using BusinessLayer.Features.Bildirimler.Services;
 
 namespace BusinessLayer.DependencyInjection
 {
@@ -40,6 +42,12 @@ namespace BusinessLayer.DependencyInjection
 
             // DenetimKayitlari
             services.AddScoped<IDenetimKaydiService, DenetimKaydiManager>();
+
+            // Favoriler
+            services.AddScoped<IFavoriService, FavoriService>();
+
+            // Bildirimler
+            services.AddScoped<IBildirimService, BildirimService>();
 
             return services;
         }
