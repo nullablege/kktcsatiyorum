@@ -391,6 +391,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
             if (ilan.SahipKullaniciId != userId)
                 return Result.Fail(ErrorType.Forbidden, ErrorCodes.Common.Forbidden, "Bu ilana erişim yetkiniz yok.");
 
+            if (ilan.SilindiMi)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan zaten silinmiş.");
+
             ilan.SilindiMi = true;
             await _ilanDal.UpdateAsync(ilan, ct);
             await _unitOfWork.CommitAsync(ct);

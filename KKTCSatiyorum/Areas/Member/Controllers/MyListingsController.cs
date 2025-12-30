@@ -4,6 +4,7 @@ using BusinessLayer.Features.KategoriAlanlari.Services;
 using BusinessLayer.Features.Kategoriler.Services;
 using EntityLayer.Enums;
 using KKTCSatiyorum.Areas.Member.Models;
+using KKTCSatiyorum.Areas.Member.Models.MyListings;
 using KKTCSatiyorum.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -41,10 +42,18 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             var result = await _ilanService.GetMyListingsAsync(userId, page, pageSize, ct);
 
             var vm = new MyListingsIndexViewModel();
-            if (result.IsSuccess && result.Data != null)
+
+            if (!result.IsSuccess)
             {
-                vm.Listings = new EntityLayer.DTOs.Public.PagedResult<MyListingRowViewModel>(
-                    result.Data.Items.Select(x => new MyListingRowViewModel
+                TempData["ErrorMessage"] = result.Error?.Message ?? "İlanlar yüklenirken bir hata oluştu.";
+                return View(vm);
+            }
+
+            if (result.Data != null)
+            {
+                vm.Listings = new PagedViewModel<MyListingRowViewModel>
+                {
+                    Items = result.Data.Items.Select(x => new MyListingRowViewModel
                     {
                         Id = x.Id,
                         Baslik = x.Baslik,
@@ -58,10 +67,10 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                         KategoriAdi = x.KategoriAdi,
                         KapakFotoUrl = x.KapakFotoUrl
                     }).ToList(),
-                    result.Data.TotalCount,
-                    result.Data.Page,
-                    result.Data.PageSize
-                );
+                    TotalCount = result.Data.TotalCount,
+                    Page = result.Data.Page,
+                    PageSize = result.Data.PageSize
+                };
             }
 
             return View(vm);

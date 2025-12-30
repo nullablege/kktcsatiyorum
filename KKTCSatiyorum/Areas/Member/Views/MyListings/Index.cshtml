@@ -1,4 +1,4 @@
-@model KKTCSatiyorum.Areas.Member.Models.MyListingsIndexViewModel
+@model KKTCSatiyorum.Areas.Member.Models.MyListings.MyListingsIndexViewModel
 @{
     ViewData["Title"] = "İlanlarım";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -118,7 +118,7 @@
                                 <td>
                                     @if (item.Durum == EntityLayer.Enums.IlanDurumu.Yayinda)
                                     {
-                                        <a href="/ilan/@item.SeoSlug" class="btn btn-sm btn-outline-primary me-1" title="Görüntüle" target="_blank">
+                                        <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.SeoSlug" class="btn btn-sm btn-outline-primary me-1" title="Görüntüle" target="_blank">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                     }

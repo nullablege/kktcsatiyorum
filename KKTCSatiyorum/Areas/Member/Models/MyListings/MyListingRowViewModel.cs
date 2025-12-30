@@ -1,13 +1,7 @@
-using EntityLayer.DTOs.Public;
 using EntityLayer.Enums;
 
-namespace KKTCSatiyorum.Areas.Member.Models
+namespace KKTCSatiyorum.Areas.Member.Models.MyListings
 {
-    public class MyListingsIndexViewModel
-    {
-        public PagedResult<MyListingRowViewModel> Listings { get; set; } = new(new List<MyListingRowViewModel>(), 0, 1, 10);
-    }
-
     public class MyListingRowViewModel
     {
         public int Id { get; set; }
