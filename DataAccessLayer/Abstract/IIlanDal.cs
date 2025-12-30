@@ -1,4 +1,4 @@
-﻿using EntityLayer.DTOs.Admin;
+﻿using DataAccessLayer.Projections;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using System.Linq.Expressions;
@@ -11,11 +11,8 @@ namespace DataAccessLayer.Abstract
         Task<Ilan> GetIlanByIdWithDetailsAsync(int id, CancellationToken ct = default);
         Task<List<Ilan>> GetIlanListByUserIdAsync(string userId, CancellationToken ct = default);
         
-        // Public search
         Task<PagedResult<ListingCardDto>> SearchPublicAsync(ListingSearchQuery query, CancellationToken ct = default);
         Task<ListingDetailDto?> GetPublicDetailBySlugAsync(string slug, CancellationToken ct = default);
-        Task<PagedResult<PendingListingRowDto>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default);
+        Task<PagedResult<PendingListingProjection>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default);
     }
 }
-
-

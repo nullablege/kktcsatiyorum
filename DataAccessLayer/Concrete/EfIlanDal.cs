@@ -1,6 +1,6 @@
 ﻿using DataAccessLayer.Abstract;
+using DataAccessLayer.Projections;
 using DataAccessLayer.Repositories;
-using EntityLayer.DTOs.Admin;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
@@ -199,26 +199,23 @@ namespace DataAccessLayer.Concrete
             return "-";
         }
 
-        public async Task<PagedResult<PendingListingRowDto>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
+        public async Task<PagedResult<PendingListingProjection>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
         {
-            var q = _context.Ilanlar
-                .Include(x => x.Kategori)
-                .Include(x => x.SahipKullanici)
-                .Include(x => x.Fotografler)
+            var baseQuery = _context.Ilanlar
                 .Where(x => x.Durum == IlanDurumu.OnayBekliyor && !x.SilindiMi)
                 .AsNoTracking();
 
-            var totalCount = await q.CountAsync(ct);
+            var totalCount = await baseQuery.CountAsync(ct);
 
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 50);
             var skip = (page - 1) * pageSize;
 
-            var items = await q
+            var items = await baseQuery
                 .OrderByDescending(x => x.OlusturmaTarihi)
                 .Skip(skip)
                 .Take(pageSize)
-                .Select(x => new PendingListingRowDto(
+                .Select(x => new PendingListingProjection(
                     x.Id,
                     x.Baslik,
                     x.SeoSlug,
@@ -235,7 +232,7 @@ namespace DataAccessLayer.Concrete
                 ))
                 .ToListAsync(ct);
 
-            return new PagedResult<PendingListingRowDto>(items, totalCount, page, pageSize);
+            return new PagedResult<PendingListingProjection>(items, totalCount, page, pageSize);
         }
     }
 }

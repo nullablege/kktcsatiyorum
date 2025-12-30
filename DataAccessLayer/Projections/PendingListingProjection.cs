@@ -1,8 +1,8 @@
-﻿using EntityLayer.Enums;
+using EntityLayer.Enums;
 
-namespace EntityLayer.DTOs.Admin
+namespace DataAccessLayer.Projections
 {
-    public sealed record PendingListingRowDto(
+    public sealed record PendingListingProjection(
         int Id,
         string Baslik,
         string SeoSlug,

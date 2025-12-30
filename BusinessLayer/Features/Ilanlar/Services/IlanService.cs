@@ -3,7 +3,6 @@ using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Ilanlar.DTOs;
 using DataAccessLayer.Abstract;
-using EntityLayer.DTOs.Admin;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
@@ -271,13 +270,30 @@ namespace BusinessLayer.Features.Ilanlar.Services
             return Result<ListingDetailDto>.Success(detail);
         }
 
-        public async Task<Result<PagedResult<PendingListingRowDto>>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
+        public async Task<Result<PagedResult<PendingListingDto>>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
         {
             page = Math.Max(1, page);
             pageSize = Math.Clamp(pageSize, 1, 50);
 
-            var result = await _ilanDal.GetPendingApprovalsAsync(page, pageSize, ct);
-            return Result<PagedResult<PendingListingRowDto>>.Success(result);
+            var projectionResult = await _ilanDal.GetPendingApprovalsAsync(page, pageSize, ct);
+
+            var dtoItems = projectionResult.Items.Select(p => new PendingListingDto(
+                p.Id,
+                p.Baslik,
+                p.SeoSlug,
+                p.Fiyat,
+                p.ParaBirimi,
+                p.Sehir,
+                p.OlusturmaTarihi,
+                p.KategoriAdi,
+                p.SahipKullaniciId,
+                p.SahipAdSoyad,
+                p.SahipEmail,
+                p.KapakFotoUrl
+            )).ToList();
+
+            var result = new PagedResult<PendingListingDto>(dtoItems, projectionResult.TotalCount, projectionResult.Page, projectionResult.PageSize);
+            return Result<PagedResult<PendingListingDto>>.Success(result);
         }
 
         public async Task<Result> ApproveAsync(int listingId, string adminUserId, CancellationToken ct = default)
@@ -300,9 +316,6 @@ namespace BusinessLayer.Features.Ilanlar.Services
             ilan.OnayTarihi = DateTime.UtcNow;
 
             await _ilanDal.UpdateAsync(ilan, ct);
-            await _unitOfWork.CommitAsync(ct);
-
-            InvalidateListingCaches(ilan.SeoSlug);
 
             var bildirim = new Bildirim
             {
@@ -313,7 +326,10 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 OlusturmaTarihi = DateTime.UtcNow
             };
             await _bildirimDal.InsertAsync(bildirim, ct);
+
             await _unitOfWork.CommitAsync(ct);
+
+            InvalidateListingCaches(ilan.SeoSlug);
 
             return Result.Success();
         }
@@ -340,9 +356,6 @@ namespace BusinessLayer.Features.Ilanlar.Services
             ilan.RedNedeni = redNedeni;
 
             await _ilanDal.UpdateAsync(ilan, ct);
-            await _unitOfWork.CommitAsync(ct);
-
-            InvalidateListingCaches(ilan.SeoSlug);
 
             var bildirim = new Bildirim
             {
@@ -353,7 +366,10 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 OlusturmaTarihi = DateTime.UtcNow
             };
             await _bildirimDal.InsertAsync(bildirim, ct);
+
             await _unitOfWork.CommitAsync(ct);
+
+            InvalidateListingCaches(ilan.SeoSlug);
 
             return Result.Success();
         }
