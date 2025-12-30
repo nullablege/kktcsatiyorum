@@ -1,4 +1,5 @@
-﻿using EntityLayer.DTOs.Public;
+﻿using EntityLayer.DTOs.Admin;
+using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using System.Linq.Expressions;
 
@@ -13,6 +14,7 @@ namespace DataAccessLayer.Abstract
         // Public search
         Task<PagedResult<ListingCardDto>> SearchPublicAsync(ListingSearchQuery query, CancellationToken ct = default);
         Task<ListingDetailDto?> GetPublicDetailBySlugAsync(string slug, CancellationToken ct = default);
+        Task<PagedResult<PendingListingRowDto>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default);
     }
 }
 

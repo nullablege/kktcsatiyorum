@@ -1,5 +1,6 @@
 ﻿using DataAccessLayer.Abstract;
 using DataAccessLayer.Repositories;
+using EntityLayer.DTOs.Admin;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
@@ -196,6 +197,45 @@ namespace DataAccessLayer.Concrete
             if (ad.TarihDeger.HasValue)
                 return ad.TarihDeger.Value.ToString("dd.MM.yyyy");
             return "-";
+        }
+
+        public async Task<PagedResult<PendingListingRowDto>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
+        {
+            var q = _context.Ilanlar
+                .Include(x => x.Kategori)
+                .Include(x => x.SahipKullanici)
+                .Include(x => x.Fotografler)
+                .Where(x => x.Durum == IlanDurumu.OnayBekliyor && !x.SilindiMi)
+                .AsNoTracking();
+
+            var totalCount = await q.CountAsync(ct);
+
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+            var skip = (page - 1) * pageSize;
+
+            var items = await q
+                .OrderByDescending(x => x.OlusturmaTarihi)
+                .Skip(skip)
+                .Take(pageSize)
+                .Select(x => new PendingListingRowDto(
+                    x.Id,
+                    x.Baslik,
+                    x.SeoSlug,
+                    x.Fiyat,
+                    x.ParaBirimi,
+                    x.Sehir,
+                    x.OlusturmaTarihi,
+                    x.Kategori.Ad,
+                    x.SahipKullaniciId,
+                    x.SahipKullanici.AdSoyad ?? x.SahipKullanici.UserName ?? "",
+                    x.SahipKullanici.Email,
+                    x.Fotografler.Where(f => f.KapakMi).Select(f => f.DosyaYolu).FirstOrDefault()
+                        ?? x.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault()
+                ))
+                .ToListAsync(ct);
+
+            return new PagedResult<PendingListingRowDto>(items, totalCount, page, pageSize);
         }
     }
 }

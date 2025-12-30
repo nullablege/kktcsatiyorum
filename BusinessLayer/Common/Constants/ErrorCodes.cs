@@ -24,6 +24,7 @@ namespace BusinessLayer.Common.Constants
             public const string NotActive = "ilan_not_active";
             public const string DuplicateSlug = "ilan_duplicate_slug";
             public const string DuplicateAttribute = "ilan_duplicate_attribute";
+            public const string InvalidState = "ilan_invalid_state";
         }
 
         public static class KategoriAlani

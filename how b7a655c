@@ -1,0 +1,35 @@
+[33mcommit b7a655c887147eaed3f6b85180bb5b09468d1490[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Ege Null <egenull0@gmail.com>
+Date:   Tue Dec 30 04:53:03 2025 +0300
+
+    ilan onay
+
+[1mdiff --git a/BusinessLayer/Features/Ilanlar/Services/IlanService.cs b/BusinessLayer/Features/Ilanlar/Services/IlanService.cs[m
+[1mindex 7c98a12..c445daf 100644[m
+[1m--- a/BusinessLayer/Features/Ilanlar/Services/IlanService.cs[m
+[1m+++ b/BusinessLayer/Features/Ilanlar/Services/IlanService.cs[m
+[36m@@ -149,7 +149,7 @@[m [mnamespace BusinessLayer.Features.Ilanlar.Services[m
+                     return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, $"'{alan.Ad}' için geçerli bir sayı girin.");[m
+ [m
+                 if (alan.VeriTipi == VeriTipi.Tarih && !DateTime.TryParse(input.Value, out _))[m
+[31m-                    return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, $"'{alan.Ad}' için geçerli bir tarih girin.");[m
+[32m+[m[32m                    return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, $"'{alan.Ad}' iÇõin geÇõerli bir tarih girin.");[m
+             }[m
+ [m
+             return Result.Success();[m
+[36m@@ -216,11 +216,10 @@[m [mnamespace BusinessLayer.Features.Ilanlar.Services[m
+ [m
+             var slug = title.ToLowerInvariant();[m
+             [m
+[31m-            // Türkçe karakter dönüşümü[m
+[31m-            slug = slug.Replace("ı", "i").Replace("ğ", "g").Replace("ü", "u")[m
+[31m-                       .Replace("ş", "s").Replace("ö", "o").Replace("ç", "c")[m
+[31m-                       .Replace("İ", "i").Replace("Ğ", "g").Replace("Ü", "u")[m
+[31m-                       .Replace("Ş", "s").Replace("Ö", "o").Replace("Ç", "c");[m
+[32m+[m[32m            slug = slug.Replace("İ", "i").Replace("ğ", "g").Replace("Ç¬", "u")[m
+[32m+[m[32m                       .Replace("ş", "s").Replace("Çô", "o").Replace("Çõ", "c")[m
+[32m+[m[32m                       .Replace("ı", "i").Replace("Ž?", "g").Replace("Ço", "u")[m
+[32m+[m[32m                       .Replace("ş", "s").Replace("Ç-", "o").Replace("ÇÅ", "c");[m
+ [m
+             // Alfanümerik olmayan karakterleri tire ile değiştir[m
+             slug = Regex.Replace(slug, @"[^a-z0-9\s-]", "");[m

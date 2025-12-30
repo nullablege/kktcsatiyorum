@@ -3,6 +3,7 @@ using BusinessLayer.Common.Constants;
 using BusinessLayer.Common.Results;
 using BusinessLayer.Features.Ilanlar.DTOs;
 using DataAccessLayer.Abstract;
+using EntityLayer.DTOs.Admin;
 using EntityLayer.DTOs.Public;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
@@ -10,6 +11,7 @@ using FluentValidation;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Features.Ilanlar.Services
@@ -20,6 +22,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
         private static readonly TimeSpan DetailCacheTtl = TimeSpan.FromMinutes(5);
 
         private readonly IIlanDal _ilanDal;
+        private readonly IBildirimDal _bildirimDal;
         private readonly IKategoriAlaniDal _kategoriAlaniDal;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IValidator<CreateIlanRequest> _createValidator;
@@ -27,12 +30,14 @@ namespace BusinessLayer.Features.Ilanlar.Services
 
         public IlanService(
             IIlanDal ilanDal,
+            IBildirimDal bildirimDal,
             IKategoriAlaniDal kategoriAlaniDal,
             IUnitOfWork unitOfWork,
             IValidator<CreateIlanRequest> createValidator,
             ICacheService cache)
         {
             _ilanDal = ilanDal;
+            _bildirimDal = bildirimDal;
             _kategoriAlaniDal = kategoriAlaniDal;
             _unitOfWork = unitOfWork;
             _createValidator = createValidator;
@@ -264,6 +269,99 @@ namespace BusinessLayer.Features.Ilanlar.Services
 
             _cache.Set(cacheKey, detail, DetailCacheTtl);
             return Result<ListingDetailDto>.Success(detail);
+        }
+
+        public async Task<Result<PagedResult<PendingListingRowDto>>> GetPendingApprovalsAsync(int page, int pageSize, CancellationToken ct = default)
+        {
+            page = Math.Max(1, page);
+            pageSize = Math.Clamp(pageSize, 1, 50);
+
+            var result = await _ilanDal.GetPendingApprovalsAsync(page, pageSize, ct);
+            return Result<PagedResult<PendingListingRowDto>>.Success(result);
+        }
+
+        public async Task<Result> ApproveAsync(int listingId, string adminUserId, CancellationToken ct = default)
+        {
+            if (listingId <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
+            if (string.IsNullOrWhiteSpace(adminUserId))
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Admin kullanıcı ID boş olamaz.");
+
+            var ilan = await _ilanDal.GetByIdAsync(listingId, ct);
+            if (ilan == null)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            if (ilan.Durum != IlanDurumu.OnayBekliyor)
+                return Result.Fail(ErrorType.Conflict, ErrorCodes.Ilan.InvalidState, "İlan zaten onaylanmış veya reddedilmiş durumda.");
+
+            ilan.Durum = IlanDurumu.Yayinda;
+            ilan.YayinTarihi = DateTime.UtcNow;
+            ilan.OnaylayanKullaniciId = adminUserId;
+            ilan.OnayTarihi = DateTime.UtcNow;
+
+            await _ilanDal.UpdateAsync(ilan, ct);
+            await _unitOfWork.CommitAsync(ct);
+
+            InvalidateListingCaches(ilan.SeoSlug);
+
+            var bildirim = new Bildirim
+            {
+                KullaniciId = ilan.SahipKullaniciId,
+                Tur = BildirimTuru.IlanOnaylandi,
+                VeriJson = JsonSerializer.Serialize(new { ilanId = ilan.Id, slug = ilan.SeoSlug, baslik = ilan.Baslik }),
+                OkunduMu = false,
+                OlusturmaTarihi = DateTime.UtcNow
+            };
+            await _bildirimDal.InsertAsync(bildirim, ct);
+            await _unitOfWork.CommitAsync(ct);
+
+            return Result.Success();
+        }
+
+        public async Task<Result> RejectAsync(int listingId, string adminUserId, string redNedeni, CancellationToken ct = default)
+        {
+            if (listingId <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
+            if (string.IsNullOrWhiteSpace(adminUserId))
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Admin kullanıcı ID boş olamaz.");
+            if (string.IsNullOrWhiteSpace(redNedeni))
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Red sebebi boş olamaz.");
+            if (redNedeni.Length > 200)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Red sebebi en fazla 200 karakter olabilir.");
+
+            var ilan = await _ilanDal.GetByIdAsync(listingId, ct);
+            if (ilan == null)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı.");
+
+            if (ilan.Durum != IlanDurumu.OnayBekliyor)
+                return Result.Fail(ErrorType.Conflict, ErrorCodes.Ilan.InvalidState, "İlan zaten onaylanmış veya reddedilmiş durumda.");
+
+            ilan.Durum = IlanDurumu.Reddedildi;
+            ilan.RedNedeni = redNedeni;
+
+            await _ilanDal.UpdateAsync(ilan, ct);
+            await _unitOfWork.CommitAsync(ct);
+
+            InvalidateListingCaches(ilan.SeoSlug);
+
+            var bildirim = new Bildirim
+            {
+                KullaniciId = ilan.SahipKullaniciId,
+                Tur = BildirimTuru.IlanReddedildi,
+                VeriJson = JsonSerializer.Serialize(new { ilanId = ilan.Id, slug = ilan.SeoSlug, baslik = ilan.Baslik, redNedeni }),
+                OkunduMu = false,
+                OlusturmaTarihi = DateTime.UtcNow
+            };
+            await _bildirimDal.InsertAsync(bildirim, ct);
+            await _unitOfWork.CommitAsync(ct);
+
+            return Result.Success();
+        }
+
+        private void InvalidateListingCaches(string slug)
+        {
+            _cache.Remove(DetailCacheKeyPrefix + slug);
+            _cache.RemoveByPrefix("listing:");
         }
     }
 }
