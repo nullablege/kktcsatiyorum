@@ -1,3 +1,5 @@
+using KKTCSatiyorum.Models.Common;
+
 namespace KKTCSatiyorum.Areas.Member.Models.MyListings
 {
     public class MyListingsIndexViewModel

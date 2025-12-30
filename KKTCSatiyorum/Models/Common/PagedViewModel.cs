@@ -1,4 +1,4 @@
-namespace KKTCSatiyorum.Areas.Member.Models.MyListings
+namespace KKTCSatiyorum.Models.Common
 {
     public class PagedViewModel<T>
     {

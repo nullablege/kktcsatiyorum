@@ -3,7 +3,7 @@ using EntityLayer.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.ComponentModel.DataAnnotations;
 
-namespace KKTCSatiyorum.Areas.Member.Models
+namespace KKTCSatiyorum.Areas.Member.Models.MyListings
 {
     public class CreateIlanViewModel
     {
@@ -29,27 +29,5 @@ namespace KKTCSatiyorum.Areas.Member.Models
 
         public IReadOnlyList<SelectListItem> KategoriOptions { get; set; } = Array.Empty<SelectListItem>();
         public IReadOnlyList<SelectListItem> ParaBirimiOptions { get; set; } = Array.Empty<SelectListItem>();
-    }
-
-    public class AttributeInputModel
-    {
-        public int KategoriAlaniId { get; set; }
-        public string? Value { get; set; }
-    }
-
-    public class KategoriAttributesDto
-    {
-        public int Id { get; set; }
-        public string Ad { get; set; } = "";
-        public string Anahtar { get; set; } = "";
-        public VeriTipi VeriTipi { get; set; }
-        public bool ZorunluMu { get; set; }
-        public List<SecenekDto> Secenekler { get; set; } = new();
-    }
-
-    public class SecenekDto
-    {
-        public int Id { get; set; }
-        public string Deger { get; set; } = "";
     }
 }

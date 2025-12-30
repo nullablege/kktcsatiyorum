@@ -1,0 +1,128 @@
+@using BusinessLayer.Features.Bildirimler.DTOs
+@using EntityLayer.Enums
+@model KKTCSatiyorum.Areas.Member.Models.Notifications.MyNotificationsIndexViewModel
+@{
+    ViewData["Title"] = "Bildirimlerim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-bell me-2"></i>Bildirimlerim</h2>
+    </div>
+
+    @if (TempData["ErrorMessage"] is string errorMsg)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @errorMsg
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+        </div>
+    }
+
+    @if (Model.Notifications.Items.Count == 0)
+    {
+        <div class="card">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-bell-slash text-muted" style="font-size: 3rem;"></i>
+                <h5 class="mt-3">Hiç bildiriminiz yok</h5>
+                <p class="text-muted">Size özel bildirimler burada listelenecektir.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="list-group list-group-flush">
+                @foreach (var item in Model.Notifications.Items)
+                {
+                    <div class="list-group-item @(!item.OkunduMu ? "bg-light" : "")">
+                        <div class="d-flex w-100 justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between">
+                                    <h5 class="mb-1">
+                                        @if (!item.OkunduMu)
+                                        {
+                                            <i class="bi bi-circle-fill text-primary me-2 small" style="font-size: 0.6rem;"></i>
+                                        }
+                                        @GetNotificationTitle(item.Tur)
+                                    </h5>
+                                    <small class="text-muted ms-2">@item.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</small>
+                                </div>
+                                <p class="mb-1 text-break">@GetNotificationMessage(item)</p>
+                            </div>
+                            
+                            @if (!item.OkunduMu)
+                            {
+                                <div class="ms-3">
+                                    <form asp-action="MarkAsRead" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" title="Okundu olarak işaretle">
+                                            <i class="bi bi-check2"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @if (Model.Notifications.TotalPages > 1)
+        {
+            <nav class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.Notifications.HasPreviousPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.Notifications.Page - 1)">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                    @for (int i = 1; i <= Model.Notifications.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Notifications.Page ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.Notifications.HasNextPage ? "" : "disabled")">
+                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.Notifications.Page + 1)">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    }
+</div>
+
+@functions {
+    string GetNotificationTitle(BildirimTuru tur)
+    {
+        return tur switch
+        {
+            BildirimTuru.IlanOnaylandi => "İlan Onaylandı",
+            BildirimTuru.IlanReddedildi => "İlan Reddedildi",
+            BildirimTuru.Sistem => "Sistem Bildirimi",
+            _ => "Bildirim"
+        };
+    }
+
+    string GetNotificationMessage(KKTCSatiyorum.Areas.Member.Models.Notifications.MyNotificationRowViewModel item)
+    {
+        if (string.IsNullOrEmpty(item.VeriJson)) return "";
+
+        try
+        {
+             if (item.Tur == BildirimTuru.IlanReddedildi)
+             {
+                 return item.VeriJson.Replace("{", "").Replace("}", "").Replace("\"", ""); 
+             }
+             
+             return "İlan durumunuz güncellendi.";
+        }
+        catch
+        {
+            return "";
+        }
+    }
+}

@@ -18,6 +18,11 @@ namespace BusinessLayer.Common.Constants
             public const string CycleDetected = "kategori_cycle_conflict_detected";
         }
 
+        public static class Bildirim
+        {
+            public const string NotFound = "bildirim_not_found";
+        }
+
         public static class Ilan
         {
             public const string NotFound = "ilan_not_found";

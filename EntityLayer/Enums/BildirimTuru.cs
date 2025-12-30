@@ -11,6 +11,7 @@ namespace EntityLayer.Enums
         IlanOnaylandi = 1,
         IlanReddedildi = 2,
         YeniSoru = 3,
-        YeniMesaj = 4
+        YeniMesaj = 4,
+        Sistem = 5
     }
 }
