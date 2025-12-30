@@ -6,6 +6,12 @@
 .agent/
 MASTER_PLAN.md
 
+# Build error logs
+bl_errors.txt
+errors.log
+web_errors.log
+build_output.txt
+
 # User-specific files
 *.rsuser
 *.suo

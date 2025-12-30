@@ -1,10 +1,10 @@
 using BusinessLayer.Features.Ilanlar.Services;
 using BusinessLayer.Features.KategoriAlanlari.Services;
-using BusinessLayer.Features.Kategoriler.DTOs;
 using BusinessLayer.Features.Kategoriler.Services;
 using EntityLayer.DTOs.Public;
 using KKTCSatiyorum.Models.Listings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace KKTCSatiyorum.Controllers
 {
@@ -14,6 +14,15 @@ namespace KKTCSatiyorum.Controllers
         private readonly IIlanService _ilanService;
         private readonly IKategoriService _kategoriService;
         private readonly IKategoriAlaniService _kategoriAlaniService;
+
+        // Static sort options - no need to recreate every request
+        private static readonly IEnumerable<SelectListItem> _sortOptions = new List<SelectListItem>
+        {
+            new SelectListItem("Tarih: Yeniden Eskiye", ""),
+            new SelectListItem("Tarih: Eskiden Yeniye", "eski"),
+            new SelectListItem("Fiyat: Artan", "fiyat_artan"),
+            new SelectListItem("Fiyat: Azalan", "fiyat_azalan")
+        };
 
         public ListingsController(
             IIlanService ilanService,
@@ -28,6 +37,10 @@ namespace KKTCSatiyorum.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index([FromQuery] ListingSearchQuery query, CancellationToken ct)
         {
+            var kategoriler = await _kategoriService.GetForDropdownAsync(ct);
+            var kategoriOptions = (kategoriler.Data ?? Enumerable.Empty<BusinessLayer.Features.Kategoriler.DTOs.KategoriDropdownItemDto>())
+                .Select(k => new SelectListItem(k.Ad, k.Id.ToString()));
+
             var searchResult = await _ilanService.SearchAsync(query, ct);
             if (!searchResult.IsSuccess)
             {
@@ -35,17 +48,18 @@ namespace KKTCSatiyorum.Controllers
                 {
                     Query = query,
                     Listings = new PagedResult<ListingCardDto>(
-                        new List<ListingCardDto>(), 0, 1, 12)
+                        new List<ListingCardDto>(), 0, 1, 12),
+                    KategoriOptions = kategoriOptions,
+                    SortOptions = _sortOptions
                 });
             }
-
-            var kategoriler = await _kategoriService.GetForDropdownAsync(ct);
 
             var viewModel = new ListingsIndexViewModel
             {
                 Query = query,
                 Listings = searchResult.Data!,
-                Kategoriler = kategoriler.Data ?? new List<KategoriDropdownItemDto>()
+                KategoriOptions = kategoriOptions,
+                SortOptions = _sortOptions
             };
 
             return View(viewModel);
@@ -88,5 +102,6 @@ namespace KKTCSatiyorum.Controllers
         }
     }
 }
+
 
 

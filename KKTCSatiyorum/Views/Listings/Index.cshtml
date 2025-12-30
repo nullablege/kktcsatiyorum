@@ -1,3 +1,4 @@
+@using KKTCSatiyorum.Models.Listings
 @model ListingsIndexViewModel
 
 @{
@@ -13,22 +14,16 @@
                 <div class="col-lg-5">
                     <div class="input-group">
                         <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                        <input type="text" name="Q" class="form-control border-start-0" placeholder="Araba, telefon, ev..."
-                               value="@Model.Query.Q">
+                        <input asp-for="Query.Q" class="form-control border-start-0" placeholder="Araba, telefon, ev...">
                     </div>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <select name="KategoriId" class="form-select" id="kategoriSelect">
+                    <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect">
                         <option value="">Tüm Kategoriler</option>
-                        @foreach (var kat in Model.Kategoriler)
-                        {
-                            var sel = Model.Query.KategoriId == kat.Id ? " selected" : "";
-                            @Html.Raw($"<option value=\"{kat.Id}\"{sel}>{System.Net.WebUtility.HtmlEncode(kat.Ad)}</option>")
-                        }
                     </select>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <input type="text" name="Sehir" class="form-control" placeholder="Şehir" value="@Model.Query.Sehir">
+                    <input asp-for="Query.Sehir" class="form-control" placeholder="Şehir">
                 </div>
                 <div class="col-lg-2">
                     <button class="btn btn-primary w-100" type="submit">
@@ -44,7 +39,7 @@
             </div>
             
             <!-- Hidden inputs for current filters -->
-            <input type="hidden" name="Sort" value="@Model.Query.Sort">
+            <input type="hidden" asp-for="Query.Sort">
         </form>
     </div>
 </div>
@@ -100,19 +95,12 @@
                     </div>
                     <div class="d-flex gap-2">
                         <form method="get" id="sortForm">
-                            <input type="hidden" name="Q" value="@Model.Query.Q">
-                            <input type="hidden" name="KategoriId" value="@Model.Query.KategoriId">
-                            <input type="hidden" name="Sehir" value="@Model.Query.Sehir">
-                            <input type="hidden" name="MinFiyat" value="@Model.Query.MinFiyat">
-                            <input type="hidden" name="MaxFiyat" value="@Model.Query.MaxFiyat">
-                            <select name="Sort" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
-                                @{
-                                    var sort = Model.Query.Sort ?? "";
-                                }
-                                @Html.Raw($"<option value=\"\"{(sort == "" ? " selected" : "")}>Tarih: Yeniden Eskiye</option>")
-                                @Html.Raw($"<option value=\"eski\"{(sort == "eski" ? " selected" : "")}>Tarih: Eskiden Yeniye</option>")
-                                @Html.Raw($"<option value=\"fiyat_artan\"{(sort == "fiyat_artan" ? " selected" : "")}>Fiyat: Artan</option>")
-                                @Html.Raw($"<option value=\"fiyat_azalan\"{(sort == "fiyat_azalan" ? " selected" : "")}>Fiyat: Azalan</option>")
+                            <input type="hidden" asp-for="Query.Q">
+                            <input type="hidden" asp-for="Query.KategoriId">
+                            <input type="hidden" asp-for="Query.Sehir">
+                            <input type="hidden" asp-for="Query.MinFiyat">
+                            <input type="hidden" asp-for="Query.MaxFiyat">
+                            <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
                             </select>
                         </form>
                     </div>
@@ -230,18 +218,13 @@
     </div>
     <div class="offcanvas-body">
         <form method="get" asp-controller="Listings" asp-action="Index">
-            <input type="hidden" name="Q" value="@Model.Query.Q">
-            <input type="hidden" name="Sort" value="@Model.Query.Sort">
+            <input type="hidden" asp-for="Query.Q">
+            <input type="hidden" asp-for="Query.Sort">
             
             <div class="filter-section">
                 <h6>Kategori</h6>
-                <select name="KategoriId" class="form-select form-select-sm">
+                <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
                     <option value="">Tüm Kategoriler</option>
-                    @foreach (var kat in Model.Kategoriler)
-                    {
-                        var sel = Model.Query.KategoriId == kat.Id ? " selected" : "";
-                        @Html.Raw($"<option value=\"{kat.Id}\"{sel}>{System.Net.WebUtility.HtmlEncode(kat.Ad)}</option>")
-                    }
                 </select>
             </div>
 
@@ -249,17 +232,17 @@
                 <h6>Fiyat Aralığı</h6>
                 <div class="row g-2 mb-2">
                     <div class="col-6">
-                        <input type="number" name="MinFiyat" class="form-control form-control-sm" placeholder="Min" value="@Model.Query.MinFiyat">
+                        <input asp-for="Query.MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
                     </div>
                     <div class="col-6">
-                        <input type="number" name="MaxFiyat" class="form-control form-control-sm" placeholder="Max" value="@Model.Query.MaxFiyat">
+                        <input asp-for="Query.MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
                     </div>
                 </div>
             </div>
 
             <div class="filter-section">
                 <h6>Şehir</h6>
-                <input type="text" name="Sehir" class="form-control form-control-sm" placeholder="Şehir" value="@Model.Query.Sehir">
+                <input asp-for="Query.Sehir" class="form-control form-control-sm" placeholder="Şehir">
             </div>
 
             <button class="btn btn-primary w-100 mt-3" type="submit" data-bs-dismiss="offcanvas">
