@@ -15,5 +15,6 @@ namespace DataAccessLayer.Abstract
         Task<T?> GetByIdAsync(object id, CancellationToken ct = default);
         Task<List<T>> GetListAllAsync(Expression<Func<T, bool>>? filter = null, CancellationToken ct = default);
         Task<bool> AnyAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default);
+        Task<int> CountAsync(Expression<Func<T, bool>>? filter = null, CancellationToken ct = default);
     }
 }

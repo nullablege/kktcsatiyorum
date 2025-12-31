@@ -14,10 +14,12 @@ namespace BusinessLayer.Common.Results
 
         public static Result<T> Success(T data) => new() { IsSuccess = true, Data = data };
 
-        public static Result<T> Fail(ErrorType type, string code, string message) =>
+        public new static Result<T> Fail(ErrorType type, string code, string message) =>
             new() { IsSuccess = false, Error = new Error(type, code, message) };
 
-        public static Result<T> ValidationFail(IEnumerable<ValidationError> errors) =>
+
+
+        public new static Result<T> ValidationFail(IEnumerable<ValidationError> errors) =>
             new()
             {
                 IsSuccess = false,
@@ -25,7 +27,7 @@ namespace BusinessLayer.Common.Results
                 ValidationErrors = errors.ToList()
             };
 
-        public static Result<T> FromValidation(ValidationResult validationResult)
+        public new static Result<T> FromValidation(ValidationResult validationResult)
         {
             var errors = validationResult.Errors
                 .Select(e => new ValidationError(e.PropertyName, e.ErrorMessage))

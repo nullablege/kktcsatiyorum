@@ -26,7 +26,7 @@ namespace DataAccessLayer.Repositories
             return Task.CompletedTask;
         }
 
-        public async Task<T> GetByIdAsync(object id, CancellationToken ct = default)
+        public async Task<T?> GetByIdAsync(object id, CancellationToken ct = default)
         {
             if (id == null)
                 throw new ArgumentNullException(nameof(id), "id parametresi null olamaz!");
@@ -80,6 +80,16 @@ namespace DataAccessLayer.Repositories
         public Task<bool> AnyAsync(Expression<Func<T, bool>> filter, CancellationToken ct = default)
         {
             return _context.Set<T>().AsNoTracking().AnyAsync(filter, ct);
+        }
+
+        public Task<int> CountAsync(Expression<Func<T, bool>>? filter = null, CancellationToken ct = default)
+        {
+            var query = _context.Set<T>().AsNoTracking();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            return query.CountAsync(ct);
         }
     }
 }

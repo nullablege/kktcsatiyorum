@@ -33,8 +33,11 @@
             <div class="d-flex align-items-center gap-2">
                 @if (SignInManager.IsSignedIn(User))
                 {
-                    <a asp-area="Member" asp-controller="MyListings" asp-action="Index" class="btn btn-outline-primary">
-                        <i class="bi bi-person"></i> Hesabım
+                    <a asp-area="Member" asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="bi bi-speedometer2"></i> Dashboard
+                    </a>
+                    <a asp-area="Member" asp-controller="Profile" asp-action="Edit" class="btn btn-outline-secondary" title="Profilim">
+                        <i class="bi bi-person-gear"></i>
                     </a>
                     <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="btn btn-outline-danger" title="Favorilerim">
                         <i class="bi bi-heart"></i>

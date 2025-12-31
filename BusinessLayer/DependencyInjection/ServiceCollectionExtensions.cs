@@ -15,6 +15,8 @@ using BusinessLayer.Features.DenetimKayitlari.Services;
 using BusinessLayer.Features.DenetimKayitlari.Managers;
 using BusinessLayer.Features.Favoriler.Services;
 using BusinessLayer.Features.Bildirimler.Services;
+using BusinessLayer.Features.Member.Services;
+using BusinessLayer.Features.Member;
 
 namespace BusinessLayer.DependencyInjection
 {
@@ -48,6 +50,9 @@ namespace BusinessLayer.DependencyInjection
 
             // Bildirimler
             services.AddScoped<IBildirimService, BildirimService>();
+
+            // Member
+            services.AddScoped<IMemberService, MemberService>();
 
             return services;
         }

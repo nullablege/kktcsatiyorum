@@ -1,0 +1,95 @@
+
+@model KKTCSatiyorum.Areas.Member.Models.Dashboard.DashboardIndexViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_FeLayout.cshtml";
+}
+
+<div class="container py-5">
+    <div class="mb-4">
+        <h2>Dashboard</h2>
+        <p class="text-muted">Hoş geldiniz, hesap özetiniz aşağıdadır.</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Aktif İlanlar -->
+        <div class="col-md-3">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Aktif İlanlar</h6>
+                            <h2 class="mt-2 text-white fw-bold">@Model.Stats.ActiveListingCount</h2>
+                        </div>
+                        <i class="bi bi-collection-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                 <div class="card-footer bg-transparent border-white border-opacity-25">
+                    <a asp-area="Member" asp-controller="MyListings" asp-action="Index" class="text-white text-decoration-none small stretched-link">
+                        İlanları Gör <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onay Bekleyen -->
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Onay Bekleyen</h6>
+                            <h2 class="mt-2 text-dark fw-bold">@Model.Stats.PendingListingCount</h2>
+                        </div>
+                        <i class="bi bi-hourglass-split fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-dark border-opacity-10">
+                    <a asp-area="Member" asp-controller="MyListings" asp-action="Index" class="text-dark text-decoration-none small stretched-link">
+                        Kontrol Et <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favoriler -->
+        <div class="col-md-3">
+            <div class="card bg-danger text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Favoriler</h6>
+                            <h2 class="mt-2 text-white fw-bold">@Model.Stats.FavoriteCount</h2>
+                        </div>
+                        <i class="bi bi-heart-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                 <div class="card-footer bg-transparent border-white border-opacity-25">
+                    <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="text-white text-decoration-none small stretched-link">
+                        Favorilerimi Gör <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bildirimler -->
+        <div class="col-md-3">
+            <div class="card bg-info text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="card-title mb-0">Okunmamış Bildirim</h6>
+                            <h2 class="mt-2 text-dark fw-bold">@Model.Stats.UnreadNotificationCount</h2>
+                        </div>
+                        <i class="bi bi-bell-fill fs-1 opacity-50"></i>
+                    </div>
+                </div>
+                 <div class="card-footer bg-transparent border-dark border-opacity-10">
+                    <a asp-area="Member" asp-controller="Notifications" asp-action="Index" class="text-dark text-decoration-none small stretched-link">
+                        Bildirimlere Git <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

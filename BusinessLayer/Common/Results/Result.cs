@@ -26,6 +26,8 @@ namespace BusinessLayer.Common.Results
                                 Error = new Error(type, code, message)
             };
         }
+
+
             
 
         public static Result ValidationFail(IEnumerable<ValidationError> errors)
