@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 
 namespace BusinessLayer.Common.Results
 {
-    public sealed record ValidationError(string Field, string Message);
+    public sealed record ValidationError(string PropertyName, string ErrorMessage);
 
 }

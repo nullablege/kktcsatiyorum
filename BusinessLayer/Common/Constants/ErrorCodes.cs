@@ -40,6 +40,12 @@ namespace BusinessLayer.Common.Constants
             public const string OptionNotFound = "kategori_alani_option_not_found";
         }
 
+        public static class Member
+        {
+            public const string UserNotFound = "user_not_found";
+            public const string UpdateFailed = "user_update_failed";
+        }
+
         public static class Common
         {
             public const string ValidationError = "validation_error";

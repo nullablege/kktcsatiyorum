@@ -9,11 +9,11 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             
-            @if(Model.StatusMessage != null)
+            @if (Model.StatusMessage != null || TempData["StatusMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    @Model.StatusMessage
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+                    @(Model.StatusMessage ?? TempData["StatusMessage"])
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
@@ -29,15 +29,15 @@
 
                         <div class="mb-3 text-center">
                             @if (!string.IsNullOrEmpty(Model.ProfilFotografiYolu))
-                            {
-                                <img src="@Model.ProfilFotografiYolu" class="rounded-circle img-thumbnail" style="width: 120px; height: 120px; object-fit: cover;" alt="Profil Fotoğrafı" />
-                            }
-                            else
-                            {
-                                <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mx-auto" style="width: 120px; height: 120px;">
-                                    <span class="fs-1 text-white">@Model.AdSoyad.Substring(0, 1).ToUpper()</span>
-                                </div>
-                            }
+                        {
+                             <img src="@Model.ProfilFotografiYolu" alt="@Model.AdSoyad" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center mb-3 mx-auto" style="width: 100px; height: 100px; font-size: 2.5rem;">
+                                @((!string.IsNullOrEmpty(Model.AdSoyad)) ? Model.AdSoyad.Trim().Substring(0, 1) : "?")
+                            </div>
+                        }
                             <div class="mt-2">
                                 <small class="text-muted">Profil fotoğrafı yükleme özelliği yakında eklenecektir.</small>
                             </div>

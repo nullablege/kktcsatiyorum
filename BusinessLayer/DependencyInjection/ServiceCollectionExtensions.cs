@@ -15,6 +15,7 @@ using BusinessLayer.Features.DenetimKayitlari.Services;
 using BusinessLayer.Features.DenetimKayitlari.Managers;
 using BusinessLayer.Features.Favoriler.Services;
 using BusinessLayer.Features.Bildirimler.Services;
+using BusinessLayer.Features.Member.DTOs;
 using BusinessLayer.Features.Member.Services;
 using BusinessLayer.Features.Member;
 
@@ -52,7 +53,10 @@ namespace BusinessLayer.DependencyInjection
             services.AddScoped<IBildirimService, BildirimService>();
 
             // Member
-            services.AddScoped<IMemberService, MemberService>();
+
+            // Member
+            services.AddScoped<IMemberService, BusinessLayer.Features.Member.Services.MemberService>();
+            services.AddScoped<IValidator<UpdateProfileRequest>, BusinessLayer.Features.Member.Validators.UpdateProfileRequestValidator>();
 
             return services;
         }

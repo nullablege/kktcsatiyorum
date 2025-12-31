@@ -53,7 +53,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             }
 
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Account", new { area = "" });
+            if(string.IsNullOrEmpty(userId)) return NotFound();
 
             var request = new UpdateProfileRequest
             {
@@ -62,21 +62,32 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             };
 
             var result = await _memberService.UpdateMyProfileAsync(userId, request);
+
             if (result.IsSuccess)
             {
-                model.StatusMessage = "Profiliniz başarıyla güncellendi.";
-                 var profileResult = await _memberService.GetMyProfileAsync(userId);
-                 if(profileResult.IsSuccess)
-                 {
-                     model.AdSoyad = profileResult.Data.AdSoyad;
-                     model.Email = profileResult.Data.Email;
-                     model.PhoneNumber = profileResult.Data.PhoneNumber;
-                     model.ProfilFotografiYolu = profileResult.Data.ProfilFotografiYolu;
-                 }
-                return View(model);
+                TempData["StatusMessage"] = "Profiliniz başarıyla güncellendi.";
+                return RedirectToAction(nameof(Edit));
             }
 
-            ModelState.AddModelError(string.Empty, result.Error.Message);
+            // Show error message
+            if (result.Error != null)
+            {
+                 ModelState.AddModelError(string.Empty, result.Error.Message);
+            }
+            // Add Validation failures
+            foreach(var error in result.ValidationErrors)
+            {
+                 ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+            
+            // Reload profile data (like photo) to prevent view issues
+             var profileResult = await _memberService.GetMyProfileAsync(userId);
+             if(profileResult.IsSuccess && profileResult.Data != null)
+             {
+                  model.Email = profileResult.Data.Email;
+                  model.ProfilFotografiYolu = profileResult.Data.ProfilFotografiYolu;
+             }
+             
             return View(model);
         }
     }

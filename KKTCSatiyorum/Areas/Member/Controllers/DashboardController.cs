@@ -1,4 +1,3 @@
-
 using BusinessLayer.Features.Member.Services;
 using EntityLayer.Constants;
 using KKTCSatiyorum.Areas.Member.Models.Dashboard;
@@ -31,8 +30,6 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             var result = await _memberService.GetDashboardStatsAsync(userId);
             if (!result.IsSuccess)
             {
-                // Handle error properly, maybe return empty stats or show error page
-                // For now, empty
                 return View(new DashboardIndexViewModel());
             }
 

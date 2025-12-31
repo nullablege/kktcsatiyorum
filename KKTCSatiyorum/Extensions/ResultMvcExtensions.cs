@@ -20,7 +20,7 @@ namespace KKTCSatiyorum.Extensions
             {
                 foreach(var ve in result.ValidationErrors)
                 {
-                    modelState.AddModelError(Key(prefix, ve.Field), ve.Message);
+                    modelState.AddModelError(Key(prefix, ve.PropertyName), ve.ErrorMessage);
                 }
                 return;
             }
