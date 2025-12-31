@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KKTCSatiyorum.Areas.Admin.Controllers
 {
-    [Area(RoleNames.Admin)]
+    [Area("Admin")]
     [Authorize(Roles = RoleNames.Admin)]
     public abstract class AdminBaseController : Controller
     {

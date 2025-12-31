@@ -1,7 +1,8 @@
 using System.Net;
 using System.Text.Json;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Hosting;
 
 namespace KKTCSatiyorum.Middlewares
 {
@@ -9,11 +10,15 @@ namespace KKTCSatiyorum.Middlewares
     {
         private readonly RequestDelegate _next;
         private readonly ILogger<GlobalExceptionMiddleware> _logger;
+        private readonly IWebHostEnvironment _env;
 
-        public GlobalExceptionMiddleware(RequestDelegate next, ILogger<GlobalExceptionMiddleware> logger)
+        public GlobalExceptionMiddleware(RequestDelegate next, 
+            ILogger<GlobalExceptionMiddleware> logger, 
+            IWebHostEnvironment env)
         {
             _next = next;
             _logger = logger;
+            _env = env;
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -24,32 +29,36 @@ namespace KKTCSatiyorum.Middlewares
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Unhandled exception occurred: {Message}", ex.Message);
-                await HandleExceptionAsync(context, ex);
-            }
-        }
+                _logger.LogError(ex, "Beklenmeyen bir hata oluştu: {Message}", ex.Message);
 
-        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-        {
-            // If it's an AJAX/JSON request, return JSON
-            if (IsAjaxRequest(context))
-            {
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                var response = new
+                if (context.Response.HasStarted)
                 {
-                    StatusCode = context.Response.StatusCode,
-                    Message = "Internal Server Error. Please try again later.",
-                    Detailed = exception.Message // You might want to hide this in Production
-                };
+                    _logger.LogWarning("Response zaten başladığı için exception handling atlanıyor.");
+                    throw;
+                }
 
-                await context.Response.WriteAsync(JsonSerializer.Serialize(response));
-            }
-            else
-            {
-                // For normal MVC requests, redirect to Error page
-                context.Response.Redirect("/Home/Error");
+                if (IsAjaxRequest(context))
+                {
+                    context.Response.ContentType = "application/json";
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+
+                    var problemDetails = new ProblemDetails
+                    {
+                        Status = context.Response.StatusCode,
+                        Title = "Sunucu Hatası",
+                        Detail = _env.IsDevelopment() ? ex.ToString() : "Bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.",
+                        Instance = context.Request.Path
+                    };
+
+                    problemDetails.Extensions["traceId"] = context.TraceIdentifier;
+
+                    var jsonOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(problemDetails, jsonOptions));
+                }
+                else
+                {
+                    throw;
+                }
             }
         }
 
