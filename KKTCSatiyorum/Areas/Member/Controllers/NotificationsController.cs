@@ -76,5 +76,16 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             var referer = Request.Headers["Referer"].ToString();
             return Url.IsLocalUrl(referer) ? Redirect(referer) : RedirectToAction(nameof(Index));
         }
+
+        [HttpGet]
+        public async Task<IActionResult> UnreadCount(CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId))
+                return Json(new { count = 0 });
+
+            var result = await _bildirimService.GetUnreadCountAsync(userId, ct);
+            return Json(new { count = result.IsSuccess ? result.Data : 0 });
+        }
     }
 }

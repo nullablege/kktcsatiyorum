@@ -12,6 +12,8 @@ errors.log
 web_errors.log
 build_output.txt
 build_errors.txt
+build_debug*.txt
+error*.txt
 AGENTS.MD
 
 # User-specific files

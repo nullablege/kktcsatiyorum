@@ -7,6 +7,7 @@ namespace BusinessLayer.Features.Bildirimler.Services
     public interface IBildirimService
     {
         Task<Result<PagedResult<MyNotificationDto>>> GetMyNotificationsAsync(string userId, int page, int pageSize, CancellationToken ct = default);
+        Task<Result<int>> GetUnreadCountAsync(string userId, CancellationToken ct = default);
         Task<Result> MarkAsReadAsync(int notificationId, string userId, CancellationToken ct = default);
     }
 }

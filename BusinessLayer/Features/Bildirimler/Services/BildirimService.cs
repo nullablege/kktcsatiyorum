@@ -61,5 +61,14 @@ namespace BusinessLayer.Features.Bildirimler.Services
 
             return Result.Success();
         }
+
+        public async Task<Result<int>> GetUnreadCountAsync(string userId, CancellationToken ct = default)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            var count = await _bildirimDal.GetUnreadCountAsync(userId, ct);
+            return Result<int>.Success(count);
+        }
     }
 }

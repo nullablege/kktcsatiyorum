@@ -25,6 +25,14 @@ namespace DataAccessLayer.Concrete
                             .ToListAsync(ct);
         }
 
+        public async Task<int> GetUnreadCountAsync(string userId, CancellationToken ct = default)
+        {
+            return await _context.Bildirimler
+                .AsNoTracking()
+                .Where(x => x.KullaniciId == userId && !x.OkunduMu)
+                .CountAsync(ct);
+        }
+
         public async Task<EntityLayer.DTOs.Public.PagedResult<Projections.NotificationProjection>> GetUserNotificationsAsync(string userId, int page, int pageSize, CancellationToken ct = default)
         {
             var query = _context.Bildirimler
