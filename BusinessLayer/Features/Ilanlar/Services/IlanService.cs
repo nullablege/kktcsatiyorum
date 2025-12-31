@@ -13,6 +13,10 @@ using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using BusinessLayer.Common.Abstractions;
+using BusinessLayer.Common.DTOs;
+
+using Microsoft.Extensions.Logging;
 
 namespace BusinessLayer.Features.Ilanlar.Services
 {
@@ -28,6 +32,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
         private readonly IValidator<CreateIlanRequest> _createValidator;
         private readonly ICacheService _cache;
         private readonly IMapper _mapper;
+        private readonly INotificationPublisher _notificationPublisher;
+        private readonly ILogger<IlanService> _logger;
 
         public IlanService(
             IIlanDal ilanDal,
@@ -36,7 +42,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
             IUnitOfWork unitOfWork,
             IValidator<CreateIlanRequest> createValidator,
             ICacheService cache,
-            IMapper mapper)
+            IMapper mapper,
+            INotificationPublisher notificationPublisher,
+            ILogger<IlanService> logger)
         {
             _ilanDal = ilanDal;
             _bildirimDal = bildirimDal;
@@ -45,6 +53,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
             _createValidator = createValidator;
             _cache = cache;
             _mapper = mapper;
+            _notificationPublisher = notificationPublisher;
+            _logger = logger;
         }
 
         public async Task<Result<int>> CreateAsync(CreateIlanRequest request, string userId, CancellationToken ct = default)
@@ -320,6 +330,24 @@ namespace BusinessLayer.Features.Ilanlar.Services
 
             InvalidateListingCaches(ilan.SeoSlug);
 
+            // SignalR Notification (Best-effort)
+            try
+            {
+                var payload = new NotificationPushedDto
+                {
+                    Id = bildirim.Id,
+                    Tur = BildirimTuru.IlanOnaylandi.ToString(),
+                    VeriJson = bildirim.VeriJson,
+                    OlusturmaTarihi = bildirim.OlusturmaTarihi,
+                    Mesaj = "İlanınız onaylandı!"
+                };
+                await _notificationPublisher.PublishAsync(ilan.SahipKullaniciId, payload, ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "SignalR notification failed for user {UserId}", ilan.SahipKullaniciId);
+            }
+
             return Result.Success();
         }
 
@@ -359,6 +387,24 @@ namespace BusinessLayer.Features.Ilanlar.Services
             await _unitOfWork.CommitAsync(ct);
 
             InvalidateListingCaches(ilan.SeoSlug);
+
+            // SignalR Notification (Best-effort)
+            try
+            {
+                var payload = new NotificationPushedDto
+                {
+                    Id = bildirim.Id,
+                    Tur = BildirimTuru.IlanReddedildi.ToString(),
+                    VeriJson = bildirim.VeriJson,
+                    OlusturmaTarihi = bildirim.OlusturmaTarihi,
+                    Mesaj = $"İlanınız reddedildi: {redNedeni}"
+                };
+                await _notificationPublisher.PublishAsync(ilan.SahipKullaniciId, payload, ct);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "SignalR notification failed for user {UserId}", ilan.SahipKullaniciId);
+            }
 
             return Result.Success();
         }

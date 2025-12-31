@@ -33,6 +33,9 @@ builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
 // Presentation Layer Services
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
+builder.Services.AddSignalR();
+builder.Services.AddScoped<BusinessLayer.Common.Abstractions.INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
+
 
 //Automapper
 builder.Services.AddAutoMapper(
@@ -136,6 +139,8 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<KKTCSatiyorum.Hubs.NotificationsHub>("/hubs/notifications");
 
 app.Run();
 

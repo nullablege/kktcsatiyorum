@@ -58,6 +58,9 @@ namespace BusinessLayer.DependencyInjection
             services.AddScoped<IMemberService, MemberService>();
             services.AddScoped<IValidator<UpdateProfileRequest>, UpdateProfileRequestValidator>();
 
+            // Common
+            services.AddScoped<BusinessLayer.Common.Abstractions.INotificationPublisher, BusinessLayer.Common.Services.NoOpNotificationPublisher>();
+
             return services;
         }
     }

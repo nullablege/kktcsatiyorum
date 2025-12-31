@@ -25,6 +25,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" href="#">
+                                Bildirimler <span id="notificationBadge" class="badge bg-danger" style="display:none;">0</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -44,6 +49,29 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.0/signalr.min.js"></script>
+        <script>
+            var connection = new signalR.HubConnectionBuilder().withUrl("/hubs/notifications").build();
+
+            connection.on("notificationReceived", function (data) {
+                console.log("Bildirim:", data);
+                var badge = document.getElementById("notificationBadge");
+                if(badge) {
+                    var count = parseInt(badge.innerText) || 0;
+                    badge.innerText = count + 1;
+                    badge.style.display = "inline-block";
+                }
+            });
+
+            connection.start().catch(function (err) {
+                console.error("SignalR Connection Error: ", err.toString());
+            });
+        </script>
+    }
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
