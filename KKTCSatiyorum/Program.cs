@@ -34,7 +34,6 @@ builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 builder.Services.AddSignalR();
-builder.Services.AddScoped<BusinessLayer.Common.Abstractions.INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
 
 
 //Automapper
