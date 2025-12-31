@@ -17,7 +17,7 @@ using BusinessLayer.Features.Favoriler.Services;
 using BusinessLayer.Features.Bildirimler.Services;
 using BusinessLayer.Features.Member.DTOs;
 using BusinessLayer.Features.Member.Services;
-using BusinessLayer.Features.Member;
+using BusinessLayer.Features.Member.Validators;
 
 namespace BusinessLayer.DependencyInjection
 {
@@ -55,8 +55,8 @@ namespace BusinessLayer.DependencyInjection
             // Member
 
             // Member
-            services.AddScoped<IMemberService, BusinessLayer.Features.Member.Services.MemberService>();
-            services.AddScoped<IValidator<UpdateProfileRequest>, BusinessLayer.Features.Member.Validators.UpdateProfileRequestValidator>();
+            services.AddScoped<IMemberService, MemberService>();
+            services.AddScoped<IValidator<UpdateProfileRequest>, UpdateProfileRequestValidator>();
 
             return services;
         }
