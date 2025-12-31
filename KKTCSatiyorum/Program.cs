@@ -34,6 +34,7 @@ builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 builder.Services.AddSignalR();
+builder.Services.AddScoped<BusinessLayer.Common.Abstractions.INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
 
 
 //Automapper
@@ -92,20 +93,20 @@ builder.Services.ConfigureApplicationCookie(options =>
 // Authorization policy'leri
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
-    options.AddPolicy("ModeratorOnly", policy => policy.RequireRole("Admin", "Moderator"));
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole(EntityLayer.Constants.RoleNames.Admin));
+    options.AddPolicy("ModeratorOnly", policy => policy.RequireRole(EntityLayer.Constants.RoleNames.Admin, EntityLayer.Constants.RoleNames.Moderator));
     options.AddPolicy("UserOnly", policy => policy.RequireAuthenticatedUser());
 });
 
 var app = builder.Build();
 
-// Uygulama başlarken Role ve Admin kullanıcısını seed et
+// Uygulama başlarken Role ve Admin kullanıcısını seed et (Sadece Dev ortamında Migrate/Seed)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        await DataAccessLayer.SeedData.InitializeAsync(services);
+        await DataAccessLayer.SeedData.InitializeAsync(services, app.Environment.IsDevelopment());
     }
     catch (Exception ex)
     {

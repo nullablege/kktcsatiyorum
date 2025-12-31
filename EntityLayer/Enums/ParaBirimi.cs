@@ -10,6 +10,7 @@ namespace EntityLayer.Enums
     {
         TRY = 1,
         USD = 2,
-        EUR = 3
+        EUR = 3,
+        GBP = 4
     }
 }

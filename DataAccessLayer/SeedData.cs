@@ -1,6 +1,7 @@
 using DataAccessLayer.Concrete;
 using EntityLayer.Entities;
 using EntityLayer.Enums;
+using EntityLayer.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,41 +14,41 @@ namespace DataAccessLayer
 {
     public static class SeedData
     {
-        public static async Task InitializeAsync(IServiceProvider serviceProvider)
+        public static async Task InitializeAsync(IServiceProvider serviceProvider, bool isDevelopment)
         {
             using var scope = serviceProvider.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<Context>();
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager<UygulamaKullanicisi>>();
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-            // Ensure database is created and migrated
-            await context.Database.MigrateAsync();
+            if (isDevelopment) 
+            {
+                await context.Database.MigrateAsync();
+            }
 
+            // Always ensure roles exist
             await EnsureRoles(roleManager);
-            var users = await EnsureUsers(userManager);
-            await EnsureCategories(context);
-            
-            // Only seed listings if categories exist (they should now)
-            await EnsureListings(context, users);
+
+            // Seed demo data only in Development
+            if (isDevelopment)
+            {
+                var users = await EnsureUsers(userManager);
+                await EnsureCategories(context);
+                await EnsureListings(context, users);
+            }
         }
 
         private static async Task EnsureRoles(RoleManager<IdentityRole> roleManager)
         {
-            string[] roles = { "Admin", "User", "Member" };
-            foreach (var role in roles)
-            {
-                if (!await roleManager.RoleExistsAsync(role))
-                {
-                    await roleManager.CreateAsync(new IdentityRole(role));
-                }
-            }
+            if (!await roleManager.RoleExistsAsync(RoleNames.Admin)) await roleManager.CreateAsync(new IdentityRole(RoleNames.Admin));
+            if (!await roleManager.RoleExistsAsync(RoleNames.User)) await roleManager.CreateAsync(new IdentityRole(RoleNames.User));
+            if (!await roleManager.RoleExistsAsync(RoleNames.Moderator)) await roleManager.CreateAsync(new IdentityRole(RoleNames.Moderator));
         }
 
         private static async Task<Dictionary<string, UygulamaKullanicisi>> EnsureUsers(UserManager<UygulamaKullanicisi> userManager)
         {
             var userMap = new Dictionary<string, UygulamaKullanicisi>();
 
-            // Admin
             var adminEmail = "admin@kktcsatiyorum.com";
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
             if (adminUser == null)
@@ -63,12 +64,11 @@ namespace DataAccessLayer
                 var result = await userManager.CreateAsync(adminUser, "Admin123!");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(adminUser, "Admin");
+                    await userManager.AddToRoleAsync(adminUser, RoleNames.Admin);
                 }
             }
-            userMap["Admin"] = adminUser;
+            userMap[RoleNames.Admin] = adminUser;
 
-            // Standard User
             var userEmail = "user@kktcsatiyorum.com";
             var normalUser = await userManager.FindByEmailAsync(userEmail);
             if (normalUser == null)
@@ -84,10 +84,10 @@ namespace DataAccessLayer
                 var result = await userManager.CreateAsync(normalUser, "User123!");
                 if (result.Succeeded)
                 {
-                    await userManager.AddToRoleAsync(normalUser, "User"); 
+                    await userManager.AddToRoleAsync(normalUser, RoleNames.User); 
                 }
             }
-            userMap["User"] = normalUser;
+            userMap[RoleNames.User] = normalUser;
 
             return userMap;
         }
@@ -96,7 +96,6 @@ namespace DataAccessLayer
         {
             if (await context.Kategoriler.AnyAsync()) return;
 
-            // Parent Categories
             var emlak = new Kategori { Ad = "Emlak", SeoSlug = "emlak", SiraNo = 1, AktifMi = true };
             var vasita = new Kategori { Ad = "Vasıta", SeoSlug = "vasita", SiraNo = 2, AktifMi = true };
             var elektronik = new Kategori { Ad = "Elektronik", SeoSlug = "elektronik", SiraNo = 3, AktifMi = true };
@@ -104,23 +103,20 @@ namespace DataAccessLayer
             context.Kategoriler.AddRange(emlak, vasita, elektronik);
             await context.SaveChangesAsync();
 
-            // Sub Categories (Emlak)
             var satilikDaire = new Kategori { Ad = "Satılık Daire", SeoSlug = "satilik-daire", UstKategoriId = emlak.Id, SiraNo = 1, AktifMi = true };
             var kiralikDaire = new Kategori { Ad = "Kiralık Daire", SeoSlug = "kiralik-daire", UstKategoriId = emlak.Id, SiraNo = 2, AktifMi = true };
             var arsa = new Kategori { Ad = "Arsa", SeoSlug = "arsa", UstKategoriId = emlak.Id, SiraNo = 3, AktifMi = true };
+            var isyeri = new Kategori { Ad = "İşyeri", SeoSlug = "isyeri", UstKategoriId = emlak.Id, SiraNo = 4, AktifMi = true };
 
-            // Sub Categories (Vasita)
             var otomobil = new Kategori { Ad = "Otomobil", SeoSlug = "otomobil", UstKategoriId = vasita.Id, SiraNo = 1, AktifMi = true };
             var motosiklet = new Kategori { Ad = "Motosiklet", SeoSlug = "motosiklet", UstKategoriId = vasita.Id, SiraNo = 2, AktifMi = true };
 
-            // Sub Categories (Elektronik)
             var telefon = new Kategori { Ad = "Telefon", SeoSlug = "telefon", UstKategoriId = elektronik.Id, SiraNo = 1, AktifMi = true };
             var bilgisayar = new Kategori { Ad = "Bilgisayar", SeoSlug = "bilgisayar", UstKategoriId = elektronik.Id, SiraNo = 2, AktifMi = true };
 
-            context.Kategoriler.AddRange(satilikDaire, kiralikDaire, arsa, otomobil, motosiklet, telefon, bilgisayar);
+            context.Kategoriler.AddRange(satilikDaire, kiralikDaire, arsa, isyeri, otomobil, motosiklet, telefon, bilgisayar);
             await context.SaveChangesAsync();
 
-            // Attributes (Emlak - Metrekare)
             var m2Alan = new KategoriAlani { KategoriId = emlak.Id, Ad = "Metrekare", Anahtar = "metrekare", VeriTipi = VeriTipi.TamSayi, ZorunluMu = true };
             var odaSayisi = new KategoriAlani { KategoriId = emlak.Id, Ad = "Oda Sayısı", Anahtar = "oda-sayisi", VeriTipi = VeriTipi.Metin, ZorunluMu = true };
             
@@ -132,26 +128,24 @@ namespace DataAccessLayer
         {
             if (await context.Ilanlar.AnyAsync()) return;
 
-            var user = users["User"]; // Owner of the listings
-            var admin = users["Admin"]; // Approver
+            var user = users[RoleNames.User]; 
+            var admin = users[RoleNames.Admin]; 
 
-            // Fetch categories for correct linking
-            var satilikDaire = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "satilik-daire");
-            var otomobil = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "otomobil");
-            var telefon = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "telefon");
-
-            if (satilikDaire == null || otomobil == null || telefon == null) return;
+            var satilikDaire = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "satilik-daire");
+            var isyeri = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "isyeri");
+            var otomobil = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "otomobil");
+            var telefon = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "telefon");
+            var bilgisayar = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "bilgisayar");
 
             var listings = new List<Ilan>
             {
-                // Real Estate
                 new Ilan
                 {
                     Baslik = "Girne Merkezde Lüks 3+1 Daire",
                     SeoSlug = "girne-merkezde-luks-3-1-daire",
                     Aciklama = "Girne'nin kalbinde, tüm olanaklara yürüme mesafesinde, harika manzaralı lüks daire.",
                     Fiyat = 150000,
-                    ParaBirimi = ParaBirimi.EUR,
+                    ParaBirimi = ParaBirimi.GBP,
                     KategoriId = satilikDaire.Id,
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
@@ -169,7 +163,7 @@ namespace DataAccessLayer
                     SeoSlug = "lefkosa-gonyeli-de-uygun-fiyatli-2-1",
                     Aciklama = "Öğrenciye veya çalışana uygun, temiz, masrafsız daire.",
                     Fiyat = 75000,
-                    ParaBirimi = ParaBirimi.EUR,
+                    ParaBirimi = ParaBirimi.GBP,
                     KategoriId = satilikDaire.Id,
                     SahipKullaniciId = user.Id,
                     Sehir = "Lefkoşa",
@@ -187,8 +181,8 @@ namespace DataAccessLayer
                     SeoSlug = "magusa-da-yatirimlik-dukkan",
                     Aciklama = "Üniversite yolunda, yüksek kira getirili dükkan.",
                     Fiyat = 90000,
-                    ParaBirimi = ParaBirimi.EUR,
-                    KategoriId = satilikDaire.Id, // Assuming property type, simplified
+                    ParaBirimi = ParaBirimi.GBP,
+                    KategoriId = isyeri.Id,
                     SahipKullaniciId = user.Id,
                     Sehir = "Gazimağusa",
                     Ilce = "Merkez",
@@ -196,15 +190,13 @@ namespace DataAccessLayer
                     OlusturmaTarihi = DateTime.UtcNow,
                     SilindiMi = false
                 },
-
-                // Vehicles
                 new Ilan
                 {
                     Baslik = "2020 Model Mercedes C200 AMG",
                     SeoSlug = "2020-model-mercedes-c200-amg",
                     Aciklama = "Hatasız, boyasız, tramersiz. Servis bakımlı.",
                     Fiyat = 35000,
-                    ParaBirimi = ParaBirimi.EUR,
+                    ParaBirimi = ParaBirimi.GBP,
                     KategoriId = otomobil.Id,
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
@@ -234,8 +226,6 @@ namespace DataAccessLayer
                     OnayTarihi = DateTime.UtcNow.AddDays(-19),
                     SilindiMi = false
                 },
-
-                // Electronics
                 new Ilan
                 {
                     Baslik = "iPhone 14 Pro Max 256GB - Garantili",
@@ -256,22 +246,74 @@ namespace DataAccessLayer
                 },
                 new Ilan
                 {
+                    Baslik = "Samsung Galaxy S23 Ultra",
+                    SeoSlug = "samsung-galaxy-s23-ultra",
+                    Aciklama = "Sıfır ayarında, kutu fatura mevcut.",
+                    Fiyat = 38000,
+                    ParaBirimi = ParaBirimi.TRY,
+                    KategoriId = telefon.Id,
+                    SahipKullaniciId = user.Id,
+                    Sehir = "Lefkoşa",
+                    Ilce = "Gönyeli",
+                    Durum = IlanDurumu.Yayinda,
+                    OlusturmaTarihi = DateTime.UtcNow.AddDays(-3),
+                    YayinTarihi = DateTime.UtcNow.AddDays(-2),
+                    OnaylayanKullaniciId = admin.Id,
+                    OnayTarihi = DateTime.UtcNow.AddDays(-2),
+                    SilindiMi = false
+                },
+                new Ilan
+                {
                     Baslik = "MacBook Air M2 Çip",
                     SeoSlug = "macbook-air-m2-cip",
                     Aciklama = "Çok az kullanıldı, pil döngüsü düşük.",
                     Fiyat = 1100,
-                    ParaBirimi = ParaBirimi.EUR, // Assuming EUR support or fallback
-                    KategoriId = telefon.Id, // Needs computer category ideally but simplifying
+                    ParaBirimi = ParaBirimi.EUR,
+                    KategoriId = bilgisayar.Id,
                     SahipKullaniciId = user.Id,
                     Sehir = "Lefkoşa",
                     Ilce = "K. Kaymaklı",
                     Durum = IlanDurumu.Taslak,
                     OlusturmaTarihi = DateTime.UtcNow.AddMinutes(-30),
                     SilindiMi = false
+                },
+                new Ilan
+                {
+                    Baslik = "Oyuncu Bilgisayarı - RTX 3060",
+                    SeoSlug = "oyuncu-bilgisayari-rtx-3060",
+                    Aciklama = "Yüksek FPS garantili, tüm oyunları açar.",
+                    Fiyat = 25000,
+                    ParaBirimi = ParaBirimi.TRY,
+                    KategoriId = bilgisayar.Id,
+                    SahipKullaniciId = user.Id,
+                    Sehir = "Girne",
+                    Ilce = "Alsancak",
+                    Durum = IlanDurumu.Yayinda,
+                    OlusturmaTarihi = DateTime.UtcNow.AddDays(-7),
+                    YayinTarihi = DateTime.UtcNow.AddDays(-7),
+                    OnaylayanKullaniciId = admin.Id,
+                    OnayTarihi = DateTime.UtcNow.AddDays(-7),
+                    SilindiMi = false
+                },
+                new Ilan
+                {
+                    Baslik = "iPad Pro 12.9 inç M1",
+                    SeoSlug = "ipad-pro-12-9-inc-m1",
+                    Aciklama = "Magic Keyboard dahil, çizim için ideal.",
+                    Fiyat = 950,
+                    ParaBirimi = ParaBirimi.GBP,
+                    KategoriId = bilgisayar.Id, 
+                    SahipKullaniciId = user.Id,
+                    Sehir = "Gazimağusa",
+                    Ilce = "Gülseren",
+                    Durum = IlanDurumu.Yayinda,
+                    OlusturmaTarihi = DateTime.UtcNow.AddDays(-14),
+                    YayinTarihi = DateTime.UtcNow.AddDays(-13),
+                    OnaylayanKullaniciId = admin.Id,
+                    OnayTarihi = DateTime.UtcNow.AddDays(-13),
+                    SilindiMi = false
                 }
             };
-            
-            // Add remaining to reach 10 if needed, simplified for now
             
             context.Ilanlar.AddRange(listings);
             await context.SaveChangesAsync();

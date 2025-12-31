@@ -34,7 +34,7 @@ graph TD
 
 1.  **Clone the Repository**
     ```bash
-    git clone https://github.com/yourusername/KKTCSatiyorum.git
+    git clone https://github.com/nullablege/KKTCSatiyorum.git
     cd KKTCSatiyorum
     ```
 
@@ -47,10 +47,10 @@ graph TD
     ```
 
 3.  **Database Migration & Seeding**
-    The application automatically applies migrations and seeds demo data on the first run.
+    The application automatically applies migrations and seeds demo data on the first run **(Development environment only)**.
     ```bash
     dotnet build
-    dotnet run --project KKTCSatiyorum
+    dotnet run --project KKTCSatiyorum --environment Development
     ```
 
 ## Demo Flow
