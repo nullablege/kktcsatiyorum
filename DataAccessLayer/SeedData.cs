@@ -131,11 +131,14 @@ namespace DataAccessLayer
             var user = users[RoleNames.User]; 
             var admin = users[RoleNames.Admin]; 
 
-            var satilikDaire = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "satilik-daire");
-            var isyeri = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "isyeri");
-            var otomobil = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "otomobil");
-            var telefon = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "telefon");
-            var bilgisayar = await context.Kategoriler.FirstAsync(k => k.SeoSlug == "bilgisayar");
+            var satilikDaire = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "satilik-daire");
+            var isyeri = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "isyeri");
+            var otomobil = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "otomobil");
+            var telefon = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "telefon");
+            var bilgisayar = await context.Kategoriler.FirstOrDefaultAsync(k => k.SeoSlug == "bilgisayar");
+
+            // Safe guard: if critical categories missing, abort seeding
+            if (satilikDaire == null || isyeri == null || otomobil == null || telefon == null || bilgisayar == null) return;
 
             var listings = new List<Ilan>
             {

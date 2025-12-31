@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using BusinessLayer.DependencyInjection;
+using BusinessLayer.Common.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBusinessLayer();
@@ -34,7 +35,7 @@ builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 builder.Services.AddSignalR();
-builder.Services.AddScoped<BusinessLayer.Common.Abstractions.INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
+builder.Services.AddScoped<INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
 
 
 //Automapper
@@ -125,6 +126,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+// Global Exception Middleware
+app.UseMiddleware<KKTCSatiyorum.Middlewares.GlobalExceptionMiddleware>();
 
 app.UseRouting();
 
