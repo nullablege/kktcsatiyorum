@@ -1,0 +1,270 @@
+@model KKTCSatiyorum.Areas.Member.Models.MyListings.EditIlanViewModel
+@using BusinessLayer.Features.KategoriAlanlari.DTOs
+@using EntityLayer.Enums
+
+@{
+    ViewData["Title"] = "İlan Düzenle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var kategoriAlanlari = ViewBag.KategoriAlanlari as List<KategoriAlaniDetailDto>;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0"><i class="bi bi-pencil-square me-2"></i>İlan Düzenle</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info border-0 shadow-sm mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>Dikkat:</strong> İlanınızın kritik bilgilerini (Başlık, Fiyat, Kategori vb.) değiştirdiğinizde ilanınız tekrar <strong>Onay Bekliyor</strong> durumuna geçecektir.
+                    </div>
+
+                    @if (TempData["ErrorMessage"] is string err)
+                    {
+                        <div class="alert alert-danger">@err</div>
+                    }
+
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data" novalidate>
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+
+                        <!-- Kategori -->
+                        <div class="mb-3">
+                            <label asp-for="KategoriId" class="form-label fw-bold">Kategori *</label>
+                            <select asp-for="KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect"></select>
+                            <span asp-validation-for="KategoriId" class="text-danger"></span>
+                        </div>
+
+                        <!-- Temel Alanlar -->
+                        <div class="mb-3">
+                            <label asp-for="Baslik" class="form-label fw-bold">İlan Başlığı *</label>
+                            <input asp-for="Baslik" class="form-control" />
+                            <span asp-validation-for="Baslik" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Aciklama" class="form-label fw-bold">Açıklama *</label>
+                            <textarea asp-for="Aciklama" class="form-control" rows="5"></textarea>
+                            <span asp-validation-for="Aciklama" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Fiyat" class="form-label fw-bold">Fiyat *</label>
+                                <input asp-for="Fiyat" type="number" step="0.01" min="0" class="form-control" />
+                                <span asp-validation-for="Fiyat" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="ParaBirimi" class="form-label fw-bold">Para Birimi</label>
+                                <select asp-for="ParaBirimi" asp-items="Model.ParaBirimiOptions" class="form-select"></select>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
+                            <input asp-for="Sehir" class="form-control" />
+                            <span asp-validation-for="Sehir" class="text-danger"></span>
+                        </div>
+
+                        <!-- Dinamik EAV Alanları -->
+                        <div id="dynamicAttributesContainer" class="mb-4" style="@(Model.KategoriId > 0 ? "display:block" : "display:none")">
+                            <hr />
+                            <h5 class="mb-3"><i class="bi bi-list-ul me-2"></i>Kategori Özellikleri</h5>
+                            <div id="attributeFields">
+                                @if (kategoriAlanlari != null && kategoriAlanlari.Any())
+                                {
+                                    for (int i = 0; i < kategoriAlanlari.Count; i++)
+                                    {
+                                        var attr = kategoriAlanlari[i];
+                                        var existingVal = Model.Attributes.FirstOrDefault(a => a.KategoriAlaniId == attr.Id)?.Value;
+                                        
+                                        <div class="mb-3">
+                                            <input type="hidden" name="Attributes[@i].KategoriAlaniId" value="@attr.Id" />
+                                            <label class="form-label">
+                                                @attr.Ad @(attr.ZorunluMu ? "*" : "")
+                                            </label>
+
+                                            @if (attr.VeriTipi == VeriTipi.Metin)
+                                            {
+                                                <input type="text" name="Attributes[@i].Value" class="form-control" value="@existingVal" @(attr.ZorunluMu ? "required" : "") />
+                                            }
+                                            else if (attr.VeriTipi == VeriTipi.TamSayi)
+                                            {
+                                                <input type="number" name="Attributes[@i].Value" class="form-control" value="@existingVal" @(attr.ZorunluMu ? "required" : "") />
+                                            }
+                                            else if (attr.VeriTipi == VeriTipi.Ondalik)
+                                            {
+                                                <input type="number" step="0.01" name="Attributes[@i].Value" class="form-control" value="@existingVal" @(attr.ZorunluMu ? "required" : "") />
+                                            }
+                                            else if (attr.VeriTipi == VeriTipi.DogruYanlis)
+                                            {
+                                                <div class="form-check">
+                                                    <input type="checkbox" name="Attributes[@i].Value" value="true" class="form-check-input" @(existingVal == "true" ? "checked" : "") />
+                                                    <label class="form-check-label">Evet</label>
+                                                </div>
+                                            }
+                                            else if (attr.VeriTipi == VeriTipi.Tarih)
+                                            {
+                                                <input type="date" name="Attributes[@i].Value" class="form-control" value="@existingVal" @(attr.ZorunluMu ? "required" : "") />
+                                            }
+                                            else if (attr.VeriTipi == VeriTipi.TekSecim)
+                                            {
+                                                <select name="Attributes[@i].Value" class="form-select" @(attr.ZorunluMu ? "required" : "")>
+                                                    <option value="">-- Seçin --</option>
+                                                    @if (attr.Secenekler != null)
+                                                    {
+                                                        foreach (var opt in attr.Secenekler)
+                                                        {
+                                                            <!option value="@opt.Id" @(existingVal == opt.Id.ToString() ? "selected" : "")>@opt.Deger</!option>
+                                                        }
+                                                    }
+                                                </select>
+                                            }
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Fotoğraflar (Read Only for now) -->
+                        <div class="mb-4">
+                            <hr />
+                            <h5 class="mb-3"><i class="bi bi-images me-2"></i>Mevcut Fotoğraflar</h5>
+                            @if (Model.CurrentPhotos != null && Model.CurrentPhotos.Any())
+                            {
+                                <div class="row g-2">
+                                    @foreach (var photo in Model.CurrentPhotos)
+                                    {
+                                        <div class="col-4 col-md-3">
+                                            <div class="position-relative">
+                                                <img src="@photo.Url" class="img-thumbnail" style="width:100%;height:150px;object-fit:cover;" />
+                                                @if (photo.KapakMi)
+                                                {
+                                                    <span class="badge bg-primary position-absolute top-0 start-0 m-1">Kapak</span>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div class="alert alert-light border mt-3 small">
+                                    <i class="bi bi-info-circle me-1"></i> Fotoğraf düzenleme özelliği yakında eklenecektir.
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="text-muted">Fotoğraf bulunmuyor.</p>
+                            }
+                        </div>
+
+                        <hr />
+                        
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-warning btn-lg">
+                                <i class="bi bi-save me-1"></i> Değişiklikleri Kaydet
+                            </button>
+                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">İptal</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const VeriTipi = {
+            Metin: @((int)VeriTipi.Metin),
+            TamSayi: @((int)VeriTipi.TamSayi),
+            Ondalik: @((int)VeriTipi.Ondalik),
+            DogruYanlis: @((int)VeriTipi.DogruYanlis),
+            Tarih: @((int)VeriTipi.Tarih),
+            TekSecim: @((int)VeriTipi.TekSecim)
+        };
+
+        // Note: Initial render is Server Side (Razor).
+        // Client side logic handles category CHANGE.
+        document.getElementById('kategoriSelect').addEventListener('change', async function() {
+            const kategoriId = this.value;
+            const container = document.getElementById('dynamicAttributesContainer');
+            const fieldsDiv = document.getElementById('attributeFields');
+            
+            if (!kategoriId) {
+                container.style.display = 'none';
+                fieldsDiv.innerHTML = '';
+                return;
+            }
+
+            // Confirm if user really wants to change category (clears attributes)
+            // But for now let's just do it.
+            
+            try {
+                const response = await fetch(`/Member/MyListings/GetAttributesForCategory?kategoriId=${kategoriId}`);
+                const attributes = await response.json();
+                
+                if (attributes.length === 0) {
+                    container.style.display = 'none';
+                    fieldsDiv.innerHTML = '';
+                    return;
+                }
+
+                container.style.display = 'block';
+                fieldsDiv.innerHTML = '';
+
+                attributes.forEach((attr, index) => {
+                    const fieldHtml = createAttributeField(attr, index);
+                    fieldsDiv.insertAdjacentHTML('beforeend', fieldHtml);
+                });
+            } catch (error) {
+                console.error('Error loading attributes:', error);
+            }
+        });
+
+        function createAttributeField(attr, index) {
+            const required = attr.zorunluMu ? ' *' : '';
+            const requiredAttr = attr.zorunluMu ? 'required' : '';
+            let inputHtml = '';
+
+            switch (attr.veriTipi) {
+                case VeriTipi.Metin:
+                    inputHtml = `<input type="text" name="Attributes[${index}].Value" class="form-control" ${requiredAttr} />`;
+                    break;
+                case VeriTipi.TamSayi:
+                    inputHtml = `<input type="number" name="Attributes[${index}].Value" class="form-control" ${requiredAttr} />`;
+                    break;
+                case VeriTipi.Ondalik:
+                    inputHtml = `<input type="number" step="0.01" name="Attributes[${index}].Value" class="form-control" ${requiredAttr} />`;
+                    break;
+                case VeriTipi.DogruYanlis:
+                    inputHtml = `
+                        <div class="form-check">
+                            <input type="checkbox" name="Attributes[${index}].Value" value="true" class="form-check-input" />
+                            <label class="form-check-label">Evet</label>
+                        </div>`;
+                    break;
+                case VeriTipi.Tarih:
+                    inputHtml = `<input type="date" name="Attributes[${index}].Value" class="form-control" ${requiredAttr} />`;
+                    break;
+                case VeriTipi.TekSecim:
+                    const options = attr.secenekler.map(s => `<option value="${s.id}">${s.deger}</option>`).join('');
+                    inputHtml = `<select name="Attributes[${index}].Value" class="form-select" ${requiredAttr}><option value="">-- Seçin --</option>${options}</select>`;
+                    break;
+                default:
+                    inputHtml = `<input type="text" name="Attributes[${index}].Value" class="form-control" />`;
+            }
+
+            return `
+                <div class="mb-3">
+                    <input type="hidden" name="Attributes[${index}].KategoriAlaniId" value="${attr.id}" />
+                    <label class="form-label">${attr.ad}${required}</label>
+                    ${inputHtml}
+                </div>
+            `;
+        }
+    </script>
+}

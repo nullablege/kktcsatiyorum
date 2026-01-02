@@ -338,6 +338,24 @@ namespace DataAccessLayer.Concrete
 
             return new PagedResult<MyListingProjection>(items, totalCount, page, pageSize);
         }
+
+        public async Task<Ilan?> GetForEditAsync(int ilanId, string userId, CancellationToken ct = default)
+        {
+            return await _context.Ilanlar
+                .Include(x => x.Kategori)
+                .Include(x => x.Fotografler)
+                .Include(x => x.AlanDegerleri)
+                .Include(x => x.SahipKullanici)
+                .Where(x => x.Id == ilanId && x.SahipKullaniciId == userId && !x.SilindiMi)
+                // We track changes because we'll update it
+                .FirstOrDefaultAsync(ct);
+        }
+
+        public async Task<bool> IsSlugTakenAsync(string slug, int excludeIlanId, CancellationToken ct = default)
+        {
+            return await _context.Ilanlar
+                .AnyAsync(x => x.SeoSlug == slug && x.Id != excludeIlanId && !x.SilindiMi, ct);
+        }
     }
 }
 

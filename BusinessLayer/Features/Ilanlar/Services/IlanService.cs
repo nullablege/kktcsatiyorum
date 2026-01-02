@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using BusinessLayer.Common.Abstractions;
 using BusinessLayer.Common.DTOs;
+using BusinessLayer.Features.DenetimKayitlari.Services;
 
 using Microsoft.Extensions.Logging;
 
@@ -33,6 +34,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
         private readonly ICacheService _cache;
         private readonly IMapper _mapper;
         private readonly INotificationPublisher _notificationPublisher;
+        private readonly IDenetimKaydiService _denetimKaydiService;
         private readonly ILogger<IlanService> _logger;
 
         public IlanService(
@@ -44,6 +46,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             ICacheService cache,
             IMapper mapper,
             INotificationPublisher notificationPublisher,
+            IDenetimKaydiService denetimKaydiService,
             ILogger<IlanService> logger)
         {
             _ilanDal = ilanDal;
@@ -54,6 +57,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             _cache = cache;
             _mapper = mapper;
             _notificationPublisher = notificationPublisher;
+            _denetimKaydiService = denetimKaydiService;
             _logger = logger;
         }
 
@@ -460,6 +464,178 @@ namespace BusinessLayer.Features.Ilanlar.Services
             await _unitOfWork.CommitAsync(ct);
 
             InvalidateListingCaches(ilan.SeoSlug);
+
+            return Result.Success();
+        }
+
+        public async Task<Result<EditIlanDto>> GetMyListingForEditAsync(int ilanId, string userId, CancellationToken ct = default)
+        {
+            if (ilanId <= 0)
+                return Result<EditIlanDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result<EditIlanDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            var ilan = await _ilanDal.GetForEditAsync(ilanId, userId, ct);
+            if (ilan == null)
+            {
+                // Either not found or not owned by user
+                return Result<EditIlanDto>.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı veya erişim yetkiniz yok.");
+            }
+
+            // Map to DTO
+            var attributes = ilan.AlanDegerleri.Select(ad => new EditAttributeDto(
+                ad.KategoriAlaniId,
+                ad.KategoriAlani?.Ad ?? "",
+                GetRawValue(ad),
+                ad.KategoriAlani?.VeriTipi ?? VeriTipi.Metin,
+                ad.KategoriAlani?.Secenekler?.Select(s => new SecenekDto { Id = s.Id, Deger = s.Deger }).ToList()
+            )).ToList();
+
+            var dto = new EditIlanDto(
+                ilan.Id,
+                ilan.KategoriId,
+                ilan.Baslik,
+                ilan.Aciklama,
+                ilan.Fiyat,
+                ilan.ParaBirimi,
+                ilan.Sehir,
+                attributes,
+                ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList()
+            );
+
+            return Result<EditIlanDto>.Success(dto);
+        }
+
+        private static string? GetRawValue(IlanAlanDegeri ad)
+        {
+             if (ad.SecenekId.HasValue) return ad.SecenekId.Value.ToString();
+             if (ad.TamSayiDeger.HasValue) return ad.TamSayiDeger.Value.ToString();
+             if (ad.OndalikDeger.HasValue) return ad.OndalikDeger.Value.ToString(CultureInfo.InvariantCulture); // Culture invariant for form binding
+             if (ad.DogruYanlisDeger.HasValue) return ad.DogruYanlisDeger.Value ? "true" : "false";
+             if (ad.TarihDeger.HasValue) return ad.TarihDeger.Value.ToString("yyyy-MM-dd"); // ISO for input type=date
+             return ad.MetinDeger;
+        }
+
+        public async Task<Result> UpdateMyListingAsync(int ilanId, UpdateIlanRequest request, string userId, CancellationToken ct = default)
+        {
+            if (ilanId <= 0)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
+            if (string.IsNullOrWhiteSpace(userId))
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            // Validation logic similar to Create (could abstract this)
+            if (string.IsNullOrWhiteSpace(request.Baslik)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Başlık zorunludur.");
+            if (request.Fiyat < 0) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Fiyat 0'dan küçük olamaz.");
+
+            var ilan = await _ilanDal.GetForEditAsync(ilanId, userId, ct);
+            if (ilan == null)
+                return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı veya erişim yetkiniz yok.");
+
+            // Check if critical fields changed
+            bool criticalChange = 
+                ilan.Baslik != request.Baslik ||
+                ilan.Aciklama != request.Aciklama ||
+                ilan.Fiyat != request.Fiyat ||
+                ilan.KategoriId != request.KategoriId ||
+                ilan.ParaBirimi != request.ParaBirimi;
+
+            // Simplified Attribute Change Check: If any attribute is different, assume change.
+            // Complex deep compare is expensive/tricky. 
+            // For now, if attributes are provided, we re-evaluate.
+            // But to avoid unnecessary reset, let's assume if request has attributes, we process them.
+            // If the user didn't change attributes in UI, they might still be sent again.
+            // Ideally we compare content.
+            // Strategy: We will update attributes anyway. If we do, we assume "edit happened".
+
+            // Update Basic Fields
+            ilan.Baslik = request.Baslik.Trim();
+            ilan.Aciklama = request.Aciklama.Trim();
+            ilan.Fiyat = request.Fiyat;
+            ilan.ParaBirimi = request.ParaBirimi;
+            ilan.Sehir = request.Sehir?.Trim();
+            ilan.GuncellemeTarihi = DateTime.UtcNow;
+
+            // Update Slug if Title changed
+            var newSlug = GenerateSlug(ilan.Baslik);
+            if (newSlug != ilan.SeoSlug)
+            {
+                var slugExists = await _ilanDal.IsSlugTakenAsync(newSlug, ilan.Id, ct);
+                if (slugExists)
+                    newSlug = $"{newSlug}-{Guid.NewGuid().ToString()[..8]}";
+                ilan.SeoSlug = newSlug;
+            }
+
+            // Update Attributes
+            // 1. Remove old values - simplistic approach for MVP
+            ilan.AlanDegerleri.Clear();
+            
+            // 2. Add new values
+            var kategoriAlanlari = await _kategoriAlaniDal.GetListByKategoriAsync(request.KategoriId, includeSecenekler: true, ct);
+            // Validate EAV again
+             var eavValidation = ValidateEavAttributes(kategoriAlanlari, request.Attributes);
+            if (!eavValidation.IsSuccess)
+                return Result.Fail(eavValidation.Error!.Type, eavValidation.Error.Code, eavValidation.Error.Message);
+
+            foreach (var attr in request.Attributes)
+            {
+                 var alan = kategoriAlanlari.FirstOrDefault(a => a.Id == attr.KategoriAlaniId);
+                 if (alan == null) continue;
+                 var deger = ParseEavValue(alan, attr.Value);
+                 if (deger != null)
+                     ilan.AlanDegerleri.Add(deger);
+            }
+
+            // Status Logic
+            if (ilan.Durum == IlanDurumu.Yayinda)
+            {
+                 // Reset to Pending Approval
+                 ilan.Durum = IlanDurumu.OnayBekliyor;
+                 ilan.OnaylayanKullaniciId = null;
+                 ilan.OnayTarihi = null;
+                 // ilan.YayinTarihi = null; // Decided to keep YayinTarihi as original publish date or null it? 
+                                            // User: "YayinTarihi null/koru (senin modele göre)"
+                                            // Let's keep it null to indicate it's not currently live in the "Active" sense if we filter by logic. 
+                                            // But standard is usually: YayinTarihi is when it WAS published. 
+                                            // Let's set it to null to be safe for "OnayBekliyor" queries that might rely on it.
+                 ilan.YayinTarihi = null; 
+
+                 await _denetimKaydiService.LogAsync("IlanGuncelleme", "Ilan", ilan.Id.ToString(), 
+                     $"İlan düzenlendi ve tekrar onaya düştü. Eski durum: Yayinda.", 
+                     null, userId, ct);
+            }
+            else if (ilan.Durum == IlanDurumu.Reddedildi)
+            {
+                // Resubmit for approval
+                ilan.Durum = IlanDurumu.OnayBekliyor;
+                ilan.RedNedeni = null;
+                 await _denetimKaydiService.LogAsync("IlanGuncelleme", "Ilan", ilan.Id.ToString(), 
+                     "Reddedilen ilan düzenlendi ve tekrar onaya gönderildi.", 
+                     null, userId, ct);
+            }
+            else
+            {
+                 // Draft or already Pending -> Just update, no status change logic needed usually, 
+                 // but if it was Draft, maybe user wants to Publish? 
+                 // Usually "Edit" on Draft keeps it Draft until "Publish" button. 
+                 // But request says "OnayBekliyor'a düşsün". 
+                 // If it is Draft, we might just keep it Draft unless user explicitly says "Publish".
+                 // BUT, simplifying: If we Edit, we save. User might need a "Publish" action.
+                 // However, prompt implies: "Yayındaki ilan editlenince... tekrar OnayBekliyor".
+                 // It doesn't explicitly say what happens to Draft.
+                 // Typical flow: Edit Draft -> Save (Draft). Publish -> Pending.
+                 // I will KEEP the current status if it is Draft or Pending.
+                 // Unless it was Reddedildi (handled above).
+            }
+
+            try
+            {
+                await _ilanDal.UpdateAsync(ilan, ct);
+                await _unitOfWork.CommitAsync(ct);
+            }
+            catch (DbUpdateException ex) when (IsUniqueViolation(ex))
+            {
+                return Result.Fail(ErrorType.Conflict, ErrorCodes.Ilan.DuplicateSlug, "Slug çakışması oluştu.");
+            }
 
             return Result.Success();
         }

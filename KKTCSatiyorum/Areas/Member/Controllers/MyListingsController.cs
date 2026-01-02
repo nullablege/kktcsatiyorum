@@ -175,6 +175,133 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             return await ReturnViewWithData(model, ct);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id, CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            var result = await _ilanService.GetMyListingForEditAsync(id, userId, ct);
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Error?.Message ?? "İlan bulunamadı.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            var dto = result.Data!;
+            var model = new EditIlanViewModel
+            {
+                Id = dto.Id,
+                KategoriId = dto.KategoriId,
+                Baslik = dto.Baslik,
+                Aciklama = dto.Aciklama,
+                Fiyat = dto.Fiyat,
+                ParaBirimi = dto.ParaBirimi,
+                Sehir = dto.Sehir ?? "",
+                CurrentPhotos = dto.Photos,
+                // Map existing attributes to input model
+                Attributes = dto.Attributes.Select(a => new AttributeInputModel 
+                { 
+                    KategoriAlaniId = a.KategoriAlaniId,
+                    Value = a.Value ?? ""
+                }).ToList(),
+                
+                KategoriOptions = await BuildKategoriOptionsAsync(ct),
+                ParaBirimiOptions = BuildParaBirimiOptions()
+            };
+
+            // We also need to pass the category attributes definition to View similarly to Create
+            // so the form can render the inputs correctly (labels, types, options).
+            // We can reuse 'GetAttributesForCategory' logic or just pass what we have if the View can handle it.
+            // But Create view uses JS to fetch attributes on category change. 
+            // For Edit, we ideally preload them. 
+            // The DTO now has some metadata (Ad, VeriTipi, Secenekler), but the View (Create.cshtml logic) 
+            // might expect the JSON structure from `GetAttributesForCategory`.
+            // Let's populate ViewBag.KategoriAlanlari as in ReturnViewWithData.
+            
+            var attrsResult = await _kategoriAlaniService.GetListForFormAsync(dto.KategoriId, ct);
+            if (attrsResult.IsSuccess)
+            {
+                 // We need to map this to what the view expects.
+                 // Create view uses ViewBag.KategoriAlanlari which is List<KategoriAttributeDto> (from service).
+                 ViewBag.KategoriAlanlari = attrsResult.Data;
+            }
+
+            return View(model); 
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, EditIlanViewModel model, CancellationToken ct)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+            if (id != model.Id) return BadRequest();
+
+            // Note: We don't handle photo uploads in this edit step yet as per requirements.
+            // But if we did, we would process them here.
+
+            if (!ModelState.IsValid)
+            {
+                // Re-populate dropdowns/attributes
+                model.KategoriOptions = await BuildKategoriOptionsAsync(ct);
+                model.ParaBirimiOptions = BuildParaBirimiOptions();
+                if (model.KategoriId > 0)
+                {
+                    var attrs = await _kategoriAlaniService.GetListForFormAsync(model.KategoriId, ct);
+                    if (attrs.IsSuccess) ViewBag.KategoriAlanlari = attrs.Data;
+                }
+                // Need to re-fetch current photos?
+                // The service GetForEdit is needed again OR we trust the view to describe photos?
+                // Usually we re-fetch to show them again.
+                var existing = await _ilanService.GetMyListingForEditAsync(id, userId, ct);
+                if (existing.IsSuccess)
+                {
+                    model.CurrentPhotos = existing.Data!.Photos;
+                }
+
+                return View(model);
+            }
+
+            var request = new UpdateIlanRequest(
+                model.KategoriId,
+                model.Baslik,
+                model.Aciklama,
+                model.Fiyat,
+                model.ParaBirimi,
+                model.Sehir,
+                model.Attributes.Select(a => new AttributeValueInput(a.KategoriAlaniId, a.Value)).ToList()
+            );
+
+            var result = await _ilanService.UpdateMyListingAsync(id, request, userId, ct);
+
+            if (result.IsSuccess)
+            {
+                TempData["SuccessMessage"] = "İlan güncellendi.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            // Error case
+            TempData["ErrorMessage"] = result.Error?.Message ?? "Güncelleme sırasında bir hata oluştu.";
+            
+            // Re-populate for view
+            model.KategoriOptions = await BuildKategoriOptionsAsync(ct);
+            model.ParaBirimiOptions = BuildParaBirimiOptions();
+             if (model.KategoriId > 0)
+            {
+                var attrs = await _kategoriAlaniService.GetListForFormAsync(model.KategoriId, ct);
+                if (attrs.IsSuccess) ViewBag.KategoriAlanlari = attrs.Data;
+            }
+             var existingRel = await _ilanService.GetMyListingForEditAsync(id, userId, ct);
+            if (existingRel.IsSuccess)
+            {
+                model.CurrentPhotos = existingRel.Data!.Photos;
+            }
+
+            return View(model);
+        }
+
         private async Task<IActionResult> ReturnViewWithData(CreateIlanViewModel model, CancellationToken ct)
         {
             model.KategoriOptions = await BuildKategoriOptionsAsync(ct);
