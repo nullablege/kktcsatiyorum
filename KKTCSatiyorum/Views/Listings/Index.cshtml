@@ -200,6 +200,9 @@
                                        asp-route-MinFiyat="@Model.Query.MinFiyat"
                                        asp-route-MaxFiyat="@Model.Query.MaxFiyat"
                                        asp-route-Sort="@Model.Query.Sort"
+                                       asp-route-UserLat="@Model.Query.UserLat"
+                                       asp-route-UserLng="@Model.Query.UserLng"
+                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
                                        asp-route-Page="@(Model.Listings.Page - 1)">
                                         <i class="bi bi-chevron-left"></i>
                                     </a>
@@ -220,6 +223,9 @@
                                            asp-route-MinFiyat="@Model.Query.MinFiyat"
                                            asp-route-MaxFiyat="@Model.Query.MaxFiyat"
                                            asp-route-Sort="@Model.Query.Sort"
+                                           asp-route-UserLat="@Model.Query.UserLat"
+                                           asp-route-UserLng="@Model.Query.UserLng"
+                                           asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
                                            asp-route-Page="@pageNum">@pageNum</a>
                                     </li>
                                 }
@@ -231,6 +237,9 @@
                                        asp-route-MinFiyat="@Model.Query.MinFiyat"
                                        asp-route-MaxFiyat="@Model.Query.MaxFiyat"
                                        asp-route-Sort="@Model.Query.Sort"
+                                       asp-route-UserLat="@Model.Query.UserLat"
+                                       asp-route-UserLng="@Model.Query.UserLng"
+                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
                                        asp-route-Page="@(Model.Listings.Page + 1)">
                                         <i class="bi bi-chevron-right"></i>
                                     </a>

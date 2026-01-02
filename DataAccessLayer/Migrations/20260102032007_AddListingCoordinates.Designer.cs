@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DataAccessLayer.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20251231115544_AddListingCoordinates")]
+    [Migration("20260102032007_AddListingCoordinates")]
     partial class AddListingCoordinates
     {
         /// <inheritdoc />
@@ -249,6 +249,9 @@ namespace DataAccessLayer.Migrations
                     b.HasIndex("OnaylayanKullaniciId");
 
                     b.HasIndex("SahipKullaniciId");
+
+                    b.HasIndex("Enlem", "Boylam")
+                        .HasDatabaseName("IX_Ilanlar_Enlem_Boylam");
 
                     b.HasIndex("KategoriId", "Durum", "OlusturmaTarihi");
 

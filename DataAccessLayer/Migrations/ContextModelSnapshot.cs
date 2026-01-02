@@ -247,6 +247,9 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("SahipKullaniciId");
 
+                    b.HasIndex("Enlem", "Boylam")
+                        .HasDatabaseName("IX_Ilanlar_Enlem_Boylam");
+
                     b.HasIndex("KategoriId", "Durum", "OlusturmaTarihi");
 
                     b.ToTable("Ilanlar", (string)null);

@@ -13,6 +13,8 @@ namespace DataAccessLayer.Configurations
     {
         public void Configure(EntityTypeBuilder<Ilan> b)
         {
+            b.HasIndex(x => new { x.Enlem, x.Boylam }).HasDatabaseName("IX_Ilanlar_Enlem_Boylam");
+
             b.ToTable("Ilanlar");
             b.HasKey(x => x.Id);
 
