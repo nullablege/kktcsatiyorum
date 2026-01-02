@@ -99,40 +99,49 @@ namespace DataAccessLayer.Concrete
             }
 
             // --- Distance Logic ---
-            var userLat = query.UserLat.HasValue ? (double)query.UserLat.Value : (double?)null;
-            var userLng = query.UserLng.HasValue ? (double)query.UserLng.Value : (double?)null;
+            var userLat = query.UserLat;
+            var userLng = query.UserLng;
             
-            // Optimization: Bounding Box pre-filter
-            if (query.MaxDistanceKm.HasValue && userLat.HasValue && userLng.HasValue)
+            // Optimization: If sorting by distance but no max distance specified, apply a default safety bound (e.g. 500km)
+            // to prevent calculating Haversine for the entire database.
+            int? effectiveMaxDist = query.MaxDistanceKm;
+            if (query.SortByDistance && !effectiveMaxDist.HasValue && userLat.HasValue && userLng.HasValue)
             {
-                var maxDist = query.MaxDistanceKm.Value;
+                effectiveMaxDist = 500; // Default safety limit
+            }
+
+            // Optimization: Bounding Box pre-filter
+            if (effectiveMaxDist.HasValue && userLat.HasValue && userLng.HasValue)
+            {
+                var maxDist = effectiveMaxDist.Value;
                 // 1 degree latitude ~= 111 km
                 var latDiff = maxDist / 111.0;
                 var latMin = userLat.Value - latDiff;
                 var latMax = userLat.Value + latDiff;
                 
-                var cosLat = Math.Cos(userLat.Value * Math.PI / 180.0);
+                var cosLat = Math.Cos((double)userLat.Value * Math.PI / 180.0);
                 var lonDiff = maxDist / (111.0 * Math.Abs(cosLat) + 0.001); // avoid div by zero
 
-                var lonMin = userLng.Value - lonDiff;
-                var lonMax = userLng.Value + lonDiff;
+                var lonMin = userLng.Value - (decimal)lonDiff;
+                var lonMax = userLng.Value + (decimal)lonDiff;
 
                 q = q.Where(x => x.Enlem >= (decimal)latMin && x.Enlem <= (decimal)latMax &&
-                                 x.Boylam >= (decimal)lonMin && x.Boylam <= (decimal)lonMax);
+                                 x.Boylam >= lonMin && x.Boylam <= lonMax);
             }
             
-            // Projection with Distance
+            // Projection with True Haversine Distance
+            // Formula: 2 * R * asin(sqrt(a))
+            // a = sin²(Δφ/2) + cos φ1 ⋅ cos φ2 ⋅ sin²(Δλ/2)
             var queryWithDist = q.Select(x => new 
             {
                 Data = x,
                 DistanceKm = (userLat.HasValue && userLng.HasValue && x.Enlem.HasValue && x.Boylam.HasValue) 
-                    ? 6371 * Math.Acos(
-                        Math.Cos(userLat.Value * Math.PI / 180.0) * 
-                        Math.Cos((double)x.Enlem.Value * Math.PI / 180.0) * 
-                        Math.Cos((double)x.Boylam.Value * Math.PI / 180.0 - userLng.Value * Math.PI / 180.0) + 
-                        Math.Sin(userLat.Value * Math.PI / 180.0) * 
-                        Math.Sin((double)x.Enlem.Value * Math.PI / 180.0)
-                      )
+                    ? 12742 * Math.Asin(Math.Sqrt(
+                        Math.Pow(Math.Sin(((double)x.Enlem.Value * Math.PI / 180.0 - (double)userLat.Value * Math.PI / 180.0) / 2), 2) +
+                        Math.Cos((double)userLat.Value * Math.PI / 180.0) *
+                        Math.Cos((double)x.Enlem.Value * Math.PI / 180.0) *
+                        Math.Pow(Math.Sin(((double)x.Boylam.Value * Math.PI / 180.0 - (double)userLng.Value * Math.PI / 180.0) / 2), 2)
+                      ))
                     : (double?)null
             });
 
@@ -141,6 +150,11 @@ namespace DataAccessLayer.Concrete
             {
                 queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue && x.DistanceKm <= query.MaxDistanceKm.Value);
             }
+            // If sorting by distance and using valid coordinates, exclude null distances to be safe and clean
+            else if (query.SortByDistance && userLat.HasValue && userLng.HasValue)
+            {
+                 queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue);
+            }
 
             // Total Count
             var totalCount = await queryWithDist.CountAsync(ct);
@@ -148,7 +162,8 @@ namespace DataAccessLayer.Concrete
             // Sorting
             if (query.SortByDistance && userLat.HasValue && userLng.HasValue)
             {
-                queryWithDist = queryWithDist.OrderBy(x => x.DistanceKm);
+                // Null-safe sorting: Ensure rows with null distance (if any slipped through) go to end
+                queryWithDist = queryWithDist.OrderBy(x => x.DistanceKm ?? double.MaxValue);
             }
             else
             {
