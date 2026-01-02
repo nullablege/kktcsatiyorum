@@ -44,8 +44,9 @@ builder.Services.Configure<KKTCSatiyorum.Integrations.Moderation.GeminiOptions>(
 var geminiSection = builder.Configuration.GetSection("Gemini");
 var geminiEnabled = geminiSection.GetValue<bool>("Enabled");
 var geminiApiKey = geminiSection.GetValue<string>("ApiKey");
+var geminiEndpoint = geminiSection.GetValue<string>("Endpoint");
 
-if (geminiEnabled && !string.IsNullOrEmpty(geminiApiKey))
+if (geminiEnabled && !string.IsNullOrEmpty(geminiApiKey) && !string.IsNullOrEmpty(geminiEndpoint))
 {
     builder.Services.AddHttpClient<IContentModerationClient, KKTCSatiyorum.Integrations.Moderation.GeminiModerationClient>()
         .ConfigureHttpClient((sp, client) => 
