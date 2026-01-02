@@ -113,19 +113,19 @@ namespace DataAccessLayer.Concrete
             // Optimization: Bounding Box pre-filter
             if (effectiveMaxDist.HasValue && userLat.HasValue && userLng.HasValue)
             {
-                var maxDist = effectiveMaxDist.Value;
+                var maxDist = (decimal)effectiveMaxDist.Value;
                 // 1 degree latitude ~= 111 km
-                var latDiff = maxDist / 111.0;
+                var latDiff = maxDist / 111m;
                 var latMin = userLat.Value - latDiff;
                 var latMax = userLat.Value + latDiff;
                 
                 var cosLat = Math.Cos((double)userLat.Value * Math.PI / 180.0);
-                var lonDiff = maxDist / (111.0 * Math.Abs(cosLat) + 0.001); // avoid div by zero
+                var lonDiff = (decimal)(maxDist / (decimal)(111.0 * Math.Abs(cosLat) + 0.001)); // avoid div by zero
 
-                var lonMin = userLng.Value - (decimal)lonDiff;
-                var lonMax = userLng.Value + (decimal)lonDiff;
+                var lonMin = userLng.Value - lonDiff;
+                var lonMax = userLng.Value + lonDiff;
 
-                q = q.Where(x => x.Enlem >= (decimal)latMin && x.Enlem <= (decimal)latMax &&
+                q = q.Where(x => x.Enlem >= latMin && x.Enlem <= latMax &&
                                  x.Boylam >= lonMin && x.Boylam <= lonMax);
             }
             
@@ -137,20 +137,22 @@ namespace DataAccessLayer.Concrete
                 Data = x,
                 DistanceKm = (userLat.HasValue && userLng.HasValue && x.Enlem.HasValue && x.Boylam.HasValue) 
                     ? 12742 * Math.Asin(Math.Sqrt(
-                        Math.Pow(Math.Sin(((double)x.Enlem.Value * Math.PI / 180.0 - (double)userLat.Value * Math.PI / 180.0) / 2), 2) +
+                        (Math.Sin(((double)x.Enlem.Value * Math.PI / 180.0 - (double)userLat.Value * Math.PI / 180.0) / 2) *
+                         Math.Sin(((double)x.Enlem.Value * Math.PI / 180.0 - (double)userLat.Value * Math.PI / 180.0) / 2)) +
                         Math.Cos((double)userLat.Value * Math.PI / 180.0) *
                         Math.Cos((double)x.Enlem.Value * Math.PI / 180.0) *
-                        Math.Pow(Math.Sin(((double)x.Boylam.Value * Math.PI / 180.0 - (double)userLng.Value * Math.PI / 180.0) / 2), 2)
+                        (Math.Sin(((double)x.Boylam.Value * Math.PI / 180.0 - (double)userLng.Value * Math.PI / 180.0) / 2) *
+                         Math.Sin(((double)x.Boylam.Value * Math.PI / 180.0 - (double)userLng.Value * Math.PI / 180.0) / 2))
                       ))
                     : (double?)null
             });
 
-            // Apply exact MaxDistance filter
-            if (query.MaxDistanceKm.HasValue && userLat.HasValue && userLng.HasValue)
+            // Apply exact effective MaxDistance filter (covering both explicit query and default safety bound)
+            if (effectiveMaxDist.HasValue && userLat.HasValue && userLng.HasValue)
             {
-                queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue && x.DistanceKm <= query.MaxDistanceKm.Value);
+                queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue && x.DistanceKm <= effectiveMaxDist.Value);
             }
-            // If sorting by distance and using valid coordinates, exclude null distances to be safe and clean
+            // If sorting by distance and using valid coordinates but no effective limit (shouldn't happen with default logic above, but safe overlap), exclude nulls
             else if (query.SortByDistance && userLat.HasValue && userLng.HasValue)
             {
                  queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue);

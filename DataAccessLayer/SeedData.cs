@@ -153,6 +153,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
                     Ilce = "Merkez",
+                    Enlem = 35.3354m,
+                    Boylam = 33.3184m, // Girne Merkez
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-5),
                     YayinTarihi = DateTime.UtcNow.AddDays(-4),
@@ -171,6 +173,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Lefkoşa",
                     Ilce = "Gönyeli",
+                    Enlem = 35.2163m,
+                    Boylam = 33.3088m, // Gönyeli
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-10),
                     YayinTarihi = DateTime.UtcNow.AddDays(-9),
@@ -189,6 +193,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Gazimağusa",
                     Ilce = "Merkez",
+                    Enlem = 35.1250m,
+                    Boylam = 33.9350m, // Mağusa Merkez
                     Durum = IlanDurumu.OnayBekliyor,
                     OlusturmaTarihi = DateTime.UtcNow,
                     SilindiMi = false
@@ -204,6 +210,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
                     Ilce = "Çatalköy",
+                    Enlem = 35.3180m,
+                    Boylam = 33.3750m, // Çatalköy
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-2),
                     YayinTarihi = DateTime.UtcNow.AddDays(-1),
@@ -222,6 +230,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Lefkoşa",
                     Ilce = "Ortaköy",
+                    Enlem = 35.1950m,
+                    Boylam = 33.3550m, // Ortaköy
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-20),
                     YayinTarihi = DateTime.UtcNow.AddDays(-19),
@@ -240,6 +250,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
                     Ilce = "Karaoğlanoğlu",
+                    Enlem = 35.3450m,
+                    Boylam = 33.2950m, // Karaoğlanoğlu
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-1),
                     YayinTarihi = DateTime.UtcNow.AddDays(-1),
@@ -258,6 +270,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Lefkoşa",
                     Ilce = "Gönyeli",
+                    Enlem = 35.2155m,
+                    Boylam = 33.3095m, // Gönyeli
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-3),
                     YayinTarihi = DateTime.UtcNow.AddDays(-2),
@@ -291,6 +305,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Girne",
                     Ilce = "Alsancak",
+                    Enlem = 35.3520m,
+                    Boylam = 33.2200m, // Alsancak
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-7),
                     YayinTarihi = DateTime.UtcNow.AddDays(-7),
@@ -309,6 +325,8 @@ namespace DataAccessLayer
                     SahipKullaniciId = user.Id,
                     Sehir = "Gazimağusa",
                     Ilce = "Gülseren",
+                    Enlem = 35.1380m,
+                    Boylam = 33.9180m, // Gülseren
                     Durum = IlanDurumu.Yayinda,
                     OlusturmaTarihi = DateTime.UtcNow.AddDays(-14),
                     YayinTarihi = DateTime.UtcNow.AddDays(-13),

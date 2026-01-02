@@ -29,9 +29,6 @@
                     <button class="btn btn-primary flex-grow-1" type="submit">
                         <i class="bi bi-search"></i> Ara
                     </button>
-                    <button class="btn btn-outline-primary" type="button" id="btnNearMe" title="Yakınımdaki İlanlar">
-                        <i class="bi bi-geo-alt-fill"></i>
-                    </button>
                 </div>
                 <div class="col-lg-1">
                     <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas"
@@ -69,6 +66,27 @@
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Filtreler</h5>
                             <a asp-controller="Listings" asp-action="Index" class="btn btn-link btn-sm text-muted p-0">Temizle</a>
+                        </div>
+
+                        <!-- Near Me Filter -->
+                        <div class="filter-section mb-3 p-3 bg-light rounded border">
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="nearMeToggle" @(Model.Query.UserLat.HasValue ? "checked" : "")>
+                                <label class="form-check-label fw-bold" for="nearMeToggle">Yakınımdaki İlanlar</label>
+                            </div>
+                            <div id="distanceControl" class="@(Model.Query.UserLat.HasValue ? "" : "d-none")">
+                                <label class="form-label small text-muted mb-1">Mesafe (km)</label>
+                                <select asp-for="Query.MaxDistanceKm" class="form-select form-select-sm" id="maxDistanceSelect">
+                                    <option value="">Seçiniz</option>
+                                    <option value="5">5 km</option>
+                                    <option value="10">10 km</option>
+                                    <option value="25">25 km</option>
+                                    <option value="50">50 km</option>
+                                    <option value="100">100 km</option>
+                                    <option value="200">200 km</option>
+                                    <option value="500">500 km</option>
+                                </select>
+                            </div>
                         </div>
 
                         <!-- Price Filter -->
@@ -326,34 +344,85 @@
             });
     });
 
-    // Geolocation Script
-    document.getElementById('btnNearMe')?.addEventListener('click', function() {
-        if (navigator.geolocation) {
-            const icon = this.querySelector('i');
-            const originalClass = icon.className;
-            icon.className = 'spinner-border spinner-border-sm';
-            
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                
-                const url = new URL(window.location.href);
-                url.searchParams.set('Query.UserLat', lat);
-                url.searchParams.set('Query.UserLng', lng);
-                url.searchParams.set('Query.Sort', 'distance');
-                // Optional: set default max distance if not set?
-                // url.searchParams.set('Query.MaxDistanceKm', '50');
-                url.searchParams.delete('Query.Page'); // Reset pagination
-                
-                window.location.href = url.toString();
-            }, function(error) {
-                alert('Konum alınamadı. Lütfen konum izni verdiğinizden emin olun.');
-                console.error(error);
-                icon.className = originalClass;
-            });
-        } else {
-            alert('Tarayıcınız konum servisini desteklemiyor.');
-        }
-    });
+    // Near Me Toggle Logic
+    const nearMeToggle = document.getElementById('nearMeToggle');
+    const distanceControl = document.getElementById('distanceControl');
+    const maxDistanceSelect = document.getElementById('maxDistanceSelect');
+    const userLatInput = document.querySelector('input[name="Query.UserLat"]'); // Sidebar input
+    const userLngInput = document.querySelector('input[name="Query.UserLng"]'); // Sidebar input
+    
+    // Also grab hidden inputs from the main sidebar form to update them directly
+    // Note: The view has multiple forms (top bar, sidebar, mobile). We strictly target sidebar form inputs for submission.
+    // However, asp-for generates same name. We should ensure we update the form we are submitting.
+    // The sidebar form is the one containing the toggle.
+
+    if (nearMeToggle) {
+        nearMeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                // User turned ON "Near Me"
+                if (!navigator.geolocation) {
+                    alert('Tarayıcınız konum servisini desteklemiyor.');
+                    this.checked = false;
+                    return;
+                }
+
+                this.disabled = true; // prevent double clicks
+                document.body.style.cursor = 'wait';
+
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        
+                        // Set inputs in the sidebar form
+                        // Find the form that contains the toggle
+                        const form = this.closest('form');
+                        if (form) {
+                            form.querySelector('input[name="Query.UserLat"]').value = lat;
+                            form.querySelector('input[name="Query.UserLng"]').value = lng;
+                            form.querySelector('input[name="Sort"]').value = 'distance'; // Force sort by distance
+                            
+                            // If no distance selected, default to 50km
+                            const distSelect = form.querySelector('select[name="Query.MaxDistanceKm"]');
+                            if (!distSelect.value) distSelect.value = '50';
+                            
+                            form.submit();
+                        }
+                    },
+                    (error) => {
+                        console.error(error);
+                        alert('Konum alınamadı. Lütfen konum izni verdiğinizden emin olun.');
+                        this.checked = false;
+                        this.disabled = false;
+                        document.body.style.cursor = 'default';
+                        distanceControl.classList.add('d-none');
+                    }
+                );
+            } else {
+                // User turned OFF "Near Me"
+                const form = this.closest('form');
+                if (form) {
+                    form.querySelector('input[name="Query.UserLat"]').value = '';
+                    form.querySelector('input[name="Query.UserLng"]').value = '';
+                     // Optional: Reset sort or keep it? Request says "graceful fallback". 
+                     // Usually better to keep sort or reset to default. Let's reset to default (newest) implies clearing 'distance' sort if set.
+                     if (form.querySelector('input[name="Sort"]').value === 'distance') {
+                         form.querySelector('input[name="Sort"]').value = '';
+                     }
+                    form.querySelector('select[name="Query.MaxDistanceKm"]').value = '';
+                    
+                    form.submit();
+                }
+            }
+        });
+    }
+
+    if (maxDistanceSelect) {
+        maxDistanceSelect.addEventListener('change', function() {
+            if (nearMeToggle.checked) {
+                this.closest('form').submit();
+            }
+        });
+    }
 </script>
 }
