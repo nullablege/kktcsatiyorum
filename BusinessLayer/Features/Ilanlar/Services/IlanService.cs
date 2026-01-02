@@ -523,31 +523,38 @@ namespace BusinessLayer.Features.Ilanlar.Services
             if (string.IsNullOrWhiteSpace(userId))
                 return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
 
-            // Validation logic similar to Create (could abstract this)
+            // Basic Validation
             if (string.IsNullOrWhiteSpace(request.Baslik)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Başlık zorunludur.");
             if (request.Fiyat < 0) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Fiyat 0'dan küçük olamaz.");
+
+             // Duplicate attribute check
+            var duplicateAttr = request.Attributes
+                .GroupBy(x => x.KategoriAlaniId)
+                .FirstOrDefault(g => g.Count() > 1);
+            if (duplicateAttr != null)
+                return Result.Fail(ErrorType.Validation, ErrorCodes.Ilan.DuplicateAttribute, "Aynı alan birden fazla kez gönderilemez.");
 
             var ilan = await _ilanDal.GetForEditAsync(ilanId, userId, ct);
             if (ilan == null)
                 return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı veya erişim yetkiniz yok.");
 
+            var oldSlug = ilan.SeoSlug;
+
             // Check if critical fields changed
-            bool criticalChange = 
+            bool criticalFieldsChanged = 
                 ilan.Baslik != request.Baslik ||
                 ilan.Aciklama != request.Aciklama ||
                 ilan.Fiyat != request.Fiyat ||
                 ilan.KategoriId != request.KategoriId ||
                 ilan.ParaBirimi != request.ParaBirimi;
+            
+            // Check if attributes changed (simplified: assuming any submission is a potential change)
+            // A precise check would compare old vs new values, but clearing and re-adding implies a change process.
+            // For rigorous re-approval, we consider attribute submission as a change if the category is dynamic.
+            bool attributesChanged = true; 
 
-            // Simplified Attribute Change Check: If any attribute is different, assume change.
-            // Complex deep compare is expensive/tricky. 
-            // For now, if attributes are provided, we re-evaluate.
-            // But to avoid unnecessary reset, let's assume if request has attributes, we process them.
-            // If the user didn't change attributes in UI, they might still be sent again.
-            // Ideally we compare content.
-            // Strategy: We will update attributes anyway. If we do, we assume "edit happened".
-
-            // Update Basic Fields
+            // Update Entity Fields
+            ilan.KategoriId = request.KategoriId; // Fix: Ensure category is updated
             ilan.Baslik = request.Baslik.Trim();
             ilan.Aciklama = request.Aciklama.Trim();
             ilan.Fiyat = request.Fiyat;
@@ -566,12 +573,10 @@ namespace BusinessLayer.Features.Ilanlar.Services
             }
 
             // Update Attributes
-            // 1. Remove old values - simplistic approach for MVP
             ilan.AlanDegerleri.Clear();
             
-            // 2. Add new values
             var kategoriAlanlari = await _kategoriAlaniDal.GetListByKategoriAsync(request.KategoriId, includeSecenekler: true, ct);
-            // Validate EAV again
+            
              var eavValidation = ValidateEavAttributes(kategoriAlanlari, request.Attributes);
             if (!eavValidation.IsSuccess)
                 return Result.Fail(eavValidation.Error!.Type, eavValidation.Error.Code, eavValidation.Error.Message);
@@ -585,46 +590,28 @@ namespace BusinessLayer.Features.Ilanlar.Services
                      ilan.AlanDegerleri.Add(deger);
             }
 
-            // Status Logic
+            // Re-approval Logic
             if (ilan.Durum == IlanDurumu.Yayinda)
             {
-                 // Reset to Pending Approval
-                 ilan.Durum = IlanDurumu.OnayBekliyor;
-                 ilan.OnaylayanKullaniciId = null;
-                 ilan.OnayTarihi = null;
-                 // ilan.YayinTarihi = null; // Decided to keep YayinTarihi as original publish date or null it? 
-                                            // User: "YayinTarihi null/koru (senin modele göre)"
-                                            // Let's keep it null to indicate it's not currently live in the "Active" sense if we filter by logic. 
-                                            // But standard is usually: YayinTarihi is when it WAS published. 
-                                            // Let's set it to null to be safe for "OnayBekliyor" queries that might rely on it.
-                 ilan.YayinTarihi = null; 
+                if (criticalFieldsChanged || attributesChanged)
+                {
+                    ilan.Durum = IlanDurumu.OnayBekliyor;
+                    ilan.OnaylayanKullaniciId = null;
+                    ilan.OnayTarihi = null;
+                    ilan.YayinTarihi = null; 
 
-                 await _denetimKaydiService.LogAsync("IlanGuncelleme", "Ilan", ilan.Id.ToString(), 
-                     $"İlan düzenlendi ve tekrar onaya düştü. Eski durum: Yayinda.", 
-                     null, userId, ct);
+                    await _denetimKaydiService.LogAsync("IlanGuncelleme", "Ilan", ilan.Id.ToString(), 
+                        $"İlan düzenlendi ve tekrar onaya düştü. Eski durum: Yayinda.", 
+                        null, userId, ct);
+                }
             }
             else if (ilan.Durum == IlanDurumu.Reddedildi)
             {
-                // Resubmit for approval
                 ilan.Durum = IlanDurumu.OnayBekliyor;
                 ilan.RedNedeni = null;
                  await _denetimKaydiService.LogAsync("IlanGuncelleme", "Ilan", ilan.Id.ToString(), 
                      "Reddedilen ilan düzenlendi ve tekrar onaya gönderildi.", 
                      null, userId, ct);
-            }
-            else
-            {
-                 // Draft or already Pending -> Just update, no status change logic needed usually, 
-                 // but if it was Draft, maybe user wants to Publish? 
-                 // Usually "Edit" on Draft keeps it Draft until "Publish" button. 
-                 // But request says "OnayBekliyor'a düşsün". 
-                 // If it is Draft, we might just keep it Draft unless user explicitly says "Publish".
-                 // BUT, simplifying: If we Edit, we save. User might need a "Publish" action.
-                 // However, prompt implies: "Yayındaki ilan editlenince... tekrar OnayBekliyor".
-                 // It doesn't explicitly say what happens to Draft.
-                 // Typical flow: Edit Draft -> Save (Draft). Publish -> Pending.
-                 // I will KEEP the current status if it is Draft or Pending.
-                 // Unless it was Reddedildi (handled above).
             }
 
             try
@@ -635,6 +622,13 @@ namespace BusinessLayer.Features.Ilanlar.Services
             catch (DbUpdateException ex) when (IsUniqueViolation(ex))
             {
                 return Result.Fail(ErrorType.Conflict, ErrorCodes.Ilan.DuplicateSlug, "Slug çakışması oluştu.");
+            }
+
+            // Cache Invalidation
+            InvalidateListingCaches(oldSlug);
+            if (oldSlug != ilan.SeoSlug)
+            {
+                InvalidateListingCaches(ilan.SeoSlug);
             }
 
             return Result.Success();

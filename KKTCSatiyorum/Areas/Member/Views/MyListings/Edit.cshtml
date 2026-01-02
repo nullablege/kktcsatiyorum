@@ -119,7 +119,7 @@
                                                     {
                                                         foreach (var opt in attr.Secenekler)
                                                         {
-                                                            <!option value="@opt.Id" @(existingVal == opt.Id.ToString() ? "selected" : "")>@opt.Deger</!option>
+                                                            <option value="@opt.Id" selected="@(existingVal == opt.Id.ToString() ? "selected" : null)">@opt.Deger</option>
                                                         }
                                                     }
                                                 </select>
