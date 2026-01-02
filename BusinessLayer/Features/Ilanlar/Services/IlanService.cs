@@ -261,6 +261,21 @@ namespace BusinessLayer.Features.Ilanlar.Services
 
         public async Task<Result<PagedResult<ListingCardDto>>> SearchAsync(ListingSearchQuery query, CancellationToken ct = default)
         {
+            // Location Validation
+            if (query.UserLat.HasValue || query.UserLng.HasValue)
+            {
+                if (query.UserLat.HasValue && (query.UserLat.Value < -90 || query.UserLat.Value > 90))
+                    return Result<PagedResult<ListingCardDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz enlem (latitude) değeri.");
+
+                if (query.UserLng.HasValue && (query.UserLng.Value < -180 || query.UserLng.Value > 180))
+                    return Result<PagedResult<ListingCardDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz boylam (longitude) değeri.");
+            }
+
+            if (query.MaxDistanceKm.HasValue && (query.MaxDistanceKm.Value < 1 || query.MaxDistanceKm.Value > 500))
+            {
+                return Result<PagedResult<ListingCardDto>>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Mesafe filtresi 1-500 km arasında olmalıdır.");
+            }
+
             var result = await _ilanDal.SearchPublicAsync(query, ct);
             return Result<PagedResult<ListingCardDto>>.Success(result);
         }

@@ -25,7 +25,8 @@ namespace KKTCSatiyorum.Controllers
             new SelectListItem("Tarih: Yeniden Eskiye", ""),
             new SelectListItem("Tarih: Eskiden Yeniye", "eski"),
             new SelectListItem("Fiyat: Artan", "fiyat_artan"),
-            new SelectListItem("Fiyat: Azalan", "fiyat_azalan")
+            new SelectListItem("Fiyat: Azalan", "fiyat_azalan"),
+            new SelectListItem("Mesafe: En Yakın", "distance")
         };
 
         public ListingsController(
@@ -43,6 +44,11 @@ namespace KKTCSatiyorum.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Index([FromQuery] ListingSearchQuery query, CancellationToken ct)
         {
+            if (query.Sort == "distance")
+            {
+                query = query with { SortByDistance = true };
+            }
+
             var kategoriler = await _kategoriService.GetForDropdownAsync(ct);
             var kategoriOptions = (kategoriler.Data ?? Enumerable.Empty<BusinessLayer.Features.Kategoriler.DTOs.KategoriDropdownItemDto>())
                 .Select(k => new SelectListItem(k.Ad, k.Id.ToString()));

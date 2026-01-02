@@ -98,37 +98,89 @@ namespace DataAccessLayer.Concrete
                 }
             }
 
-            // Count before pagination
-            var totalCount = await q.CountAsync(ct);
+            // --- Distance Logic ---
+            var userLat = query.UserLat.HasValue ? (double)query.UserLat.Value : (double?)null;
+            var userLng = query.UserLng.HasValue ? (double)query.UserLng.Value : (double?)null;
+            
+            // Optimization: Bounding Box pre-filter
+            if (query.MaxDistanceKm.HasValue && userLat.HasValue && userLng.HasValue)
+            {
+                var maxDist = query.MaxDistanceKm.Value;
+                // 1 degree latitude ~= 111 km
+                var latDiff = maxDist / 111.0;
+                var latMin = userLat.Value - latDiff;
+                var latMax = userLat.Value + latDiff;
+                
+                var cosLat = Math.Cos(userLat.Value * Math.PI / 180.0);
+                var lonDiff = maxDist / (111.0 * Math.Abs(cosLat) + 0.001); // avoid div by zero
+
+                var lonMin = userLng.Value - lonDiff;
+                var lonMax = userLng.Value + lonDiff;
+
+                q = q.Where(x => x.Enlem >= (decimal)latMin && x.Enlem <= (decimal)latMax &&
+                                 x.Boylam >= (decimal)lonMin && x.Boylam <= (decimal)lonMax);
+            }
+            
+            // Projection with Distance
+            var queryWithDist = q.Select(x => new 
+            {
+                Data = x,
+                DistanceKm = (userLat.HasValue && userLng.HasValue && x.Enlem.HasValue && x.Boylam.HasValue) 
+                    ? 6371 * Math.Acos(
+                        Math.Cos(userLat.Value * Math.PI / 180.0) * 
+                        Math.Cos((double)x.Enlem.Value * Math.PI / 180.0) * 
+                        Math.Cos((double)x.Boylam.Value * Math.PI / 180.0 - userLng.Value * Math.PI / 180.0) + 
+                        Math.Sin(userLat.Value * Math.PI / 180.0) * 
+                        Math.Sin((double)x.Enlem.Value * Math.PI / 180.0)
+                      )
+                    : (double?)null
+            });
+
+            // Apply exact MaxDistance filter
+            if (query.MaxDistanceKm.HasValue && userLat.HasValue && userLng.HasValue)
+            {
+                queryWithDist = queryWithDist.Where(x => x.DistanceKm.HasValue && x.DistanceKm <= query.MaxDistanceKm.Value);
+            }
+
+            // Total Count
+            var totalCount = await queryWithDist.CountAsync(ct);
 
             // Sorting
-            q = query.Sort?.ToLowerInvariant() switch
+            if (query.SortByDistance && userLat.HasValue && userLng.HasValue)
             {
-                "fiyat_artan" => q.OrderBy(x => x.Fiyat),
-                "fiyat_azalan" => q.OrderByDescending(x => x.Fiyat),
-                "eski" => q.OrderBy(x => x.OlusturmaTarihi),
-                _ => q.OrderByDescending(x => x.OlusturmaTarihi)
-            };
+                queryWithDist = queryWithDist.OrderBy(x => x.DistanceKm);
+            }
+            else
+            {
+                queryWithDist = query.Sort?.ToLowerInvariant() switch
+                {
+                    "fiyat_artan" => queryWithDist.OrderBy(x => x.Data.Fiyat),
+                    "fiyat_azalan" => queryWithDist.OrderByDescending(x => x.Data.Fiyat),
+                    "eski" => queryWithDist.OrderBy(x => x.Data.OlusturmaTarihi),
+                    _ => queryWithDist.OrderByDescending(x => x.Data.OlusturmaTarihi)
+                };
+            }
 
             // Pagination
             var page = Math.Max(1, query.Page);
             var pageSize = Math.Clamp(query.PageSize, 1, 50);
             var skip = (page - 1) * pageSize;
 
-            var items = await q
+            var items = await queryWithDist
                 .Skip(skip)
                 .Take(pageSize)
                 .Select(x => new ListingCardDto(
-                    x.Id,
-                    x.SeoSlug,
-                    x.Baslik,
-                    x.Fiyat,
-                    x.ParaBirimi,
-                    x.Sehir,
-                    x.Fotografler.Where(f => f.KapakMi).Select(f => f.DosyaYolu).FirstOrDefault() 
-                        ?? x.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault(),
-                    x.OlusturmaTarihi,
-                    x.Kategori.Ad
+                    x.Data.Id,
+                    x.Data.SeoSlug,
+                    x.Data.Baslik,
+                    x.Data.Fiyat,
+                    x.Data.ParaBirimi,
+                    x.Data.Sehir,
+                    x.Data.Fotografler.Where(f => f.KapakMi).Select(f => f.DosyaYolu).FirstOrDefault() 
+                        ?? x.Data.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault(),
+                    x.Data.OlusturmaTarihi,
+                    x.Data.Kategori.Ad,
+                    x.DistanceKm
                 ))
                 .ToListAsync(ct);
 

@@ -11,5 +11,11 @@ namespace EntityLayer.DTOs.Public
         public int Page { get; init; } = 1;
         public int PageSize { get; init; } = 12;
         public Dictionary<int, string>? EavFilters { get; init; }
+        
+        // Location-based search
+        public decimal? UserLat { get; init; }
+        public decimal? UserLng { get; init; }
+        public int? MaxDistanceKm { get; init; }
+        public bool SortByDistance { get; init; }
     }
 }

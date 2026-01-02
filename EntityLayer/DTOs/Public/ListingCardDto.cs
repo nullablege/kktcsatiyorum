@@ -11,6 +11,7 @@ namespace EntityLayer.DTOs.Public
         string? Sehir,
         string? KapakFotoUrl,
         DateTime OlusturmaTarihi,
-        string? KategoriAd = null
+        string? KategoriAd = null,
+        double? DistanceKm = null
     );
 }

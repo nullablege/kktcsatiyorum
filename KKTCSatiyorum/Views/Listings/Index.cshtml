@@ -25,9 +25,12 @@
                 <div class="col-6 col-lg-2">
                     <input asp-for="Query.Sehir" class="form-control" placeholder="Şehir">
                 </div>
-                <div class="col-lg-2">
-                    <button class="btn btn-primary w-100" type="submit">
-                        <i class="bi bi-search me-1"></i> Ara
+                <div class="col-lg-2 d-flex gap-2">
+                    <button class="btn btn-primary flex-grow-1" type="submit">
+                        <i class="bi bi-search"></i> Ara
+                    </button>
+                    <button class="btn btn-outline-primary" type="button" id="btnNearMe" title="Yakınımdaki İlanlar">
+                        <i class="bi bi-geo-alt-fill"></i>
                     </button>
                 </div>
                 <div class="col-lg-1">
@@ -40,6 +43,9 @@
             
             <!-- Hidden inputs for current filters -->
             <input type="hidden" asp-for="Query.Sort">
+            <input type="hidden" asp-for="Query.UserLat" id="userLat">
+            <input type="hidden" asp-for="Query.UserLng" id="userLng">
+            <input type="hidden" asp-for="Query.MaxDistanceKm">
         </form>
     </div>
 </div>
@@ -56,6 +62,9 @@
                         <input type="hidden" name="KategoriId" value="@Model.Query.KategoriId">
                         <input type="hidden" name="Sehir" value="@Model.Query.Sehir">
                         <input type="hidden" name="Sort" value="@Model.Query.Sort">
+                        <input type="hidden" asp-for="Query.UserLat">
+                        <input type="hidden" asp-for="Query.UserLng">
+                        <input type="hidden" asp-for="Query.MaxDistanceKm">
                         
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Filtreler</h5>
@@ -100,6 +109,9 @@
                             <input type="hidden" asp-for="Query.Sehir">
                             <input type="hidden" asp-for="Query.MinFiyat">
                             <input type="hidden" asp-for="Query.MaxFiyat">
+                            <input type="hidden" asp-for="Query.UserLat">
+                            <input type="hidden" asp-for="Query.UserLng">
+                            <input type="hidden" asp-for="Query.MaxDistanceKm">
                             <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
                             </select>
                         </form>
@@ -138,6 +150,10 @@
                                             <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
                                             <div class="product-location">
                                                 <i class="bi bi-geo-alt"></i> @(item.Sehir ?? "KKTC")
+                                                @if (item.DistanceKm.HasValue)
+                                                {
+                                                    <span class="text-primary small ms-1">(@item.DistanceKm.Value.ToString("N1") km)</span>
+                                                }
                                             </div>
                                             <div class="d-flex justify-content-between align-items-center mt-2">
                                                 <span class="product-date">@item.OlusturmaTarihi.ToString("dd MMM yyyy")</span>
@@ -220,6 +236,9 @@
         <form method="get" asp-controller="Listings" asp-action="Index">
             <input type="hidden" asp-for="Query.Q">
             <input type="hidden" asp-for="Query.Sort">
+            <input type="hidden" asp-for="Query.UserLat">
+            <input type="hidden" asp-for="Query.UserLng">
+            <input type="hidden" asp-for="Query.MaxDistanceKm">
             
             <div class="filter-section">
                 <h6>Kategori</h6>
@@ -255,6 +274,7 @@
 @section Scripts {
 <script>
     document.getElementById('kategoriSelect')?.addEventListener('change', function() {
+        // ... existing code ...
         const kategoriId = this.value;
         const container = document.getElementById('dynamicFilters');
         
@@ -304,6 +324,36 @@
                     container.appendChild(section);
                 });
             });
+    });
+
+    // Geolocation Script
+    document.getElementById('btnNearMe')?.addEventListener('click', function() {
+        if (navigator.geolocation) {
+            const icon = this.querySelector('i');
+            const originalClass = icon.className;
+            icon.className = 'spinner-border spinner-border-sm';
+            
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                const url = new URL(window.location.href);
+                url.searchParams.set('Query.UserLat', lat);
+                url.searchParams.set('Query.UserLng', lng);
+                url.searchParams.set('Query.Sort', 'distance');
+                // Optional: set default max distance if not set?
+                // url.searchParams.set('Query.MaxDistanceKm', '50');
+                url.searchParams.delete('Query.Page'); // Reset pagination
+                
+                window.location.href = url.toString();
+            }, function(error) {
+                alert('Konum alınamadı. Lütfen konum izni verdiğinizden emin olun.');
+                console.error(error);
+                icon.className = originalClass;
+            });
+        } else {
+            alert('Tarayıcınız konum servisini desteklemiyor.');
+        }
     });
 </script>
 }

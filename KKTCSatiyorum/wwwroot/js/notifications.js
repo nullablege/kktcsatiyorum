@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 .build();
 
             connection.on("notificationReceived", function (data) {
-                console.log("Bildirim yollandı:", data);
                 incrementBadge();
             });
 
