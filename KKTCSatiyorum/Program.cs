@@ -38,7 +38,28 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
 
 
-//Automapper
+// Moderation Services
+builder.Services.Configure<KKTCSatiyorum.Integrations.Moderation.GeminiOptions>(builder.Configuration.GetSection("Gemini"));
+
+var geminiSection = builder.Configuration.GetSection("Gemini");
+var geminiEnabled = geminiSection.GetValue<bool>("Enabled");
+var geminiApiKey = geminiSection.GetValue<string>("ApiKey");
+
+if (geminiEnabled && !string.IsNullOrEmpty(geminiApiKey))
+{
+    builder.Services.AddHttpClient<IContentModerationClient, KKTCSatiyorum.Integrations.Moderation.GeminiModerationClient>()
+        .ConfigureHttpClient((sp, client) => 
+        {
+            var options = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<KKTCSatiyorum.Integrations.Moderation.GeminiOptions>>().Value;
+            client.Timeout = TimeSpan.FromSeconds(options.TimeoutSeconds);
+        });
+}
+else
+{
+    builder.Services.AddScoped<IContentModerationClient, KKTCSatiyorum.Integrations.Moderation.NoOpModerationClient>();
+}
+
+// Automapper
 builder.Services.AddAutoMapper(
     typeof(AccountProfile).Assembly
 );

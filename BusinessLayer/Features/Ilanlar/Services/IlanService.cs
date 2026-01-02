@@ -47,7 +47,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
             IMapper mapper,
             INotificationPublisher notificationPublisher,
             IDenetimKaydiService denetimKaydiService,
-            ILogger<IlanService> logger)
+            ILogger<IlanService> logger,
+            IContentModerationClient moderationClient)
         {
             _ilanDal = ilanDal;
             _bildirimDal = bildirimDal;
@@ -59,12 +60,26 @@ namespace BusinessLayer.Features.Ilanlar.Services
             _notificationPublisher = notificationPublisher;
             _denetimKaydiService = denetimKaydiService;
             _logger = logger;
+            _moderationClient = moderationClient;
         }
+
+        private readonly IContentModerationClient _moderationClient;
 
         public async Task<Result<int>> CreateAsync(CreateIlanRequest request, string userId, CancellationToken ct = default)
         {
             if (string.IsNullOrWhiteSpace(userId))
                 return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
+
+            // Moderation Check
+            var moderationDecision = await _moderationClient.ModerateListingAsync(request.Baslik, request.Aciklama, ct);
+            if (!moderationDecision.IsAllowed)
+            {
+                await _denetimKaydiService.LogAsync("ModerationBlocked", "Ilan", "0", 
+                    $"İlan oluşturma moderasyona takıldı. Sebep: {moderationDecision.ReasonCode} - {moderationDecision.ReasonMessage}", 
+                    null, userId, ct);
+
+                return Result<int>.Fail(ErrorType.Validation, ErrorCodes.Moderation.Blocked, $"İlan metni moderasyona takıldı: {moderationDecision.ReasonMessage}");
+            }
 
             var validationResult = await _createValidator.ValidateAsync(request, ct);
             if (!validationResult.IsValid)
@@ -541,6 +556,22 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 return Result.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı veya erişim yetkiniz yok.");
 
             var oldSlug = ilan.SeoSlug;
+
+            // Content Moderation (Only if title/description changed)
+            if (ilan.Baslik != request.Baslik || ilan.Aciklama != request.Aciklama)
+            {
+                 var moderationDecision = await _moderationClient.ModerateListingAsync(request.Baslik, request.Aciklama, ct);
+                 if (!moderationDecision.IsAllowed)
+                 {
+                     await _denetimKaydiService.LogAsync("ModerationBlocked", "Ilan", ilan.Id.ToString(), 
+                         $"İlan güncelleme moderasyona takıldı. Sebep: {moderationDecision.ReasonCode} - {moderationDecision.ReasonMessage}", 
+                         null, userId, ct);
+
+                     return Result.Fail(ErrorType.Validation, ErrorCodes.Moderation.Blocked, $"İlan metni moderasyona takıldı: {moderationDecision.ReasonMessage}");
+                 }
+            }
+
+            // Check if critical fields changed
 
             // Check if critical fields changed
             bool criticalFieldsChanged = 

@@ -53,5 +53,11 @@ namespace BusinessLayer.Common.Constants
             public const string CommitFail = "commit_failed";
             public const string Forbidden = "forbidden";
         }
+
+        public static class Moderation
+        {
+            public const string Blocked = "moderation_blocked";
+            public const string Unavailable = "moderation_unavailable";
+        }
     }
 }
