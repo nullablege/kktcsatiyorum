@@ -74,6 +74,11 @@ namespace BusinessLayer.Features.Ilanlar.Services
             var moderationDecision = await _moderationClient.ModerateListingAsync(request.Baslik, request.Aciklama, ct);
             if (!moderationDecision.IsAllowed)
             {
+                if (moderationDecision.ReasonCode == "UNAVAILABLE")
+                {
+                    return Result<int>.Fail(ErrorType.Conflict, ErrorCodes.Moderation.Unavailable, moderationDecision.ReasonMessage ?? "Moderasyon servisine ulaşılamıyor.");
+                }
+
                 await _denetimKaydiService.LogAsync("ModerationBlocked", "Ilan", "0", 
                     $"İlan oluşturma moderasyona takıldı. Sebep: {moderationDecision.ReasonCode} - {moderationDecision.ReasonMessage}", 
                     null, userId, ct);
@@ -563,6 +568,11 @@ namespace BusinessLayer.Features.Ilanlar.Services
                  var moderationDecision = await _moderationClient.ModerateListingAsync(request.Baslik, request.Aciklama, ct);
                  if (!moderationDecision.IsAllowed)
                  {
+                     if (moderationDecision.ReasonCode == "UNAVAILABLE")
+                     {
+                         return Result.Fail(ErrorType.Conflict, ErrorCodes.Moderation.Unavailable, moderationDecision.ReasonMessage ?? "Moderasyon servisine ulaşılamıyor.");
+                     }
+
                      await _denetimKaydiService.LogAsync("ModerationBlocked", "Ilan", ilan.Id.ToString(), 
                          $"İlan güncelleme moderasyona takıldı. Sebep: {moderationDecision.ReasonCode} - {moderationDecision.ReasonMessage}", 
                          null, userId, ct);

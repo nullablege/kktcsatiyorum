@@ -28,9 +28,9 @@ namespace KKTCSatiyorum.Integrations.Moderation
         public async Task<ModerationDecision> ModerateListingAsync(string title, string description, CancellationToken ct)
         {
             // Fallback check
-            if (string.IsNullOrWhiteSpace(_options.ApiKey))
+            if (string.IsNullOrWhiteSpace(_options.ApiKey) || string.IsNullOrWhiteSpace(_options.Endpoint))
             {
-                _logger.LogWarning("Gemini API Key is missing. Skipping moderation.");
+                _logger.LogWarning("Gemini configuration missing (ApiKey or Endpoint). Skipping moderation.");
                 return ModerationDecision.Allowed();
             }
 
@@ -75,19 +75,10 @@ Respond ONLY with a valid JSON object in the following format:
                 if (!response.IsSuccessStatusCode)
                 {
                     _logger.LogError("Gemini API call failed with status code: {StatusCode}", response.StatusCode);
-                    return ModerationDecision.Allowed(); // Open on error principle, or Block based on policy. User asked for "Unavailable" error code but also said "fallback allow". Reviewing requirement: "Moderasyon servisi down -> 'Şu an moderasyon servisine ulaşılamıyor' gibi kontrollü mesaj". So I should probably return blocked/fail or a specific error?
-                    // Requirement says: "Fallback (çok önemli): Enabled=false veya ApiKey boşsa NoOpModerationClient kullan (her şeye allow)."
-                    // Requirement also says: "Timeout + hata yönetimi olacak (servis down olursa kontrollü mesaj)"
-                    // And: "Uygunsuz metin -> create/edit engelleniyor. Uygun metin -> akış bozulmuyor. Moderasyon servisi down -> 'Şu an moderasyon servisine ulaşılamıyor' gibi kontrollü mesaj"
-                    
-                    // So if service is down (HTTP error), I should probably throwing or returning a decision that causes the controller to show a message.
-                    // Let's throw a specific exception or return a decision with 'Unavailable' reason if strictly following "controlled message".
-                    // However, to keep it simple and safe for now, if it fails, I might block it temporarily saying service unavailable.
-                    
                     return new ModerationDecision 
                     { 
                          IsAllowed = false, 
-                         ReasonCode = "SERVICE_UNAVAILABLE", 
+                         ReasonCode = "UNAVAILABLE", 
                          ReasonMessage = "Moderasyon servisine ulaşılamıyor." 
                     };
                 }
@@ -95,7 +86,8 @@ Respond ONLY with a valid JSON object in the following format:
                 var responseString = await response.Content.ReadAsStringAsync(ct);
                 var geminiResponse = JsonSerializer.Deserialize<GeminiResponse>(responseString);
                 
-                var textResponse = geminiResponse?.Candidates?[0]?.Content?.Parts?[0]?.Text;
+                // Safe access using LINQ FirstOrDefault
+                var textResponse = geminiResponse?.Candidates?.FirstOrDefault()?.Content?.Parts?.FirstOrDefault()?.Text;
 
                 if (string.IsNullOrWhiteSpace(textResponse))
                 {
@@ -113,11 +105,10 @@ Respond ONLY with a valid JSON object in the following format:
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error calling Gemini API");
-                 // If actual exception (timeout etc), return unavailable so user knows.
                 return new ModerationDecision 
                 { 
                         IsAllowed = false, 
-                        ReasonCode = "SERVICE_ERROR", 
+                        ReasonCode = "UNAVAILABLE", 
                         ReasonMessage = "Moderasyon servisi hatası." 
                 };
             }
