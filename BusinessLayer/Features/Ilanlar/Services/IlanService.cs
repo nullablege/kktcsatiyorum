@@ -527,8 +527,10 @@ namespace BusinessLayer.Features.Ilanlar.Services
             if (string.IsNullOrWhiteSpace(request.Baslik)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Başlık zorunludur.");
             if (request.Fiyat < 0) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Fiyat 0'dan küçük olamaz.");
 
+            var inputAttributes = request.Attributes ?? new List<AttributeValueInput>();
+
              // Duplicate attribute check
-            var duplicateAttr = request.Attributes
+            var duplicateAttr = inputAttributes
                 .GroupBy(x => x.KategoriAlaniId)
                 .FirstOrDefault(g => g.Count() > 1);
             if (duplicateAttr != null)
@@ -548,13 +550,42 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.KategoriId != request.KategoriId ||
                 ilan.ParaBirimi != request.ParaBirimi;
             
-            // Check if attributes changed (simplified: assuming any submission is a potential change)
-            // A precise check would compare old vs new values, but clearing and re-adding implies a change process.
-            // For rigorous re-approval, we consider attribute submission as a change if the category is dynamic.
-            bool attributesChanged = true; 
+            // Check if attributes changed
+            bool attributesChanged = false;
+            // First check count mismatch (assuming Category didn't change, forcing clear/rewrite logic handled by ilan.KategoriId check implicitly, but explicit here is safer)
+            // If category matches, we compare values. If category changed, attributesChanged is implicitly true/irrelevant as criticalFieldsChanged is true.
+            // But let's calculate it correctly for completeness.
+            if (ilan.KategoriId != request.KategoriId)
+            {
+                attributesChanged = true; // Category change implies attributes change
+            }
+            else
+            {
+                // Same category check for value diffs
+                if (ilan.AlanDegerleri.Count != inputAttributes.Count)
+                {
+                    attributesChanged = true;
+                }
+                else
+                {
+                    foreach (var inputAttr in inputAttributes)
+                    {
+                        var existingAttr = ilan.AlanDegerleri.FirstOrDefault(a => a.KategoriAlaniId == inputAttr.KategoriAlaniId);
+                        // Compare normalized strings (treat null and empty as same to avoid false positives)
+                        var existingVal = existingAttr != null ? GetRawValue(existingAttr) : null;
+                        var newVal = inputAttr.Value;
+
+                        if ((existingVal ?? "") != (newVal ?? ""))
+                        {
+                            attributesChanged = true;
+                            break;
+                        }
+                    }
+                }
+            }
 
             // Update Entity Fields
-            ilan.KategoriId = request.KategoriId; // Fix: Ensure category is updated
+            ilan.KategoriId = request.KategoriId;
             ilan.Baslik = request.Baslik.Trim();
             ilan.Aciklama = request.Aciklama.Trim();
             ilan.Fiyat = request.Fiyat;
@@ -577,11 +608,11 @@ namespace BusinessLayer.Features.Ilanlar.Services
             
             var kategoriAlanlari = await _kategoriAlaniDal.GetListByKategoriAsync(request.KategoriId, includeSecenekler: true, ct);
             
-             var eavValidation = ValidateEavAttributes(kategoriAlanlari, request.Attributes);
+             var eavValidation = ValidateEavAttributes(kategoriAlanlari, inputAttributes);
             if (!eavValidation.IsSuccess)
                 return Result.Fail(eavValidation.Error!.Type, eavValidation.Error.Code, eavValidation.Error.Message);
 
-            foreach (var attr in request.Attributes)
+            foreach (var attr in inputAttributes)
             {
                  var alan = kategoriAlanlari.FirstOrDefault(a => a.Id == attr.KategoriAlaniId);
                  if (alan == null) continue;
