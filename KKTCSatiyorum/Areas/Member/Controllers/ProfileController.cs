@@ -27,7 +27,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             if (string.IsNullOrEmpty(userId)) return RedirectToAction("Login", "Account", new { area = "" });
 
             var result = await _memberService.GetMyProfileAsync(userId);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Data == null)
             {
                 return NotFound();
             }

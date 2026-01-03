@@ -29,7 +29,7 @@ namespace KKTCSatiyorum.Controllers
         // Ýlan onaylama
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> IlanOnayla(int ilanId)
+        public IActionResult IlanOnayla(int ilanId)
         {
             // Ýlaný onayla
            // Domaýn ýcerýsýne alacagýz
@@ -41,7 +41,7 @@ namespace KKTCSatiyorum.Controllers
         // Ýlan reddetme
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> IlanReddet(int ilanId, string redNedeni)
+        public IActionResult IlanReddet(int ilanId, string redNedeni)
         {
             // Ýlaný reddet
             // Domaýn ýcerýsýne alacagýz
@@ -68,7 +68,7 @@ namespace KKTCSatiyorum.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Policy = "AdminOnly")]
-        public async Task<IActionResult> KullaniciAskiyaAl(string kullaniciId, DateTime bitisTarihi)
+        public IActionResult KullaniciAskiyaAl(string kullaniciId, DateTime bitisTarihi)
         {
             // Kullanýcýyý askýya al
             // Domaýn ýcerýsýne alacagýz

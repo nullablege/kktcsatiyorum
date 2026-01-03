@@ -64,7 +64,7 @@ namespace DataAccessLayer.Concrete
                     Baslik = x.Ilan.Baslik,
                     SeoSlug = x.Ilan.SeoSlug,
                     Fiyat = x.Ilan.Fiyat,
-                    Sehir = x.Ilan.Sehir,
+                    Sehir = x.Ilan.Sehir ?? string.Empty,
                     OlusturmaTarihi = x.Ilan.OlusturmaTarihi,
                     KapakFotoUrl = x.Ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => f.DosyaYolu).FirstOrDefault(),
                     KategoriAdi = x.Ilan.Kategori.Ad

@@ -81,7 +81,7 @@ namespace KKTCSatiyorum.Controllers
         public async Task<IActionResult> Detail(string slug, CancellationToken ct)
         {
             var result = await _ilanService.GetPublicDetailBySlugAsync(slug, ct);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Data == null)
             {
                 return NotFound();
             }
@@ -106,7 +106,7 @@ namespace KKTCSatiyorum.Controllers
         public async Task<IActionResult> GetFilters(int kategoriId, CancellationToken ct)
         {
             var result = await _kategoriAlaniService.GetListForFormAsync(kategoriId, ct);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Data == null)
             {
                 return Json(new List<object>());
             }

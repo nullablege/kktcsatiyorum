@@ -9,7 +9,7 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
     public sealed record KategoriDropdownItemDto
     {
         public int Id { get; set; }
-        public string Ad { get; set; }
+        public string Ad { get; set; } = string.Empty;
         public int? UstKategoriId { get; set; }
         public int SiraNo { get; set; }
 

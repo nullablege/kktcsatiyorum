@@ -11,8 +11,8 @@ namespace BusinessLayer.Features.Kategoriler.DTOs
     {
         public int Id { get; set; }
        
-        public string Ad { get; set; }
-        public string SeoSlug { get; set; }
+        public string Ad { get; set; } = string.Empty;
+        public string SeoSlug { get; set; } = string.Empty;
         public int? UstKategoriId { get; set; }
         public int SiraNo { get; set; }
         public bool AktifMi { get; set; }

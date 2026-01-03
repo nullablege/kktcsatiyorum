@@ -4,7 +4,7 @@ namespace KKTCSatiyorum.Areas.Admin.Controllers
 {
     public class DashboardController : AdminBaseController
     {
-        public IActionResult Index()
+        public new IActionResult Index()
         {
             return View();
         }

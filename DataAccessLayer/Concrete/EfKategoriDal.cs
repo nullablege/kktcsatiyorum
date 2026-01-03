@@ -16,7 +16,7 @@ namespace DataAccessLayer.Concrete
         {
         }
 
-        public async Task<Kategori> GetKategoriByIdWithOzelliklerAsync(int id, CancellationToken ct = default)
+        public async Task<Kategori?> GetKategoriByIdWithOzelliklerAsync(int id, CancellationToken ct = default)
         {
             return await _context.Kategoriler
                                  .Include(x => x.UstKategori)

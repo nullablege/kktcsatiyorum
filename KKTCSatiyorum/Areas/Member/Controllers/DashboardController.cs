@@ -28,7 +28,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
             }
 
             var result = await _memberService.GetDashboardStatsAsync(userId);
-            if (!result.IsSuccess)
+            if (!result.IsSuccess || result.Data == null)
             {
                 return View(new DashboardIndexViewModel());
             }
