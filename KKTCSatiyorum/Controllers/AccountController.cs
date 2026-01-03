@@ -69,25 +69,31 @@ namespace KKTCSatiyorum.Controllers
 
             var username = user.UserName ?? user.Email;
             var result = await _signInManager.PasswordSignInAsync(username!, model.Password, model.RememberMe, lockoutOnFailure: true);
-
             if (result.Succeeded)
             {
-                // Son giriş tarihini güncelle
+                // Son giriŸ tarihini gncelle
                 user.SonGirisTarihi = DateTime.UtcNow;
                 await _userManager.UpdateAsync(user);
 
-                _logger.LogInformation("Kullanıcı giriş yaptı: {Email}", model.Email);
+                _logger.LogInformation("Kullanc giriŸ yapt: {Email}", model.Email);
 
                 if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 {
                     return Redirect(returnUrl);
                 }
-                else
+
+                if (await _userManager.IsInRoleAsync(user, RoleNames.Admin))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Home", new { area = "Admin" });
                 }
+
+                if (await _userManager.IsInRoleAsync(user, RoleNames.User))
+                {
+                    return RedirectToAction("Index", "Dashboard", new { area = "Member" });
+                }
+
+                return RedirectToAction("Index", "Home");
             }
-            
             if (result.IsLockedOut)
             {
                 _logger.LogWarning("Kullanıcı hesabı kilitlendi: {Email}", model.Email);
@@ -132,7 +138,7 @@ namespace KKTCSatiyorum.Controllers
                 _logger.LogInformation("Yeni kullanıcı oluşturuldu: {Email}", user.Email);
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard", new { area = "Member" });
             }
 
             foreach (var error in result.Errors)

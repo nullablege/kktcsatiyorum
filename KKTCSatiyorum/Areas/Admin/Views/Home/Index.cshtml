@@ -1,4 +1,4 @@
-ï»¿
+
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -10,7 +10,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="mb-1">Dashboard</h3>
-            <p class="text-muted mb-0">HoÅŸ geldin, Admin! BugÃ¼n 13 AralÄ±k 2024</p>
+            <p class="text-muted mb-0">Hoþ geldin, Admin! Bugün 13 Aralýk 2024</p>
         </div>
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
@@ -18,7 +18,12 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
                 <li><a class="dropdown-item" href="#">Profil</a></li>
-                <li><a class="dropdown-item text-danger" href="../login.html">Ã‡Ä±kÄ±ÅŸ</a></li>
+                <li>
+    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
+        @Html.AntiForgeryToken()
+        <button type="submit" class="dropdown-item text-danger">Cikis</button>
+    </form>
+</li>
             </ul>
         </div>
     </div>
@@ -29,7 +34,7 @@
             <div class="stat-card">
                 <div class="stat-icon primary"><i class="bi bi-people"></i></div>
                 <div class="stat-number">12.458</div>
-                <div class="stat-label">Toplam KullanÄ±cÄ±</div>
+                <div class="stat-label">Toplam Kullanýcý</div>
                 <small class="text-success"><i class="bi bi-arrow-up"></i> +124 bu hafta</small>
             </div>
         </div>
@@ -37,7 +42,7 @@
             <div class="stat-card">
                 <div class="stat-icon success"><i class="bi bi-megaphone"></i></div>
                 <div class="stat-number">45.892</div>
-                <div class="stat-label">Toplam Ä°lan</div>
+                <div class="stat-label">Toplam Ýlan</div>
                 <small class="text-success"><i class="bi bi-arrow-up"></i> +342 bu hafta</small>
             </div>
         </div>
@@ -46,15 +51,15 @@
                 <div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div>
                 <div class="stat-number">12</div>
                 <div class="stat-label">Bekleyen Onay</div>
-                <a href="moderation.html" class="small text-primary">Ä°ncele â†’</a>
+                <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="small text-primary">Ýncele ›</a>
             </div>
         </div>
         <div class="col-sm-6 col-xl-3">
             <div class="stat-card">
                 <div class="stat-icon danger"><i class="bi bi-exclamation-triangle"></i></div>
                 <div class="stat-number">3</div>
-                <div class="stat-label">Åžikayet Edilen</div>
-                <a href="#" class="small text-primary">Ä°ncele â†’</a>
+                <div class="stat-label">Þikayet Edilen</div>
+                <a href="#" class="small text-primary">Ýncele ›</a>
             </div>
         </div>
     </div>
@@ -64,11 +69,11 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Ä°lan & KullanÄ±cÄ± Ä°statistikleri</h5>
+                    <h5 class="mb-0">Ýlan & Kullanýcý Ýstatistikleri</h5>
                     <select class="form-select form-select-sm" style="width:auto;">
-                        <option>Son 7 GÃ¼n</option>
-                        <option selected>Son 30 GÃ¼n</option>
-                        <option>Son 90 GÃ¼n</option>
+                        <option>Son 7 Gün</option>
+                        <option selected>Son 30 Gün</option>
+                        <option>Son 90 Gün</option>
                     </select>
                 </div>
                 <div class="card-body">
@@ -81,24 +86,24 @@
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">HÄ±zlÄ± Ä°ÅŸlemler</h5>
+                    <h5 class="mb-0">Hýzlý Ýþlemler</h5>
                 </div>
                 <div class="card-body">
-                    <a href="moderation.html" class="btn btn-warning w-100 mb-2">
+                    <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="btn btn-warning w-100 mb-2">
                         <i class="bi bi-shield-check me-2"></i>Onay Havuzu (12)
                     </a>
-                    <a href="categories.html" class="btn btn-outline-primary w-100 mb-2">
+                    <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="btn btn-outline-primary w-100 mb-2">
                         <i class="bi bi-folder-plus me-2"></i>Kategori Ekle
                     </a>
                     <a href="#" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-file-earmark-text me-2"></i>Rapor OluÅŸtur
+                        <i class="bi bi-file-earmark-text me-2"></i>Rapor Oluþtur
                     </a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Kategori DaÄŸÄ±lÄ±mÄ±</h5>
+                    <h5 class="mb-0">Kategori Daðýlýmý</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="categoryChart" height="200"></canvas>
@@ -112,7 +117,7 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Son Eklenen Ä°lanlar</h5>
+                    <h5 class="mb-0">Son Eklenen Ýlanlar</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
@@ -121,7 +126,7 @@
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
                                 <strong>2021 BMW 320i M Sport</strong>
-                                <div class="small text-muted">Mehmet Y. â€¢ 10 dk Ã¶nce</div>
+                                <div class="small text-muted">Mehmet Y. • 10 dk önce</div>
                             </div>
                             <span class="badge bg-warning">Bekliyor</span>
                         </div>
@@ -129,19 +134,19 @@
                             <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&h=40&fit=crop"
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
-                                <strong>3+1 Deniz ManzaralÄ± Daire</strong>
-                                <div class="small text-muted">AyÅŸe K. â€¢ 25 dk Ã¶nce</div>
+                                <strong>3+1 Deniz Manzaralý Daire</strong>
+                                <div class="small text-muted">Ayþe K. • 25 dk önce</div>
                             </div>
-                            <span class="badge bg-success">OnaylÄ±</span>
+                            <span class="badge bg-success">Onaylý</span>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=60&h=40&fit=crop"
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
                                 <strong>iPhone 15 Pro Max</strong>
-                                <div class="small text-muted">Ali M. â€¢ 1 saat Ã¶nce</div>
+                                <div class="small text-muted">Ali M. • 1 saat önce</div>
                             </div>
-                            <span class="badge bg-success">OnaylÄ±</span>
+                            <span class="badge bg-success">Onaylý</span>
                         </div>
                     </div>
                 </div>
@@ -151,7 +156,7 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Son KayÄ±t Olan KullanÄ±cÄ±lar</h5>
+                    <h5 class="mb-0">Son Kayýt Olan Kullanýcýlar</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
@@ -163,7 +168,7 @@
                                 <strong>Zeynep Kaya</strong>
                                 <div class="small text-muted">zeynep@email.com</div>
                             </div>
-                            <small class="text-muted">5 dk Ã¶nce</small>
+                            <small class="text-muted">5 dk önce</small>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
@@ -173,17 +178,17 @@
                                 <strong>Can Demir</strong>
                                 <div class="small text-muted">can@email.com</div>
                             </div>
-                            <small class="text-muted">15 dk Ã¶nce</small>
+                            <small class="text-muted">15 dk önce</small>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
                                 <i class="bi bi-person text-warning"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <strong>Elif YÄ±ldÄ±z</strong>
+                                <strong>Elif Yýldýz</strong>
                                 <div class="small text-muted">elif@email.com</div>
                             </div>
-                            <small class="text-muted">1 saat Ã¶nce</small>
+                            <small class="text-muted">1 saat önce</small>
                         </div>
                     </div>
                 </div>
@@ -202,14 +207,14 @@
             data: {
                 labels: ['1 Ara', '5 Ara', '10 Ara', '15 Ara', '20 Ara', '25 Ara', '30 Ara'],
                 datasets: [{
-                    label: 'Yeni Ä°lanlar',
+                    label: 'Yeni Ýlanlar',
                     data: [120, 190, 150, 220, 180, 250, 342],
                     borderColor: '#0D6EFD',
                     backgroundColor: 'rgba(13, 110, 253, 0.1)',
                     fill: true,
                     tension: 0.4
                 }, {
-                    label: 'Yeni KullanÄ±cÄ±lar',
+                    label: 'Yeni Kullanýcýlar',
                     data: [40, 55, 45, 70, 60, 85, 124],
                     borderColor: '#198754',
                     backgroundColor: 'rgba(25, 135, 84, 0.1)',
@@ -228,7 +233,7 @@
         new Chart(document.getElementById('categoryChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Emlak', 'VasÄ±ta', 'Elektronik', 'Ev & YaÅŸam', 'DiÄŸer'],
+                labels: ['Emlak', 'Vasýta', 'Elektronik', 'Ev & Yaþam', 'Diðer'],
                 datasets: [{
                     data: [12450, 8320, 15780, 6940, 2402],
                     backgroundColor: ['#0D6EFD', '#198754', '#FFC107', '#DC3545', '#6C757D']

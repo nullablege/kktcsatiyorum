@@ -87,3 +87,8 @@ While writing code:
 - PR/summary should mention: migrations added, cache invalidation changes, UI template used (FE file name).
 - Do not commit build logs/artifacts (add to `.gitignore` instead).
 - After the commit for the requested task, stop (see Agent Behavior).
+
+## UI Integration Master Plan (summary)
+- Source of truth: TASKS.md (full phases, status, deliverables, exit criteria).
+- Phases: 0 Inventory, 1 Layouts, 2 Auth, 3 Public, 4 Member, 5 Admin, 6 Missing+Errors, 7 Routes, 8 UI polish.
+- Always follow: TagHelpers only, layout/partials only, preserve FE structure/classes, keep assets under ~/FE.

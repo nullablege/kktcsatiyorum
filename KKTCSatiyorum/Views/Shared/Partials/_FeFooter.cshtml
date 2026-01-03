@@ -18,16 +18,19 @@
                 <a asp-controller="Account" asp-action="Register">KayÄ±t Ol</a>
                 <a asp-area="Member" asp-controller="MyListings" asp-action="Index">Ä°lanlarÄ±m</a>
             </div>
-            <div class="col-6 col-lg-2">
-                <h5>YardÄ±m</h5>
-                <a href="#">NasÄ±l Ã‡alÄ±ÅŸÄ±r?</a>
-                <a href="#">SSS</a>
-                <a href="#">Ä°letiÅŸim</a>
+                        <div class="col-6 col-lg-2">
+                <h5>Yardým</h5>
+                <a asp-controller="Home" asp-action="HowItWorks">Nasýl Çalýþýr?</a>
+                <a asp-controller="Home" asp-action="Faq">SSS</a>
+                <a asp-controller="Home" asp-action="SafeShopping">Güvenli Alýþveriþ</a>
+                <a asp-controller="Home" asp-action="Contact">Ýletiþim</a>
             </div>
-            <div class="col-6 col-lg-2">
+                        <div class="col-6 col-lg-2">
                 <h5>Kurumsal</h5>
-                <a href="#">HakkÄ±mÄ±zda</a>
-                <a href="#">Gizlilik PolitikasÄ±</a>
+                <a asp-controller="Home" asp-action="About">Hakkýmýzda</a>
+                <a asp-controller="Home" asp-action="Terms">Kullaným Koþullarý</a>
+                <a asp-controller="Home" asp-action="Privacy">Gizlilik Politikasý</a>
+                <a asp-controller="Home" asp-action="Kvkk">KVKK</a>
             </div>
         </div>
         <div class="footer-bottom">
