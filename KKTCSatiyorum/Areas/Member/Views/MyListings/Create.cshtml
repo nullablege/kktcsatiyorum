@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Yeni İlan Oluştur";
         Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+    var initialStep = Model.KategoriId > 0 ? 2 : 1;
 }
 
 <main class="py-4">
@@ -19,12 +20,30 @@
                     @Html.AntiForgeryToken()
 
                     <div class="wizard-steps mb-4">
-                        <div class="wizard-step completed" data-step="1">
-                            <div class="step-number"><i class="bi bi-check"></i></div>
+                        <div class="wizard-step@(initialStep > 1 ? " completed" : initialStep == 1 ? " active" : "")" data-step="1">
+                            <div class="step-number">
+                                @if (initialStep > 1)
+                                {
+                                    <i class="bi bi-check"></i>
+                                }
+                                else
+                                {
+                                    @:1
+                                }
+                            </div>
                             <span class="step-label">Kategori</span>
                         </div>
-                        <div class="wizard-step active" data-step="2">
-                            <div class="step-number">2</div>
+                        <div class="wizard-step@(initialStep > 2 ? " completed" : initialStep == 2 ? " active" : "")" data-step="2">
+                            <div class="step-number">
+                                @if (initialStep > 2)
+                                {
+                                    <i class="bi bi-check"></i>
+                                }
+                                else
+                                {
+                                    @:2
+                                }
+                            </div>
                             <span class="step-label">Detaylar</span>
                         </div>
                         <div class="wizard-step" data-step="3">
@@ -41,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4 step-content" id="step1" style="display: none;">
+                    <div class="card mb-4 step-content" id="step1" style="display: @(initialStep == 1 ? "block" : "none");">
                         <div class="card-body p-4">
                             <h4 class="mb-4">Kategori Seçin</h4>
                             <div class="row g-3">
@@ -67,7 +86,7 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4 step-content" id="step2">
+                    <div class="card mb-4 step-content" id="step2" style="display: @(initialStep == 2 ? "block" : "none");">
                         <div class="card-body p-4">
                             <h4 class="mb-4">İlan Detayları</h4>
                             <p class="text-muted mb-4"><span class="badge bg-primary me-2">Kategori</span>Seçilen kategori için detayları doldurun.</p>
@@ -187,7 +206,7 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let currentStep = 2, map = null;
+        let currentStep = @initialStep, map = null;
         function goToStep(step) {
             document.getElementById('step' + currentStep).style.display = 'none';
             document.getElementById('step' + step).style.display = 'block';
@@ -251,6 +270,9 @@
                 fieldsDiv.insertAdjacentHTML('beforeend', fieldHtml);
             });
         });
+        if (document.getElementById('kategoriSelect').value) {
+            document.getElementById('kategoriSelect').dispatchEvent(new Event('change'));
+        }
 
         function createAttributeField(attr, index) {
             const required = attr.zorunluMu ? ' *' : '';
