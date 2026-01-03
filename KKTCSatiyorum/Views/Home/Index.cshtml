@@ -1,4 +1,4 @@
-﻿@model KKTCSatiyorum.Models.Home.HomeIndexViewModel
+@model KKTCSatiyorum.Models.Home.HomeIndexViewModel
 @{
     ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
@@ -8,16 +8,16 @@
         <div class="container-fluid px-3">
             <div class="secondary-nav-inner">
                 <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Emlak</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">VasÄ±ta</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Yedek ParÃ§a</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ä°kinci El</a>
+                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Vasıta</a>
+                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Yedek Parça</a>
+                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İkinci El</a>
                 <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Elektronik</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ä°ÅŸ Makineleri</a>
+                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş Makineleri</a>
                 <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ustalar</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ä°ÅŸ Ä°lanlarÄ±</a>
+                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş İlanları</a>
                 <span class="secondary-nav-divider"></span>
-                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori Ä°lanlarÄ±m</a>
-                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori AramalarÄ±m</a>
+                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori İlanlarım</a>
+                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori Aramalarım</a>
             </div>
         </div>
     </nav>
@@ -46,20 +46,20 @@
                             </div>
                             <ul class="subcategory-list">
                                 <li><a asp-controller="Listings" asp-action="Index">Konut <span>(8.540)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Ä°ÅŸ Yeri <span>(1.890)</span></a></li>
+                                <li><a asp-controller="Listings" asp-action="Index">İş Yeri <span>(1.890)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Arsa <span>(1.250)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Bina <span>(420)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Devre MÃ¼lk <span>(350)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">TÃ¼mÃ¼nÃ¼ GÃ¶ster <i class="bi bi-chevron-down"></i></a>
+                                <li><a asp-controller="Listings" asp-action="Index">Devre Mülk <span>(350)</span></a></li>
+                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
                                 </li>
                             </ul>
                         </div>
 
-                        <!-- VasÄ±ta Category -->
+                        <!-- Vasıta Category -->
                         <div class="sidebar-section">
                             <div class="category-header">
                                 <i class="bi bi-car-front"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">VasÄ±ta</a>
+                                <a asp-controller="Listings" asp-action="Index" class="category-main">Vasıta</a>
                                 <span class="category-count">(8.320)</span>
                             </div>
                             <ul class="subcategory-list">
@@ -67,8 +67,8 @@
                                 <li><a asp-controller="Listings" asp-action="Index">Arazi, SUV & Pickup <span>(1.240)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Motosiklet <span>(680)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Minivan & Panelvan <span>(420)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Ticari AraÃ§lar <span>(200)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">TÃ¼mÃ¼nÃ¼ GÃ¶ster <i class="bi bi-chevron-down"></i></a>
+                                <li><a asp-controller="Listings" asp-action="Index">Ticari Araçlar <span>(200)</span></a></li>
+                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
                                 </li>
                             </ul>
                         </div>
@@ -89,36 +89,36 @@
                             </ul>
                         </div>
 
-                        <!-- Ev & YaÅŸam Category -->
+                        <!-- Ev & Yaşam Category -->
                         <div class="sidebar-section">
                             <div class="category-header">
                                 <i class="bi bi-lamp"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Ev & YaÅŸam</a>
+                                <a asp-controller="Listings" asp-action="Index" class="category-main">Ev & Yaşam</a>
                                 <span class="category-count">(6.940)</span>
                             </div>
                             <ul class="subcategory-list">
                                 <li><a asp-controller="Listings" asp-action="Index">Mobilya <span>(2.890)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Beyaz EÅŸya <span>(1.560)</span></a></li>
+                                <li><a asp-controller="Listings" asp-action="Index">Beyaz Eşya <span>(1.560)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Mutfak <span>(1.240)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">BahÃ§e <span>(750)</span></a></li>
+                                <li><a asp-controller="Listings" asp-action="Index">Bahçe <span>(750)</span></a></li>
                                 <li><a asp-controller="Listings" asp-action="Index">Dekorasyon <span>(500)</span></a></li>
                             </ul>
                         </div>
 
-                        <!-- Ä°ÅŸ Makineleri Category -->
+                        <!-- İş Makineleri Category -->
                         <div class="sidebar-section">
                             <div class="category-header">
                                 <i class="bi bi-truck"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Ä°ÅŸ Makineleri</a>
+                                <a asp-controller="Listings" asp-action="Index" class="category-main">İş Makineleri</a>
                                 <span class="category-count">(2.150)</span>
                             </div>
                         </div>
 
-                        <!-- DiÄŸer Category -->
+                        <!-- Diğer Category -->
                         <div class="sidebar-section">
                             <div class="category-header">
                                 <i class="bi bi-grid-3x3-gap"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">DiÄŸer</a>
+                                <a asp-controller="Listings" asp-action="Index" class="category-main">Diğer</a>
                                 <span class="category-count">(4.680)</span>
                             </div>
                         </div>
@@ -193,9 +193,9 @@
                     <section class="content-section">
                         <div class="section-header">
                             <h2 class="section-title">
-                                <i class="bi bi-house-door"></i> Emlak Ä°lanlarÄ±
+                                <i class="bi bi-house-door"></i> Emlak İlanları
                             </h2>
-                            <a asp-controller="Listings" asp-action="Index" class="view-all-link">TÃ¼mÃ¼nÃ¼ gÃ¶ster <i
+                            <a asp-controller="Listings" asp-action="Index" class="view-all-link">Tümünü göster <i
                                     class="bi bi-chevron-right"></i></a>
                         </div>
 
@@ -210,7 +210,7 @@
                                     <div class="card-body">
                                         <div class="product-title">Sahibinden Temiz Daire</div>
                                         <div class="product-price">2.100.000 TL</div>
-                                        <div class="product-location">LefkoÅŸa</div>
+                                        <div class="product-location">Lefkoşa</div>
                                     </div>
                                 </a>
                             </div>
@@ -236,9 +236,9 @@
                                             alt="Ev">
                                     </div>
                                     <div class="card-body">
-                                        <div class="product-title">Ä°vedik Osb De Plaza</div>
+                                        <div class="product-title">İvedik Osb De Plaza</div>
                                         <div class="product-price">4.800.000 TL</div>
-                                        <div class="product-location">LefkoÅŸa</div>
+                                        <div class="product-location">Lefkoşa</div>
                                     </div>
                                 </a>
                             </div>
@@ -250,7 +250,7 @@
                                             alt="Daire">
                                     </div>
                                     <div class="card-body">
-                                        <div class="product-title">KiralÄ±k Plaza KatÄ±</div>
+                                        <div class="product-title">Kiralık Plaza Katı</div>
                                         <div class="product-price">45.000 TL/Ay</div>
                                         <div class="product-location">Girne</div>
                                     </div>
@@ -264,7 +264,7 @@
                                             alt="Villa">
                                     </div>
                                     <div class="card-body">
-                                        <div class="product-title">Casarent - KiralÄ±k</div>
+                                        <div class="product-title">Casarent - Kiralık</div>
                                         <div class="product-price">85.000 TL/Ay</div>
                                         <div class="product-location">Girne</div>
                                     </div>
@@ -280,7 +280,7 @@
                                     <div class="card-body">
                                         <div class="product-title">Adaklik Koyun Site</div>
                                         <div class="product-price">3.600.000 TL</div>
-                                        <div class="product-location">Ä°skele</div>
+                                        <div class="product-location">İskele</div>
                                     </div>
                                 </a>
                             </div>
