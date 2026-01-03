@@ -1,16 +1,16 @@
-ï»¿@model KKTCSatiyorum.Areas.Admin.Models.KategoriIndexViewModel
+@model KKTCSatiyorum.Areas.Admin.Models.KategoriIndexViewModel
 
 
 @{
-    ViewData["Title"] = "Kategori YÃ¶netimi";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Kategori Yönetimi";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <main class="admin-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 mb-1">Kategori YÃ¶netimi</h1>
-            <p class="text-muted mb-0">Kategorileri yÃ¶netin</p>
+            <h1 class="h3 mb-1">Kategori Yönetimi</h1>
+            <p class="text-muted mb-0">Kategorileri yönetin</p>
         </div>
 
         <a class="btn btn-primary"
@@ -42,7 +42,7 @@
                         @if (Model.Items.Count == 0)
                         {
                             <div class="list-group-item text-muted">
-                                HenÃ¼z kategori yok.
+                                Henüz kategori yok.
                             </div>
                         }
                         else
@@ -57,7 +57,7 @@
                                         <span class="badge bg-light text-dark ms-2">@item.SeoSlug</span>
 
                                         <div class="small text-muted mt-1">
-                                            Id: @item.Id â€¢ Parent: @(item.UstKategoriId?.ToString() ?? "-") â€¢ SÄ±ra: @item.SiraNo
+                                            Id: @item.Id • Parent: @(item.UstKategoriId?.ToString() ?? "-") • Sýra: @item.SiraNo
                                         </div>
                                     </div>
 
@@ -83,7 +83,7 @@
                                                 @Html.AntiForgeryToken()
                                                 <button type="submit"
                                                         class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('Kategori pasife Ã§ekilsin mi?');">
+                                                        onclick="return confirm('Kategori pasife çekilsin mi?');">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
@@ -103,14 +103,14 @@
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
                     <div>
                         <h5 class="mb-0">Kategori Detay</h5>
-                        <small class="text-muted">Kategori DetaylarÄ±</small>
+                        <small class="text-muted">Kategori Detaylarý</small>
                     </div>
                 </div>
                 <div class="card-body">
                     @if (Model.Selected == null)
                     {
                         <div class="alert alert-info mb-0">
-                            DÃ¼zenlemek iÃ§in soldan bir kategori seÃ§.
+                            Düzenlemek için soldan bir kategori seç.
                         </div>
                     }
                     else
@@ -146,7 +146,7 @@
 
                             <div class="d-flex gap-2">
                                 <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-lg me-1"></i> GÃ¼ncelle
+                                    <i class="bi bi-check-lg me-1"></i> Güncelle
                                 </button>
                                 <a class="btn btn-secondary"
                                    asp-area="Admin"

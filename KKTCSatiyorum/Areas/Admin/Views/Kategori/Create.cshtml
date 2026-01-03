@@ -1,15 +1,15 @@
-ï»¿@model KKTCSatiyorum.Areas.Admin.Models.CreateKategoriViewModel
+@model KKTCSatiyorum.Areas.Admin.Models.CreateKategoriViewModel
 
 @{
     ViewData["Title"] = "Yeni Kategori";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <main class="admin-content">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h1 class="h3 mb-1">Yeni Kategori</h1>
-            <p class="text-muted mb-0">Yeni kategori oluÅŸturun</p>
+            <p class="text-muted mb-0">Yeni kategori oluşturun</p>
         </div>
 
         <a class="btn btn-outline-secondary"
@@ -35,7 +35,7 @@
 
                         <div class="mb-3">
                             <label asp-for="Ad" class="form-label"></label>
-                            <input asp-for="Ad" class="form-control" placeholder="Ã–rn: Spor & Outdoor" />
+                            <input asp-for="Ad" class="form-control" placeholder="Örn: Spor & Outdoor" />
                             <span asp-validation-for="Ad" class="text-danger"></span>
                         </div>
 
@@ -56,7 +56,7 @@
                                 <i class="bi bi-check-lg me-1"></i> Kaydet
                             </button>
                             <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="btn btn-secondary">
-                                Ä°ptal
+                                İptal
                             </a>
                         </div>
                     </form>
@@ -69,9 +69,9 @@
                 <div class="card-body">
                     <h6 class="text-info mb-2"><i class="bi bi-info-circle me-2"></i>Notlar</h6>
                     <ul class="small text-muted mb-0">
-                        <li>Slug otomatik Ã¼retilir.</li>
-                        <li>Ãœst kategori seÃ§mezsen â€œAna Kategoriâ€ (root) oluÅŸturursun.</li>
-                        <li>SÄ±raNo 1â€™den baÅŸlamalÄ±.</li>
+                        <li>Slug otomatik üretilir.</li>
+                        <li>Üst kategori seçmezsen “Ana Kategori” (root) oluşturursun.</li>
+                        <li>SıraNo 1’den başlamalı.</li>
                     </ul>
                 </div>
             </div>

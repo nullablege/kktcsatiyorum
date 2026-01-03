@@ -1,7 +1,7 @@
-ï»¿@model KKTCSatiyorum.Areas.Admin.Models.Moderasyon.ModerasyonIndexViewModel
+@model KKTCSatiyorum.Areas.Admin.Models.Moderasyon.ModerasyonIndexViewModel
 @{
     ViewData["Title"] = "Moderasyon";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
 <main class="admin-content">
@@ -34,7 +34,7 @@
             <div class="card-body text-center py-5">
                 <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
                 <h5 class="mt-3">Onay bekleyen ilan yok</h5>
-                <p class="text-muted">TÃ¼m ilanlar iÅŸlenmiÅŸ durumda.</p>
+                <p class="text-muted">Tüm ilanlar iþlenmiþ durumda.</p>
             </div>
         </div>
     }
@@ -44,11 +44,11 @@
             <table class="table table-hover mb-0">
                 <thead>
                     <tr>
-                        <th>Ä°lan</th>
+                        <th>Ýlan</th>
                         <th>Kategori</th>
-                        <th>SatÄ±cÄ±</th>
+                        <th>Satýcý</th>
                         <th>Tarih</th>
-                        <th>Ä°ÅŸlem</th>
+                        <th>Ýþlem</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,7 +69,7 @@
                                     }
                                     <div>
                                         <strong>@item.Baslik</strong>
-                                        <div class="small text-muted">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "â‚º" : item.ParaBirimi.ToString())</div>
+                                        <div class="small text-muted">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "?" : item.ParaBirimi.ToString())</div>
                                     </div>
                                 </div>
                             </td>
@@ -132,24 +132,24 @@
         <div class="modal-content">
             <form asp-action="Reject" method="post">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">Ä°lanÄ± Reddet</h5>
+                    <h5 class="modal-title" id="rejectModalLabel">Ýlaný Reddet</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="ListingId" id="rejectListingId" />
                     <p class="mb-3">
-                        <strong id="rejectListingTitle"></strong> ilanÄ±nÄ± reddetmek Ã¼zeresiniz.
+                        <strong id="rejectListingTitle"></strong> ilanýný reddetmek üzeresiniz.
                     </p>
                     <div class="mb-3">
                         <label for="RedNedeni" class="form-label">Red Sebebi <span class="text-danger">*</span></label>
                         <textarea class="form-control" id="RedNedeni" name="RedNedeni" rows="3" 
-                                  placeholder="KullanÄ±cÄ±ya gÃ¶nderilecek red sebebini yazÄ±n..." 
+                                  placeholder="Kullanýcýya gönderilecek red sebebini yazýn..." 
                                   required maxlength="200"></textarea>
                         <div class="form-text">Maksimum 200 karakter</div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ä°ptal</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ýptal</button>
                     <button type="submit" class="btn btn-danger">Reddet</button>
                 </div>
             </form>
