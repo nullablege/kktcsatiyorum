@@ -1,12 +1,18 @@
-@using KKTCSatiyorum.Models.Listings
-@model ListingsIndexViewModel
-
+﻿@model ListingsIndexViewModel
 @{
     ViewData["Title"] = string.IsNullOrEmpty(Model.Query.Q) ? "İlanlar" : $"\"{Model.Query.Q}\" için Arama Sonuçları";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
+
+    var hasFilters = !string.IsNullOrWhiteSpace(Model.Query.Q)
+        || Model.Query.KategoriId.HasValue
+        || !string.IsNullOrWhiteSpace(Model.Query.Sehir)
+        || Model.Query.MinFiyat.HasValue
+        || Model.Query.MaxFiyat.HasValue;
+    var kategoriText = Model.Query.KategoriId.HasValue
+        ? Model.KategoriOptions.FirstOrDefault(x => x.Value == Model.Query.KategoriId.Value.ToString())?.Text
+        : null;
 }
 
-<!-- Search Bar -->
 <div class="bg-white py-3 border-bottom">
     <div class="container">
         <form method="get" asp-controller="Listings" asp-action="Index">
@@ -23,23 +29,30 @@
                     </select>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <input asp-for="Query.Sehir" class="form-control" placeholder="Şehir">
+                    <select asp-for="Query.Sehir" class="form-select">
+                        <option value="">Tüm KKTC</option>
+                        <option>Girne</option>
+                        <option>Lefkoşa</option>
+                        <option>Gazimağusa</option>
+                        <option>İskele</option>
+                        <option>Güzelyurt</option>
+                    </select>
                 </div>
-                <div class="col-lg-2 d-flex gap-2">
-                    <button class="btn btn-primary flex-grow-1" type="submit">
-                        <i class="bi bi-search"></i> Ara
+                <div class="col-lg-2">
+                    <button class="btn btn-primary w-100" type="submit">
+                        <i class="bi bi-search me-1"></i> Ara
                     </button>
                 </div>
                 <div class="col-lg-1">
-                    <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas"
-                            data-bs-target="#filterOffcanvas">
+                    <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
                         <i class="bi bi-funnel"></i>
                     </button>
                 </div>
             </div>
-            
-            <!-- Hidden inputs for current filters -->
+
             <input type="hidden" asp-for="Query.Sort">
+            <input type="hidden" asp-for="Query.MinFiyat">
+            <input type="hidden" asp-for="Query.MaxFiyat">
             <input type="hidden" asp-for="Query.UserLat" id="userLat">
             <input type="hidden" asp-for="Query.UserLng" id="userLng">
             <input type="hidden" asp-for="Query.MaxDistanceKm">
@@ -47,28 +60,25 @@
     </div>
 </div>
 
-<!-- Main Content -->
 <main class="py-4">
     <div class="container">
         <div class="row">
-            <!-- Filters Sidebar - Desktop -->
             <div class="col-lg-3 d-none d-lg-block">
                 <div class="filter-sidebar">
                     <form method="get" asp-controller="Listings" asp-action="Index">
-                        <input type="hidden" name="Q" value="@Model.Query.Q">
-                        <input type="hidden" name="KategoriId" value="@Model.Query.KategoriId">
-                        <input type="hidden" name="Sehir" value="@Model.Query.Sehir">
-                        <input type="hidden" name="Sort" value="@Model.Query.Sort">
+                        <input type="hidden" asp-for="Query.Q">
+                        <input type="hidden" asp-for="Query.KategoriId">
+                        <input type="hidden" asp-for="Query.Sehir">
+                        <input type="hidden" asp-for="Query.Sort">
                         <input type="hidden" asp-for="Query.UserLat">
                         <input type="hidden" asp-for="Query.UserLng">
                         <input type="hidden" asp-for="Query.MaxDistanceKm">
-                        
+
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Filtreler</h5>
                             <a asp-controller="Listings" asp-action="Index" class="btn btn-link btn-sm text-muted p-0">Temizle</a>
                         </div>
 
-                        <!-- Near Me Filter -->
                         <div class="filter-section mb-3 p-3 bg-light rounded border">
                             <div class="form-check form-switch mb-2">
                                 <input class="form-check-input" type="checkbox" id="nearMeToggle" @(Model.Query.UserLat.HasValue ? "checked" : "")>
@@ -89,20 +99,25 @@
                             </div>
                         </div>
 
-                        <!-- Price Filter -->
+                        <div class="filter-section">
+                            <h6>Kategori</h6>
+                            <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
+                                <option value="">Tüm Kategoriler</option>
+                            </select>
+                        </div>
+
                         <div class="filter-section">
                             <h6>Fiyat Aralığı</h6>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <input type="number" name="MinFiyat" class="form-control form-control-sm" placeholder="Min" value="@Model.Query.MinFiyat">
+                                    <input asp-for="Query.MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
                                 </div>
                                 <div class="col-6">
-                                    <input type="number" name="MaxFiyat" class="form-control form-control-sm" placeholder="Max" value="@Model.Query.MaxFiyat">
+                                    <input asp-for="Query.MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Dynamic EAV Filters -->
                         <div id="dynamicFilters"></div>
 
                         <button class="btn btn-primary w-100" type="submit">
@@ -112,9 +127,7 @@
                 </div>
             </div>
 
-            <!-- Results -->
             <div class="col-lg-9">
-                <!-- Results Header -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div>
                         <h1 class="h5 mb-1">@ViewData["Title"]</h1>
@@ -130,32 +143,72 @@
                             <input type="hidden" asp-for="Query.UserLat">
                             <input type="hidden" asp-for="Query.UserLng">
                             <input type="hidden" asp-for="Query.MaxDistanceKm">
-                            <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
-                            </select>
+                            <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()"></select>
                         </form>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-secondary btn-sm active" title="Grid" type="button">
+                                <i class="bi bi-grid"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" title="List" type="button">
+                                <i class="bi bi-list"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
-                @if (Model.Listings.Items.Count == 0)
+                @if (hasFilters)
                 {
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
-                        Arama kriterlerinize uygun ilan bulunamadı.
+                    <div class="d-flex flex-wrap gap-2 mb-4">
+                        @if (!string.IsNullOrWhiteSpace(Model.Query.Q))
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                @Model.Query.Q
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(kategoriText))
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                @kategoriText
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(Model.Query.Sehir))
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                @Model.Query.Sehir
+                            </span>
+                        }
+                        @if (Model.Query.MinFiyat.HasValue || Model.Query.MaxFiyat.HasValue)
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                @(Model.Query.MinFiyat?.ToString("N0") ?? "0") - @(Model.Query.MaxFiyat?.ToString("N0") ?? "∞") ₺
+                            </span>
+                        }
                     </div>
                 }
-                else
-                {
-                    <!-- Product Grid -->
-                    <div class="row g-3">
+
+                <div class="row g-3">
+                    @if (!Model.Listings.Items.Any())
+                    {
+                        <div class="col-12">
+                            <div class="card card-product">
+                                <div class="card-body">
+                                    <h5 class="product-title">Sonuç bulunamadı</h5>
+                                    <div class="text-muted">Arama kriterlerinizi değiştirip tekrar deneyin.</div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
                         @foreach (var item in Model.Listings.Items)
                         {
                             <div class="col-6 col-md-4">
-                                <a asp-action="Detail" asp-route-slug="@item.Slug" class="text-decoration-none">
+                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="text-decoration-none">
                                     <div class="card card-product">
-                                        <button class="btn-favorite"><i class="bi bi-heart"></i></button>
+                                        <button class="btn-favorite" type="button"><i class="bi bi-heart"></i></button>
                                         @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
                                         {
-                                            <img src="@item.KapakFotoUrl" class="card-img-top" alt="@item.Baslik" style="height: 200px; object-fit: cover;">
+                                            <img src="@item.KapakFotoUrl" class="card-img-top" alt="@item.Baslik">
                                         }
                                         else
                                         {
@@ -185,75 +238,73 @@
                                 </a>
                             </div>
                         }
-                    </div>
-
-                    <!-- Pagination -->
-                    @if (Model.Listings.TotalPages > 1)
-                    {
-                        <nav class="mt-5">
-                            <ul class="pagination pagination-custom justify-content-center">
-                                <li class="page-item @(!Model.Listings.HasPreviousPage ? "disabled" : "")">
-                                    <a class="page-link" asp-action="Index" 
-                                       asp-route-Q="@Model.Query.Q" 
-                                       asp-route-KategoriId="@Model.Query.KategoriId"
-                                       asp-route-Sehir="@Model.Query.Sehir"
-                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                       asp-route-Sort="@Model.Query.Sort"
-                                       asp-route-UserLat="@Model.Query.UserLat"
-                                       asp-route-UserLng="@Model.Query.UserLng"
-                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                       asp-route-Page="@(Model.Listings.Page - 1)">
-                                        <i class="bi bi-chevron-left"></i>
-                                    </a>
-                                </li>
-                                @for (int i = 1; i <= Model.Listings.TotalPages && i <= 5; i++)
-                                {
-                                    var pageNum = i;
-                                    if (Model.Listings.TotalPages > 5 && Model.Listings.Page > 3)
-                                    {
-                                        pageNum = Model.Listings.Page - 3 + i;
-                                        if (pageNum > Model.Listings.TotalPages) continue;
-                                    }
-                                    <li class="page-item @(pageNum == Model.Listings.Page ? "active" : "")">
-                                        <a class="page-link" asp-action="Index" 
-                                           asp-route-Q="@Model.Query.Q" 
-                                           asp-route-KategoriId="@Model.Query.KategoriId"
-                                           asp-route-Sehir="@Model.Query.Sehir"
-                                           asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                           asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                           asp-route-Sort="@Model.Query.Sort"
-                                           asp-route-UserLat="@Model.Query.UserLat"
-                                           asp-route-UserLng="@Model.Query.UserLng"
-                                           asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                           asp-route-Page="@pageNum">@pageNum</a>
-                                    </li>
-                                }
-                                <li class="page-item @(!Model.Listings.HasNextPage ? "disabled" : "")">
-                                    <a class="page-link" asp-action="Index" 
-                                       asp-route-Q="@Model.Query.Q" 
-                                       asp-route-KategoriId="@Model.Query.KategoriId"
-                                       asp-route-Sehir="@Model.Query.Sehir"
-                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                       asp-route-Sort="@Model.Query.Sort"
-                                       asp-route-UserLat="@Model.Query.UserLat"
-                                       asp-route-UserLng="@Model.Query.UserLng"
-                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                       asp-route-Page="@(Model.Listings.Page + 1)">
-                                        <i class="bi bi-chevron-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
                     }
+                </div>
+
+                @if (Model.Listings.TotalPages > 1)
+                {
+                    <nav class="mt-5">
+                        <ul class="pagination pagination-custom justify-content-center">
+                            <li class="page-item @(!Model.Listings.HasPreviousPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-Q="@Model.Query.Q"
+                                   asp-route-KategoriId="@Model.Query.KategoriId"
+                                   asp-route-Sehir="@Model.Query.Sehir"
+                                   asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                   asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                   asp-route-Sort="@Model.Query.Sort"
+                                   asp-route-UserLat="@Model.Query.UserLat"
+                                   asp-route-UserLng="@Model.Query.UserLng"
+                                   asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
+                                   asp-route-Page="@(Model.Listings.Page - 1)">
+                                    <i class="bi bi-chevron-left"></i>
+                                </a>
+                            </li>
+                            @for (int i = 1; i <= Model.Listings.TotalPages && i <= 5; i++)
+                            {
+                                var pageNum = i;
+                                if (Model.Listings.TotalPages > 5 && Model.Listings.Page > 3)
+                                {
+                                    pageNum = Model.Listings.Page - 3 + i;
+                                    if (pageNum > Model.Listings.TotalPages) continue;
+                                }
+                                <li class="page-item @(pageNum == Model.Listings.Page ? "active" : "")">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-Q="@Model.Query.Q"
+                                       asp-route-KategoriId="@Model.Query.KategoriId"
+                                       asp-route-Sehir="@Model.Query.Sehir"
+                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                       asp-route-Sort="@Model.Query.Sort"
+                                       asp-route-UserLat="@Model.Query.UserLat"
+                                       asp-route-UserLng="@Model.Query.UserLng"
+                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
+                                       asp-route-Page="@pageNum">@pageNum</a>
+                                </li>
+                            }
+                            <li class="page-item @(!Model.Listings.HasNextPage ? "disabled" : "")">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-Q="@Model.Query.Q"
+                                   asp-route-KategoriId="@Model.Query.KategoriId"
+                                   asp-route-Sehir="@Model.Query.Sehir"
+                                   asp-route-MinFiyat="@Model.Query.MinFiyat"
+                                   asp-route-MaxFiyat="@Model.Query.MaxFiyat"
+                                   asp-route-Sort="@Model.Query.Sort"
+                                   asp-route-UserLat="@Model.Query.UserLat"
+                                   asp-route-UserLng="@Model.Query.UserLng"
+                                   asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
+                                   asp-route-Page="@(Model.Listings.Page + 1)">
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
                 }
             </div>
         </div>
     </div>
 </main>
 
-<!-- Mobile Filter Offcanvas -->
 <div class="offcanvas offcanvas-start" tabindex="-1" id="filterOffcanvas">
     <div class="offcanvas-header">
         <h5 class="offcanvas-title">Filtreler</h5>
@@ -266,7 +317,7 @@
             <input type="hidden" asp-for="Query.UserLat">
             <input type="hidden" asp-for="Query.UserLng">
             <input type="hidden" asp-for="Query.MaxDistanceKm">
-            
+
             <div class="filter-section">
                 <h6>Kategori</h6>
                 <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
@@ -287,8 +338,15 @@
             </div>
 
             <div class="filter-section">
-                <h6>Şehir</h6>
-                <input asp-for="Query.Sehir" class="form-control form-control-sm" placeholder="Şehir">
+                <h6>Konum</h6>
+                <select asp-for="Query.Sehir" class="form-select form-select-sm mb-2">
+                    <option value="">Tüm KKTC</option>
+                    <option>Girne</option>
+                    <option>Lefkoşa</option>
+                    <option>Gazimağusa</option>
+                    <option>İskele</option>
+                    <option>Güzelyurt</option>
+                </select>
             </div>
 
             <button class="btn btn-primary w-100 mt-3" type="submit" data-bs-dismiss="offcanvas">
@@ -301,43 +359,41 @@
 @section Scripts {
 <script>
     document.getElementById('kategoriSelect')?.addEventListener('change', function() {
-        // ... existing code ...
         const kategoriId = this.value;
         const container = document.getElementById('dynamicFilters');
-        
-        // Clear existing content
+
         container.innerHTML = '';
-        
+
         if (!kategoriId) return;
-        
+
         fetch(`/ilanlar/filters?kategoriId=${kategoriId}`)
             .then(res => res.json())
             .then(attrs => {
                 attrs.forEach(attr => {
                     const section = document.createElement('div');
                     section.className = 'filter-section';
-                    
+
                     const heading = document.createElement('h6');
                     heading.textContent = attr.ad;
                     section.appendChild(heading);
-                    
+
                     if (attr.secenekler && attr.secenekler.length > 0) {
                         const select = document.createElement('select');
                         select.name = `Query.EavFilters[${attr.id}]`;
                         select.className = 'form-select form-select-sm';
-                        
+
                         const defaultOpt = document.createElement('option');
                         defaultOpt.value = '';
                         defaultOpt.textContent = 'Seçiniz';
                         select.appendChild(defaultOpt);
-                        
+
                         attr.secenekler.forEach(s => {
                             const opt = document.createElement('option');
                             opt.value = s.id;
                             opt.textContent = s.deger;
                             select.appendChild(opt);
                         });
-                        
+
                         section.appendChild(select);
                     } else {
                         const input = document.createElement('input');
@@ -347,54 +403,42 @@
                         input.placeholder = attr.ad;
                         section.appendChild(input);
                     }
-                    
+
                     container.appendChild(section);
                 });
             });
     });
 
-    // Near Me Toggle Logic
     const nearMeToggle = document.getElementById('nearMeToggle');
     const distanceControl = document.getElementById('distanceControl');
     const maxDistanceSelect = document.getElementById('maxDistanceSelect');
-    const userLatInput = document.querySelector('input[name="Query.UserLat"]'); // Sidebar input
-    const userLngInput = document.querySelector('input[name="Query.UserLng"]'); // Sidebar input
-    
-    // Also grab hidden inputs from the main sidebar form to update them directly
-    // Note: The view has multiple forms (top bar, sidebar, mobile). We strictly target sidebar form inputs for submission.
-    // However, asp-for generates same name. We should ensure we update the form we are submitting.
-    // The sidebar form is the one containing the toggle.
 
     if (nearMeToggle) {
         nearMeToggle.addEventListener('change', function() {
             if (this.checked) {
-                // User turned ON "Near Me"
                 if (!navigator.geolocation) {
                     alert('Tarayıcınız konum servisini desteklemiyor.');
                     this.checked = false;
                     return;
                 }
 
-                this.disabled = true; // prevent double clicks
+                this.disabled = true;
                 document.body.style.cursor = 'wait';
 
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
-                        
-                        // Set inputs in the sidebar form
-                        // Find the form that contains the toggle
+
                         const form = this.closest('form');
                         if (form) {
                             form.querySelector('input[name="Query.UserLat"]').value = lat;
                             form.querySelector('input[name="Query.UserLng"]').value = lng;
-                            form.querySelector('input[name="Sort"]').value = 'distance'; // Force sort by distance
-                            
-                            // If no distance selected, default to 50km
+                            form.querySelector('input[name="Query.Sort"]').value = 'distance';
+
                             const distSelect = form.querySelector('select[name="Query.MaxDistanceKm"]');
                             if (!distSelect.value) distSelect.value = '50';
-                            
+
                             form.submit();
                         }
                     },
@@ -408,18 +452,15 @@
                     }
                 );
             } else {
-                // User turned OFF "Near Me"
                 const form = this.closest('form');
                 if (form) {
                     form.querySelector('input[name="Query.UserLat"]').value = '';
                     form.querySelector('input[name="Query.UserLng"]').value = '';
-                     // Optional: Reset sort or keep it? Request says "graceful fallback". 
-                     // Usually better to keep sort or reset to default. Let's reset to default (newest) implies clearing 'distance' sort if set.
-                     if (form.querySelector('input[name="Sort"]').value === 'distance') {
-                         form.querySelector('input[name="Sort"]').value = '';
-                     }
+                    if (form.querySelector('input[name="Query.Sort"]').value === 'distance') {
+                        form.querySelector('input[name="Query.Sort"]').value = '';
+                    }
                     form.querySelector('select[name="Query.MaxDistanceKm"]').value = '';
-                    
+
                     form.submit();
                 }
             }
