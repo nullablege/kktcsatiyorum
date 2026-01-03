@@ -1,268 +1,338 @@
 @model ListingDetailDto
 @using EntityLayer.Enums
 @{
-    ViewData["Title"] = Model.Baslik;
+    var listing = Model;
+    ViewData["Title"] = listing?.Baslik ?? "İlan bulunamadı";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
 
-<!-- Breadcrumb -->
-<div class="bg-white py-3 border-bottom">
-    <div class="container">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-0">
-                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
-                <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">İlanlar</a></li>
-                <li class="breadcrumb-item active" aria-current="page">@Model.Baslik</li>
-            </ol>
-        </nav>
-    </div>
-</div>
-
-<!-- Main Content -->
-<main class="py-4">
-    <div class="container">
-        <div class="row g-4">
-            <!-- Left Column: Gallery & Details -->
-            <div class="col-lg-8">
-                <!-- Image Gallery -->
-                <div class="card mb-4">
-                    @if (Model.Fotograflar.Count > 0)
-                    {
-                        <div class="gallery-main">
-                            <div id="productCarousel" class="carousel slide" data-bs-ride="false">
-                                <div class="carousel-inner">
-                                    @for (int i = 0; i < Model.Fotograflar.Count; i++)
-                                    {
-                                        var foto = Model.Fotograflar[i];
-                                        <div class="carousel-item @(i == 0 ? "active" : "")">
-                                            <img src="@foto.Url" class="d-block w-100" alt="@Model.Baslik Görsel @(i+1)"
-                                                 style="height: 400px; object-fit: cover;" loading="@(i == 0 ? "eager" : "lazy")">
-                                        </div>
-                                    }
-                                </div>
-                                @if (Model.Fotograflar.Count > 1)
-                                {
-                                    <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                                        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-                                    </button>
-                                    <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                                        <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
-                                    </button>
-                                }
-                            </div>
-                        </div>
-
-                        @if (Model.Fotograflar.Count > 1)
-                        {
-                            <!-- Thumbnails -->
-                            <div class="card-body">
-                                <div class="gallery-thumbs">
-                                    @for (int i = 0; i < Model.Fotograflar.Count; i++)
-                                    {
-                                        var foto = Model.Fotograflar[i];
-                                        <img src="@foto.Url" alt="Thumb @(i+1)" class="@(i == 0 ? "active" : "")"
-                                             data-bs-target="#productCarousel" data-bs-slide-to="@i"
-                                             style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;">
-                                    }
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
-                            <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
-                        </div>
-                    }
-                </div>
-
-                <!-- Product Info -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
-                            <div>
-                                <h1 class="h3 mb-2">@Model.Baslik</h1>
-                                <div class="d-flex align-items-center gap-3 text-muted">
-                                    <span><i class="bi bi-geo-alt me-1"></i>@(Model.Sehir ?? "KKTC")</span>
-                                    <span><i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd MMMM yyyy")</span>
-                                </div>
-                            </div>
-                            
-                            @{
-                                var isFavorite = ViewBag.IsFavorite is bool b && b;
-                            }
-                            <button id="btn-toggle-favorite" class="btn @(isFavorite ? "btn-danger" : "btn-outline-secondary")" data-id="@Model.Id">
-                                <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>
-                            </button>
-                            @Html.AntiForgeryToken()
-                        </div>
-
-                        <div class="product-price display-5 text-primary fw-bold mb-4">
-                            @Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())
-                        </div>
-
-                        @if (Model.Attributes.Count > 0)
-                        {
-                            <!-- EAV Dynamic Attributes -->
-                            <h5 class="mb-3">İlan Özellikleri</h5>
-                            <div class="eav-attributes mb-4">
-                                @foreach (var attr in Model.Attributes)
-                                {
-                                    <div class="eav-item">
-                                        <span class="eav-label">@attr.Label</span>
-                                        <span class="eav-value">@attr.Value</span>
-                                    </div>
-                                }
-                            </div>
-                        }
-
-                        @if (!string.IsNullOrEmpty(Model.Aciklama))
-                        {
-                            <!-- Description -->
-                            <h5 class="mb-3">Açıklama</h5>
-                            <div class="mb-4" style="white-space: pre-line">@Model.Aciklama</div>
-                        }
+@if (listing == null)
+{
+    <main class="py-4">
+        <div class="container">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h1 class="h4 mb-2">İlan bulunamadı</h1>
+                    <p class="text-muted mb-0">Aradığınız ilan yayında değil veya kaldırılmış olabilir.</p>
+                    <div class="mt-3">
+                        <a asp-controller="Listings" asp-action="Index" class="btn btn-primary">İlanlara Dön</a>
                     </div>
-                </div>
-            </div>
-
-            <!-- Right Column: Seller Info & Actions -->
-            <div class="col-lg-4">
-                <!-- Price Card (Mobile Sticky) -->
-                <div class="card mb-4 d-lg-none">
-                    <div class="card-body">
-                        <div class="product-price h3 text-primary fw-bold mb-3">
-                            @Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())
-                        </div>
-                        <div class="d-grid gap-2">
-                            <button class="btn btn-cta btn-lg">
-                                <i class="bi bi-telephone me-2"></i>Ara
-                            </button>
-                            <button class="btn btn-outline-primary">
-                                <i class="bi bi-chat me-2"></i>Mesaj Gönder
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Seller Card -->
-                <div class="seller-card mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="seller-avatar me-3">
-                            <i class="bi bi-person"></i>
-                        </div>
-                        <div>
-                            <div class="seller-name">@(Model.SaticiAd ?? "Satıcı")</div>
-                            <div class="seller-since">
-                                <i class="bi bi-patch-check-fill text-primary me-1"></i>
-                                Doğrulanmış Üye
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-cta btn-lg">
-                            <i class="bi bi-telephone me-2"></i>İletişim Bilgisi
-                        </button>
-                        <button class="btn btn-outline-primary">
-                            <i class="bi bi-chat me-2"></i>Mesaj Gönder
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Safety Tips -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h6 class="mb-3"><i class="bi bi-shield-check text-success me-2"></i>Güvenlik İpuçları</h6>
-                        <ul class="list-unstyled mb-0 small text-muted">
-                            <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Ürünü görmeden ödeme yapmayın</li>
-                            <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Şüpheli ilanları bize bildirin</li>
-                            <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Halka açık yerlerde buluşun</li>
-                            <li><i class="bi bi-check text-success me-1"></i>Bankaya özel bilgi vermeyin</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- Report -->
-                <div class="text-center">
-                    <button class="btn btn-link text-muted">
-                        <i class="bi bi-flag me-1"></i>İlanı Şikayet Et
-                    </button>
                 </div>
             </div>
         </div>
+    </main>
+}
+else
+{
+    <div class="bg-white py-3 border-bottom">
+        <div class="container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">İlanlar</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">Kategori</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">@Model.Baslik</li>
+                </ol>
+            </nav>
+        </div>
     </div>
-</main>
+
+    <main class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <div class="card mb-4">
+                        @if (Model.Fotograflar.Count > 0)
+                        {
+                            <div class="gallery-main">
+                                <div id="productCarousel" class="carousel slide" data-bs-ride="false">
+                                    <div class="carousel-inner">
+                                        @for (int i = 0; i < Model.Fotograflar.Count; i++)
+                                        {
+                                            var foto = Model.Fotograflar[i];
+                                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                                <img src="@foto.Url" class="d-block w-100" alt="@Model.Baslik Görsel @(i + 1)"
+                                                     style="height: 400px; object-fit: cover;" loading="@(i == 0 ? "eager" : "lazy")">
+                                            </div>
+                                        }
+                                    </div>
+                                    @if (Model.Fotograflar.Count > 1)
+                                    {
+                                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                                            <span class="carousel-control-next-icon bg-dark rounded-circle p-3" aria-hidden="true"></span>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (Model.Fotograflar.Count > 1)
+                            {
+                                <div class="card-body">
+                                    <div class="gallery-thumbs">
+                                        @for (int i = 0; i < Model.Fotograflar.Count; i++)
+                                        {
+                                            var foto = Model.Fotograflar[i];
+                                            <img src="@foto.Url" alt="Thumb @(i + 1)" class="@(i == 0 ? "active" : "")"
+                                                 data-bs-target="#productCarousel" data-bs-slide-to="@i"
+                                                 style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;">
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 400px;">
+                                <i class="bi bi-image text-muted" style="font-size: 5rem;"></i>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h1 class="h3 mb-2">@Model.Baslik</h1>
+                                    <div class="d-flex align-items-center gap-3 text-muted">
+                                        <span><i class="bi bi-geo-alt me-1"></i>@(Model.Sehir ?? "KKTC")</span>
+                                        <span><i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd MMMM yyyy")</span>
+                                        <span><i class="bi bi-eye me-1"></i>0 görüntülenme</span>
+                                    </div>
+                                </div>
+                                @{
+                                    var isFavorite = ViewBag.IsFavorite is bool b && b;
+                                }
+                                <button id="btn-toggle-favorite" class="btn @(isFavorite ? "btn-danger" : "btn-outline-secondary")" data-id="@Model.Id">
+                                    <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>
+                                </button>
+                                @Html.AntiForgeryToken()
+                            </div>
+
+                            <div class="product-price display-5 text-primary fw-bold mb-4">
+                                @Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())
+                            </div>
+
+                            @if (Model.Attributes.Count > 0)
+                            {
+                                <h5 class="mb-3">İlan Özellikleri</h5>
+                                <div class="eav-attributes mb-4">
+                                    @foreach (var attr in Model.Attributes)
+                                    {
+                                        <div class="eav-item">
+                                            <span class="eav-label">@attr.Label</span>
+                                            <span class="eav-value">@attr.Value</span>
+                                        </div>
+                                    }
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Aciklama))
+                            {
+                                <h5 class="mb-3">Açıklama</h5>
+                                <div class="mb-4" style="white-space: pre-line">@Model.Aciklama</div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i>Konum</h5>
+                            <div id="map" class="map-container"></div>
+                            <p class="text-muted small mt-2 mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Haritadaki konum yaklaşık olarak gösterilmektedir.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="mb-4"><i class="bi bi-chat-dots me-2"></i>Satıcıya Soru Sor</h5>
+
+                            <div class="mb-4">
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="bg-light rounded-circle p-2 me-2">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Ahmet Y.</strong>
+                                            <span class="text-muted small ms-2">2 gün önce</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-2">Aidat ne kadar? Takas düşünür müsünüz?</p>
+
+                                    <div class="bg-light rounded p-3 ms-4 mt-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <span class="badge bg-primary me-2">Satıcı</span>
+                                            <span class="text-muted small">1 gün önce</span>
+                                        </div>
+                                        <p class="mb-0">Aidat 2.500 TL civarında. Takas düşünmüyorum, nakit satış yapıyorum.</p>
+                                    </div>
+                                </div>
+
+                                <div class="border rounded p-3 mb-3">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <div class="bg-light rounded-circle p-2 me-2">
+                                            <i class="bi bi-person"></i>
+                                        </div>
+                                        <div>
+                                            <strong>Zeynep K.</strong>
+                                            <span class="text-muted small ms-2">3 saat önce</span>
+                                        </div>
+                                    </div>
+                                    <p class="mb-0">Pazarlık payı var mı?</p>
+                                </div>
+                            </div>
+
+                            <form>
+                                <div class="mb-3">
+                                    <textarea class="form-control" rows="3" placeholder="Sorunuzu buraya yazın..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send me-1"></i> Soru Gönder
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card mb-4 d-lg-none">
+                        <div class="card-body">
+                            <div class="product-price h3 text-primary fw-bold mb-3">
+                                @Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-cta btn-lg">
+                                    <i class="bi bi-telephone me-2"></i>Ara
+                                </button>
+                                <button type="button" class="btn btn-outline-primary">
+                                    <i class="bi bi-chat me-2"></i>Mesaj Gönder
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="seller-card mb-4">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="seller-avatar me-3">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div>
+                                <div class="seller-name">@(Model.SaticiAd ?? "Satıcı")</div>
+                                <div class="seller-since">
+                                    <i class="bi bi-patch-check-fill text-primary me-1"></i>
+                                    Üye: Mart 2019
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-3 mb-4 text-center">
+                            <div class="flex-fill p-2 bg-light rounded">
+                                <div class="h5 mb-0 text-primary">24</div>
+                                <small class="text-muted">Aktif İlan</small>
+                            </div>
+                            <div class="flex-fill p-2 bg-light rounded">
+                                <div class="h5 mb-0 text-primary">4.8</div>
+                                <small class="text-muted">Puan</small>
+                            </div>
+                            <div class="flex-fill p-2 bg-light rounded">
+                                <div class="h5 mb-0 text-primary">156</div>
+                                <small class="text-muted">Satış</small>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-cta btn-lg">
+                                <i class="bi bi-telephone me-2"></i>0555 123 45 67
+                            </button>
+                            <button type="button" class="btn btn-outline-primary">
+                                <i class="bi bi-chat me-2"></i>Mesaj Gönder
+                            </button>
+                            <a asp-controller="Listings" asp-action="Index" class="btn btn-outline-secondary">
+                                <i class="bi bi-grid me-2"></i>Diğer İlanlarını Gör
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="mb-3"><i class="bi bi-shield-check text-success me-2"></i>Güvenlik İpuçları</h6>
+                            <ul class="list-unstyled mb-0 small text-muted">
+                                <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Ürünü görmeden ödeme yapmayın</li>
+                                <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Şüpheli ilanları bize bildirin</li>
+                                <li class="mb-2"><i class="bi bi-check text-success me-1"></i>Halka açık yerlerde buluşun</li>
+                                <li><i class="bi bi-check text-success me-1"></i>Bankaya özel bilgi vermeyin</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="button" class="btn btn-link text-muted">
+                            <i class="bi bi-flag me-1"></i>İlanı Şikayet Et
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
 
 @section Scripts {
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Thumbnail click handler
-        const thumbs = document.querySelectorAll('.gallery-thumbs img');
-        thumbs.forEach(thumb => {
-            thumb.addEventListener('click', function () {
-                thumbs.forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const thumbs = document.querySelectorAll('.gallery-thumbs img');
+            thumbs.forEach(thumb => {
+                thumb.addEventListener('click', function () {
+                    thumbs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                });
             });
-        });
 
-        // Sync carousel with thumbnails
-        const carousel = document.getElementById('productCarousel');
-        if (carousel) {
-            carousel.addEventListener('slid.bs.carousel', function (e) {
-                thumbs.forEach(t => t.classList.remove('active'));
-                if (thumbs[e.to]) thumbs[e.to].classList.add('active');
-            });
-        }
+            const carousel = document.getElementById('productCarousel');
+            if (carousel) {
+                carousel.addEventListener('slid.bs.carousel', function (e) {
+                    thumbs.forEach(t => t.classList.remove('active'));
+                    if (thumbs[e.to]) thumbs[e.to].classList.add('active');
+                });
+            }
 
-        // Favorite Toggle
-        const btnFav = document.getElementById('btn-toggle-favorite');
-        if(btnFav) {
-            btnFav.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const icon = this.querySelector('i');
-                const textSpan = document.getElementById('fav-text');
-                const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const mapElement = document.getElementById('map');
+            if (mapElement && window.L) {
+                const map = L.map('map').setView([40.9863, 29.0296], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
 
-                // Optimistic UI update
-                const wasFavorite = this.classList.contains('btn-danger');
-                
-                // Toggle UI
-                // We'll revert if error
-                if(!wasFavorite) {
-                    this.classList.remove('btn-outline-secondary');
-                    this.classList.add('btn-danger');
-                    icon.classList.remove('bi-heart');
-                    icon.classList.add('bi-heart-fill');
-                    textSpan.textContent = "Favorilerden Çıkar";
-                } else {
-                    this.classList.remove('btn-danger');
-                    this.classList.add('btn-outline-secondary');
-                    icon.classList.remove('bi-heart-fill');
-                    icon.classList.add('bi-heart');
-                    textSpan.textContent = "Favorilere Ekle";
-                }
+                L.circle([40.9863, 29.0296], {
+                    color: '#0D6EFD',
+                    fillColor: '#0D6EFD',
+                    fillOpacity: 0.2,
+                    radius: 200
+                }).addTo(map);
+            }
 
-                // Send Request
-                fetch('/Favorites/Toggle', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'RequestVerificationToken': token
-                    },
-                    body: `ilanId=${id}`
-                })
-                .then(response => {
-                    if(response.status === 401) {
-                         window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
-                         throw new Error('Unauthorized');
-                    }
-                    if(!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    // Ideally sync state with data.isFavorite
-                    if(data.isFavorite) {
+            const btnFav = document.getElementById('btn-toggle-favorite');
+            if (btnFav) {
+                btnFav.addEventListener('click', function () {
+                    const id = this.dataset.id;
+                    const icon = this.querySelector('i');
+                    const textSpan = document.getElementById('fav-text');
+                    const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
+                    if (!tokenInput) return;
+                    const token = tokenInput.value;
+
+                    const wasFavorite = this.classList.contains('btn-danger');
+
+                    if (!wasFavorite) {
                         this.classList.remove('btn-outline-secondary');
                         this.classList.add('btn-danger');
                         icon.classList.remove('bi-heart');
@@ -275,16 +345,46 @@
                         icon.classList.add('bi-heart');
                         textSpan.textContent = "Favorilere Ekle";
                     }
-                })
-                .catch(error => {
-                    if(error.message !== 'Unauthorized') {
-                        alert('İşlem sırasında bir hata oluştu');
-                        // Revert UI if needed (simple reload or logical revert)
-                        location.reload(); 
-                    }
+
+                    fetch('/Favorites/Toggle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `ilanId=${id}`
+                    })
+                    .then(response => {
+                        if (response.status === 401) {
+                             window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                             throw new Error('Unauthorized');
+                        }
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.isFavorite) {
+                            this.classList.remove('btn-outline-secondary');
+                            this.classList.add('btn-danger');
+                            icon.classList.remove('bi-heart');
+                            icon.classList.add('bi-heart-fill');
+                            textSpan.textContent = "Favorilerden Çıkar";
+                        } else {
+                            this.classList.remove('btn-danger');
+                            this.classList.add('btn-outline-secondary');
+                            icon.classList.remove('bi-heart-fill');
+                            icon.classList.add('bi-heart');
+                            textSpan.textContent = "Favorilere Ekle";
+                        }
+                    })
+                    .catch(error => {
+                        if (error.message !== 'Unauthorized') {
+                            alert('İşlem sırasında bir hata oluştu');
+                            location.reload();
+                        }
+                    });
                 });
-            });
-        }
-    });
-</script>
+            }
+        });
+    </script>
 }
