@@ -19,12 +19,12 @@ jobs:
         dotnet-version: 8.0.x
         
     - name: Restore dependencies
-      run: dotnet restore
+      run: dotnet restore KKTCSatiyorum.sln
       
     - name: Build
       # Note: Not using /warnaserror yet due to existing warnings. Fix warnings to uncomment.
-      # run: dotnet build --no-restore --configuration Release /warnaserror
-      run: dotnet build --no-restore --configuration Release
+      # run: dotnet build KKTCSatiyorum.sln --no-restore --configuration Release /warnaserror
+      run: dotnet build KKTCSatiyorum.sln --no-restore --configuration Release
       
     # Uncomment when tests are added
     # - name: Test
