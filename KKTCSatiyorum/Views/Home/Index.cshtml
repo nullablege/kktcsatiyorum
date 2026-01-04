@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
+    var hasCategories = Model.Categories != null && Model.Categories.Count > 0;
 }
-@if (Model.Categories.Count > 0)
+@if (hasCategories)
 {
     <partial name="Partials/_HomeCategoryQuickLinks" model="Model.Categories" />
 }
@@ -13,13 +14,13 @@
         <div class="container-fluid px-3">
             <div class="row g-2">
 
-@if (Model.Categories.Count > 0)
+@if (hasCategories)
 {
     <partial name="Partials/_HomeCategorySidebar" model="Model.Categories" />
 }
 
                 <!-- MAIN CONTENT AREA -->
-                <div class="col-lg-10 col-md-9">
+                <div class="@(hasCategories ? "col-lg-10 col-md-9" : "col-12")">
 
                                         <!-- Vitrin Section -->
                     <section class="content-section">
