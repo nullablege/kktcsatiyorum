@@ -33,24 +33,25 @@
                                     class="bi bi-chevron-right"></i></a>
                         </div>
 
-                        <!-- Compact Product Grid -->
-                        <div class="row g-2">
-                            @foreach (var item in Model.FeaturedListings)
-                            {
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                    <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="card card-product-compact">
-                                        <div class="card-img-wrapper">
-                                            <img src="@item.KapakFotoUrl" alt="@item.Baslik">
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
-                                            <div class="product-location">@(item.Sehir ?? "KKTC")</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                        @if (Model.FeaturedListings.Count > 0)
+                        {
+                            <div class="row g-2">
+                                @foreach (var item in Model.FeaturedListings)
+                                {
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                        <partial name="Partials/_ListingCardCompact" model="item" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-star fs-1 d-block mb-2"></i>
+                                <p class="mb-2">Henüz vitrin ilanı yok.</p>
+                                <a asp-controller="Listings" asp-action="Index" class="btn btn-outline-primary btn-sm">Tüm İlanları Gör</a>
+                            </div>
+                        }
                     </section>
 
                                         <!-- Son Eklenenler Section -->
@@ -63,24 +64,25 @@
                                     class="bi bi-chevron-right"></i></a>
                         </div>
 
-                        <!-- Compact Product Grid -->
-                        <div class="row g-2">
-                            @foreach (var item in Model.LatestListings)
-                            {
-                                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                    <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="card card-product-compact">
-                                        <div class="card-img-wrapper">
-                                            <img src="@item.KapakFotoUrl" alt="@item.Baslik">
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
-                                            <div class="product-location">@(item.Sehir ?? "KKTC")</div>
-                                        </div>
-                                    </a>
-                                </div>
-                            }
-                        </div>
+                        @if (Model.LatestListings.Count > 0)
+                        {
+                            <div class="row g-2">
+                                @foreach (var item in Model.LatestListings)
+                                {
+                                    <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                        <partial name="Partials/_ListingCardCompact" model="item" />
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="text-center text-muted py-4">
+                                <i class="bi bi-clock fs-1 d-block mb-2"></i>
+                                <p class="mb-2">Henüz ilan eklenmemiş.</p>
+                                <a asp-controller="Listings" asp-action="Index" class="btn btn-outline-primary btn-sm">Tüm İlanları Gör</a>
+                            </div>
+                        }
                     </section>
 
                     <!-- Emlak Section -->
@@ -97,25 +99,7 @@
                             @foreach (var item in Model.LatestListings.Take(6))
                             {
                                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                    <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="card card-product-compact">
-                                        <div class="card-img-wrapper">
-                                            @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
-                                            {
-                                                <img src="@item.KapakFotoUrl" alt="@item.Baslik">
-                                            }
-                                            else
-                                            {
-                                                <div class="bg-light d-flex align-items-center justify-content-center h-100">
-                                                    <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
-                                                </div>
-                                            }
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
-                                            <div class="product-location">@(item.Sehir ?? "KKTC")</div>
-                                        </div>
-                                    </a>
+                                    <partial name="Partials/_ListingCardCompact" model="item" />
                                 </div>
                             }
                         </div>
