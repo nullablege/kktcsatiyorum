@@ -92,7 +92,16 @@
                                 <div class="col-6 col-sm-4 col-md-3 col-lg-2">
                                     <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="card card-product-compact">
                                         <div class="card-img-wrapper">
-                                            <img src="@item.KapakFotoUrl" alt="@item.Baslik">
+                                            @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
+                                            {
+                                                <img src="@item.KapakFotoUrl" alt="@item.Baslik">
+                                            }
+                                            else
+                                            {
+                                                <div class="bg-light d-flex align-items-center justify-content-center h-100">
+                                                    <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                                                </div>
+                                            }
                                         </div>
                                         <div class="card-body">
                                             <div class="product-title">@item.Baslik</div>
