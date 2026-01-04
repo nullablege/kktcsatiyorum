@@ -223,6 +223,7 @@
                             <input type="hidden" asp-for="Boylam" id="boylamInput" />
                             <div id="locationMap" class="map-container mb-3"></div>
                             <button type="button" class="btn btn-outline-primary mb-3" id="findMyLocationBtn"><i class="bi bi-geo me-2"></i>Konumumu Bul</button>
+                            <div id="geoError" class="alert alert-warning d-none" role="alert"></div>
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)"><i class="bi bi-arrow-left me-1"></i> Geri</button>
                                 <button type="button" class="btn btn-primary" onclick="goToStep(5)">Devam Et <i class="bi bi-arrow-right ms-1"></i></button>
@@ -317,21 +318,36 @@
                     });
                     
                     document.getElementById('findMyLocationBtn').addEventListener('click', function() {
+                        const geoErr = document.getElementById('geoError');
                         if (!navigator.geolocation) {
-                            alert('Tarayıcınız konum özelliğini desteklemiyor.');
+                            if (geoErr) { geoErr.textContent = 'Tarayıcınız konum özelliğini desteklemiyor.'; geoErr.classList.remove('d-none'); }
+                            return;
+                        }
+                        if (!map) {
+                            if (geoErr) { geoErr.textContent = 'Harita yüklenemedi.'; geoErr.classList.remove('d-none'); }
                             return;
                         }
                         navigator.geolocation.getCurrentPosition(
                             function(position) {
+                                if (geoErr) { geoErr.classList.add('d-none'); geoErr.textContent = ''; }
                                 const lat = position.coords.latitude;
                                 const lng = position.coords.longitude;
                                 map.setView([lat, lng], 13);
-                                marker.setLatLng([lat, lng]);
+                                if (marker) {
+                                    marker.setLatLng([lat, lng]);
+                                } else {
+                                    marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                                    marker.on('dragend', function(e) {
+                                        const pos = marker.getLatLng();
+                                        document.getElementById('enlemInput').value = formatCoord(pos.lat);
+                                        document.getElementById('boylamInput').value = formatCoord(pos.lng);
+                                    });
+                                }
                                 document.getElementById('enlemInput').value = formatCoord(lat);
                                 document.getElementById('boylamInput').value = formatCoord(lng);
                             },
                             function(error) {
-                                alert('Konum alınamadı. Lütfen konum iznini kontrol edin.');
+                                if (geoErr) { geoErr.textContent = 'Konum alınamadı. Lütfen konum iznini kontrol edin.'; geoErr.classList.remove('d-none'); }
                             },
                             { enableHighAccuracy: true, timeout: 8000 }
                         );
