@@ -25,6 +25,15 @@ namespace KKTCSatiyorum.Areas.Member.Models.MyListings
         [Display(Name = "Şehir")]
         public string Sehir { get; set; } = "";
 
+        [Display(Name = "İlçe")]
+        public string Ilce { get; set; } = "";
+
+        [Display(Name = "Enlem")]
+        public decimal? Enlem { get; set; }
+
+        [Display(Name = "Boylam")]
+        public decimal? Boylam { get; set; }
+
         public List<AttributeInputModel> Attributes { get; set; } = new();
 
         public IReadOnlyList<SelectListItem> KategoriOptions { get; set; } = Array.Empty<SelectListItem>();

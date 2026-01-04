@@ -64,11 +64,23 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
-                            <input asp-for="Sehir" class="form-control" />
-                            <span asp-validation-for="Sehir" class="text-danger"></span>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
+                                <input asp-for="Sehir" class="form-control" />
+                                <span asp-validation-for="Sehir" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Ilce" class="form-label fw-bold">İlçe</label>
+                                <input asp-for="Ilce" class="form-control" />
+                                <span asp-validation-for="Ilce" class="text-danger"></span>
+                            </div>
                         </div>
+                        <input asp-for="Enlem" type="hidden" />
+                        <input asp-for="Boylam" type="hidden" />
+                        <div class="text-muted small mb-2">Seçili konum: <span id="editLocationDisplay">@(Model.Enlem.HasValue && Model.Boylam.HasValue ? $"{Model.Enlem.Value:F6}, {Model.Boylam.Value:F6}" : "Henüz seçilmedi")</span></div>
+                        <div id="editLocationMap" class="map-container mb-3"></div>
+                        <div class="text-muted small mb-4">Haritaya tıklayarak veya konumunuzu paylaşarak ilanın konumunu güncelleyebilirsiniz.</div>
 
                         <!-- Dinamik EAV Alanları -->
                         <div id="dynamicAttributesContainer" class="mb-4" style="@(Model.KategoriId > 0 ? "display:block" : "display:none")">
@@ -175,9 +187,67 @@
     </div>
 </div>
 
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
+        const defaultLat = 41.04, defaultLng = 29.01;
+        const initialLat = @((Model.Enlem.HasValue ? Model.Enlem.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"));
+        const initialLng = @((Model.Boylam.HasValue ? Model.Boylam.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"));
+        let editMap = null, editMarker = null;
+
+        function initEditMap() {
+            const lat = initialLat ?? defaultLat;
+            const lng = initialLng ?? defaultLng;
+
+            editMap = L.map('editLocationMap').setView([lat, lng], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(editMap);
+            editMap.on('click', e => updateEditLocation(e.latlng.lat, e.latlng.lng));
+
+            updateEditLocation(lat, lng);
+
+            if (!initialLat || !initialLng) {
+                tryEditLocate();
+            }
+        }
+
+        function tryEditLocate() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                editMap.setView([lat, lng], 14);
+                updateEditLocation(lat, lng);
+            });
+        }
+
+        function updateEditLocation(lat, lng) {
+            if (!editMap) return;
+            if (!editMarker) {
+                editMarker = L.marker([lat, lng], { draggable: true }).addTo(editMap);
+                editMarker.on('dragend', () => {
+                    const pos = editMarker.getLatLng();
+                    setEditLocationFields(pos.lat, pos.lng);
+                });
+            } else {
+                editMarker.setLatLng([lat, lng]);
+            }
+            setEditLocationFields(lat, lng);
+        }
+
+        function setEditLocationFields(lat, lng) {
+            const latInput = document.getElementById('Enlem');
+            const lngInput = document.getElementById('Boylam');
+            const display = document.getElementById('editLocationDisplay');
+            if (latInput) latInput.value = lat.toFixed(6);
+            if (lngInput) lngInput.value = lng.toFixed(6);
+            if (display) display.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
+        }
+
         const VeriTipi = {
             Metin: @((int)VeriTipi.Metin),
             TamSayi: @((int)VeriTipi.TamSayi),
@@ -266,5 +336,7 @@
                 </div>
             `;
         }
+
+        initEditMap();
     </script>
 }

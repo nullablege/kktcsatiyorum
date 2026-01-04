@@ -157,7 +157,15 @@
                                     <input asp-for="Sehir" class="form-control" />
                                     <span asp-validation-for="Sehir" class="text-danger small"></span>
                                 </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Ilce" class="form-label">İlçe</label>
+                                    <input asp-for="Ilce" class="form-control" />
+                                    <span asp-validation-for="Ilce" class="text-danger small"></span>
+                                </div>
                             </div>
+                            <input asp-for="Enlem" type="hidden" />
+                            <input asp-for="Boylam" type="hidden" />
+                            <div class="text-muted small mb-2">Seçili konum: <span id="locationDisplay">Henüz seçilmedi</span></div>
                             <div id="locationMap" class="map-container mb-3"></div>
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)"><i class="bi bi-arrow-left me-1"></i> Geri</button>
@@ -206,7 +214,11 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let currentStep = @initialStep, map = null;
+        let currentStep = @initialStep, map = null, marker = null;
+        const defaultLat = 41.04, defaultLng = 29.01;
+        const initialLat = @((Model.Enlem.HasValue ? Model.Enlem.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"));
+        const initialLng = @((Model.Boylam.HasValue ? Model.Boylam.Value.ToString(System.Globalization.CultureInfo.InvariantCulture) : "null"));
+
         function goToStep(step) {
             document.getElementById('step' + currentStep).style.display = 'none';
             document.getElementById('step' + step).style.display = 'block';
@@ -218,12 +230,56 @@
             });
             currentStep = step;
             if (step === 4 && !map) {
-                setTimeout(() => {
-                    map = L.map('locationMap').setView([41.04, 29.01], 14);
-                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                    L.marker([41.04, 29.01], { draggable: true }).addTo(map);
-                }, 100);
+                setTimeout(initMap, 100);
             }
+        }
+
+        function initMap() {
+            const lat = initialLat ?? defaultLat;
+            const lng = initialLng ?? defaultLng;
+
+            map = L.map('locationMap').setView([lat, lng], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            map.on('click', e => updateLocation(e.latlng.lat, e.latlng.lng));
+
+            updateLocation(lat, lng);
+
+            if (!initialLat || !initialLng) {
+                tryLocate();
+            }
+        }
+
+        function tryLocate() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                map.setView([lat, lng], 14);
+                updateLocation(lat, lng);
+            });
+        }
+
+        function updateLocation(lat, lng) {
+            if (!map) return;
+            if (!marker) {
+                marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+                marker.on('dragend', () => {
+                    const pos = marker.getLatLng();
+                    setLocationFields(pos.lat, pos.lng);
+                });
+            } else {
+                marker.setLatLng([lat, lng]);
+            }
+            setLocationFields(lat, lng);
+        }
+
+        function setLocationFields(lat, lng) {
+            const latInput = document.getElementById('Enlem');
+            const lngInput = document.getElementById('Boylam');
+            const display = document.getElementById('locationDisplay');
+            if (latInput) latInput.value = lat.toFixed(6);
+            if (lngInput) lngInput.value = lng.toFixed(6);
+            if (display) display.textContent = `${lat.toFixed(6)}, ${lng.toFixed(6)}`;
         }
         function selectCategory(el) {
             document.querySelectorAll('.category-card').forEach(e => e.classList.remove('active'));
