@@ -110,6 +110,7 @@ else
                                     <i class="bi @(isFavorite ? "bi-heart-fill" : "bi-heart")"></i> <span id="fav-text">@(isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle")</span>
                                 </button>
                                 @Html.AntiForgeryToken()
+                                <div id="favError" class="alert alert-warning py-2 small d-none mt-2 mb-0"></div>
                             </div>
 
                             <div class="product-price display-5 text-primary fw-bold mb-4">
@@ -339,6 +340,10 @@ else
 
             const btnFav = document.getElementById('btn-toggle-favorite');
             if (btnFav) {
+                const favToggleUrl = '@Url.Action("Toggle", "Favorites")';
+                const loginUrl = '@Url.Action("Login", "Account")';
+                const favErrorEl = document.getElementById('favError');
+
                 btnFav.addEventListener('click', function () {
                     const id = this.dataset.id;
                     const icon = this.querySelector('i');
@@ -346,6 +351,9 @@ else
                     const tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
                     if (!tokenInput) return;
                     const token = tokenInput.value;
+
+                    favErrorEl.classList.add('d-none');
+                    favErrorEl.textContent = '';
 
                     const wasFavorite = this.classList.contains('btn-danger');
 
@@ -363,7 +371,7 @@ else
                         textSpan.textContent = "Favorilere Ekle";
                     }
 
-                    fetch('/Favorites/Toggle', {
+                    fetch(favToggleUrl, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/x-www-form-urlencoded',
@@ -373,7 +381,7 @@ else
                     })
                     .then(response => {
                         if (response.status === 401) {
-                             window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                             window.location.href = `${loginUrl}?returnUrl=${encodeURIComponent(window.location.pathname)}`;
                              throw new Error('Unauthorized');
                         }
                         if (!response.ok) throw new Error('Network response was not ok');
@@ -396,8 +404,21 @@ else
                     })
                     .catch(error => {
                         if (error.message !== 'Unauthorized') {
-                            alert('İşlem sırasında bir hata oluştu');
-                            location.reload();
+                            if (wasFavorite) {
+                                this.classList.remove('btn-outline-secondary');
+                                this.classList.add('btn-danger');
+                                icon.classList.remove('bi-heart');
+                                icon.classList.add('bi-heart-fill');
+                                textSpan.textContent = "Favorilerden Çıkar";
+                            } else {
+                                this.classList.remove('btn-danger');
+                                this.classList.add('btn-outline-secondary');
+                                icon.classList.remove('bi-heart-fill');
+                                icon.classList.add('bi-heart');
+                                textSpan.textContent = "Favorilere Ekle";
+                            }
+                            favErrorEl.textContent = 'İşlem sırasında bir hata oluştu. Lütfen tekrar deneyin.';
+                            favErrorEl.classList.remove('d-none');
                         }
                     });
                 });
