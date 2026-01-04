@@ -247,7 +247,9 @@ namespace DataAccessLayer.Concrete
                 ilan.OlusturmaTarihi,
                 ilan.SahipKullanici?.AdSoyad,
                 fotograflar,
-                attributes
+                attributes,
+                ilan.Enlem,
+                ilan.Boylam
             );
         }
 

@@ -13,7 +13,9 @@ namespace EntityLayer.DTOs.Public
         DateTime OlusturmaTarihi,
         string? SaticiAd,
         List<PhotoDto> Fotograflar,
-        List<AttributeValueDisplayDto> Attributes
+        List<AttributeValueDisplayDto> Attributes,
+        decimal? Enlem,
+        decimal? Boylam
     );
 
     public sealed record PhotoDto(string Url, bool KapakMi, int SiraNo);

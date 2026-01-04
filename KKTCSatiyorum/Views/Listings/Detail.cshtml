@@ -1,5 +1,6 @@
 @model ListingDetailDto
 @using EntityLayer.Enums
+@using System.Globalization
 @{
     var listing = Model;
     ViewData["Title"] = listing?.Baslik ?? "İlan bulunamadı";
@@ -140,10 +141,19 @@ else
                     <div class="card mb-4">
                         <div class="card-body">
                             <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i>Konum</h5>
-                            <div id="map" class="map-container"></div>
-                            <p class="text-muted small mt-2 mb-0">
-                                <i class="bi bi-info-circle me-1"></i>Haritadaki konum yaklaşık olarak gösterilmektedir.
-                            </p>
+                            @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
+                            {
+                                <div id="map" class="map-container"></div>
+                                <p class="text-muted small mt-2 mb-0">
+                                    <i class="bi bi-info-circle me-1"></i>Haritadaki konum yaklaşık olarak gösterilmektedir.
+                                </p>
+                            }
+                            else
+                            {
+                                <div class="alert alert-info mb-0">
+                                    <i class="bi bi-info-circle me-1"></i>Bu ilan için konum bilgisi eklenmemiş.
+                                </div>
+                            }
                         </div>
                     </div>
 
@@ -305,19 +315,26 @@ else
                 });
             }
 
-            const mapElement = document.getElementById('map');
-            if (mapElement && window.L) {
-                const map = L.map('map').setView([40.9863, 29.0296], 15);
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
+            @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
+            {
+                <text>
+                const lat = parseFloat('@Model.Enlem.Value.ToString(CultureInfo.InvariantCulture)');
+                const lng = parseFloat('@Model.Boylam.Value.ToString(CultureInfo.InvariantCulture)');
+                const mapElement = document.getElementById('map');
+                if (mapElement && window.L) {
+                    const map = L.map('map').setView([lat, lng], 15);
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
 
-                L.circle([40.9863, 29.0296], {
-                    color: '#0D6EFD',
-                    fillColor: '#0D6EFD',
-                    fillOpacity: 0.2,
-                    radius: 200
-                }).addTo(map);
+                    L.circle([lat, lng], {
+                        color: '#0D6EFD',
+                        fillColor: '#0D6EFD',
+                        fillOpacity: 0.2,
+                        radius: 200
+                    }).addTo(map);
+                }
+                </text>
             }
 
             const btnFav = document.getElementById('btn-toggle-favorite');
