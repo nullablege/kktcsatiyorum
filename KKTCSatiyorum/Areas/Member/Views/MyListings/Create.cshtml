@@ -7,10 +7,12 @@
     var hasGeneralError = ViewData.ModelState.ContainsKey(string.Empty) && ViewData.ModelState[string.Empty]?.Errors.Count > 0;
     var hasPhotosError = ViewData.ModelState.ContainsKey("photos") && ViewData.ModelState["photos"]?.Errors.Count > 0;
     var hasSehirError = ViewData.ModelState.ContainsKey("Sehir") && ViewData.ModelState["Sehir"]?.Errors.Count > 0;
+    var hasAttributesError = false;
+    foreach (var key in ViewData.ModelState.Keys) { if (key.StartsWith("Attributes")) { hasAttributesError = true; break; } }
     var hasStep2Error = (ViewData.ModelState.ContainsKey("Baslik") && ViewData.ModelState["Baslik"]?.Errors.Count > 0) ||
                         (ViewData.ModelState.ContainsKey("Fiyat") && ViewData.ModelState["Fiyat"]?.Errors.Count > 0) ||
                         (ViewData.ModelState.ContainsKey("ParaBirimi") && ViewData.ModelState["ParaBirimi"]?.Errors.Count > 0) ||
-                        ViewData.ModelState.Keys.Any(k => k.StartsWith("Attributes"));
+                        hasAttributesError;
     
     int initialStep;
     if (hasGeneralError) { initialStep = 5; }
