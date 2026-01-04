@@ -3,127 +3,14 @@
     ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
-    <!-- Secondary Nav - Category Quick Links -->
-    <nav class="secondary-nav">
-        <div class="container-fluid px-3">
-            <div class="secondary-nav-inner">
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Emlak</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Vasıta</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Yedek Parça</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İkinci El</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Elektronik</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş Makineleri</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ustalar</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş İlanları</a>
-                <span class="secondary-nav-divider"></span>
-                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori İlanlarım</a>
-                <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori Aramalarım</a>
-            </div>
-        </div>
-    </nav>
+<partial name="Partials/_HomeCategoryQuickLinks" />
 
     <!-- Main Content with Sidebar Layout -->
     <main class="main-content">
         <div class="container-fluid px-3">
             <div class="row g-2">
 
-                <!-- LEFT SIDEBAR - Category Tree -->
-                <aside class="col-lg-2 col-md-3 d-none d-md-block">
-                    <div class="sidebar-categories">
-                        <!-- Quick Filters -->
-                        <div class="sidebar-section">
-                            <a asp-controller="Listings" asp-action="Index" class="quick-link"><i class="bi bi-exclamation-circle"></i> Acil Acil</a>
-                            <a asp-controller="Listings" asp-action="Index" class="quick-link"><i class="bi bi-clock"></i> Son 48 Saat / <span
-                                    class="text-primary">1 Hafta</span> / <span>1 Ay</span></a>
-                        </div>
-
-                        <!-- Emlak Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-house-door"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Emlak</a>
-                                <span class="category-count">(12.450)</span>
-                            </div>
-                            <ul class="subcategory-list">
-                                <li><a asp-controller="Listings" asp-action="Index">Konut <span>(8.540)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">İş Yeri <span>(1.890)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Arsa <span>(1.250)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Bina <span>(420)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Devre Mülk <span>(350)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Vasıta Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-car-front"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Vasıta</a>
-                                <span class="category-count">(8.320)</span>
-                            </div>
-                            <ul class="subcategory-list">
-                                <li><a asp-controller="Listings" asp-action="Index">Otomobil <span>(5.780)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Arazi, SUV & Pickup <span>(1.240)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Motosiklet <span>(680)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Minivan & Panelvan <span>(420)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Ticari Araçlar <span>(200)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index" class="show-more">Tümünü Göster <i class="bi bi-chevron-down"></i></a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <!-- Elektronik Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-phone"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Elektronik</a>
-                                <span class="category-count">(15.780)</span>
-                            </div>
-                            <ul class="subcategory-list">
-                                <li><a asp-controller="Listings" asp-action="Index">Cep Telefonu <span>(6.450)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Bilgisayar <span>(4.320)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Oyun & Konsol <span>(2.150)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">TV & Ses Sistemleri <span>(1.860)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Foto & Kamera <span>(1.000)</span></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- Ev & Yaşam Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-lamp"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Ev & Yaşam</a>
-                                <span class="category-count">(6.940)</span>
-                            </div>
-                            <ul class="subcategory-list">
-                                <li><a asp-controller="Listings" asp-action="Index">Mobilya <span>(2.890)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Beyaz Eşya <span>(1.560)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Mutfak <span>(1.240)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Bahçe <span>(750)</span></a></li>
-                                <li><a asp-controller="Listings" asp-action="Index">Dekorasyon <span>(500)</span></a></li>
-                            </ul>
-                        </div>
-
-                        <!-- İş Makineleri Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-truck"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">İş Makineleri</a>
-                                <span class="category-count">(2.150)</span>
-                            </div>
-                        </div>
-
-                        <!-- Diğer Category -->
-                        <div class="sidebar-section">
-                            <div class="category-header">
-                                <i class="bi bi-grid-3x3-gap"></i>
-                                <a asp-controller="Listings" asp-action="Index" class="category-main">Diğer</a>
-                                <span class="category-count">(4.680)</span>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
+<partial name="Partials/_HomeCategorySidebar" />
 
                 <!-- MAIN CONTENT AREA -->
                 <div class="col-lg-10 col-md-9">
