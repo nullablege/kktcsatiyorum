@@ -121,6 +121,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 Fiyat = request.Fiyat,
                 ParaBirimi = request.ParaBirimi,
                 Sehir = request.Sehir?.Trim(),
+                Ilce = request.Ilce?.Trim(),
+                Enlem = request.Enlem,
+                Boylam = request.Boylam,
                 Durum = IlanDurumu.OnayBekliyor,
                 OlusturmaTarihi = DateTime.UtcNow
             };
@@ -519,6 +522,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.Fiyat,
                 ilan.ParaBirimi,
                 ilan.Sehir,
+                ilan.Ilce,
+                ilan.Enlem,
+                ilan.Boylam,
                 attributes,
                 ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList()
             );
@@ -546,6 +552,8 @@ namespace BusinessLayer.Features.Ilanlar.Services
             // Basic Validation
             if (string.IsNullOrWhiteSpace(request.Baslik)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Başlık zorunludur.");
             if (request.Fiyat < 0) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Fiyat 0'dan küçük olamaz.");
+            if (request.Enlem.HasValue && (request.Enlem < -90 || request.Enlem > 90)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçerli bir enlem değeri giriniz.");
+            if (request.Boylam.HasValue && (request.Boylam < -180 || request.Boylam > 180)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçerli bir boylam değeri giriniz.");
 
             var inputAttributes = request.Attributes ?? new List<AttributeValueInput>();
 
@@ -584,12 +592,16 @@ namespace BusinessLayer.Features.Ilanlar.Services
             // Check if critical fields changed
 
             // Check if critical fields changed
-            bool criticalFieldsChanged = 
+            bool criticalFieldsChanged =
                 ilan.Baslik != request.Baslik ||
                 ilan.Aciklama != request.Aciklama ||
                 ilan.Fiyat != request.Fiyat ||
                 ilan.KategoriId != request.KategoriId ||
-                ilan.ParaBirimi != request.ParaBirimi;
+                ilan.ParaBirimi != request.ParaBirimi ||
+                ilan.Sehir != request.Sehir ||
+                ilan.Ilce != request.Ilce ||
+                ilan.Enlem != request.Enlem ||
+                ilan.Boylam != request.Boylam;
             
             // Check if attributes changed
             bool attributesChanged = false;
@@ -632,6 +644,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
             ilan.Fiyat = request.Fiyat;
             ilan.ParaBirimi = request.ParaBirimi;
             ilan.Sehir = request.Sehir?.Trim();
+            ilan.Ilce = request.Ilce?.Trim();
+            ilan.Enlem = request.Enlem;
+            ilan.Boylam = request.Boylam;
             ilan.GuncellemeTarihi = DateTime.UtcNow;
 
             // Update Slug if Title changed

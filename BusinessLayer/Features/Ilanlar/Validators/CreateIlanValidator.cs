@@ -25,6 +25,15 @@ namespace BusinessLayer.Features.Ilanlar.Validators
                 .NotEmpty().WithMessage("Şehir boş olamaz.")
                 .MaximumLength(100).WithMessage("Şehir en fazla 100 karakter olabilir.");
 
+            RuleFor(x => x.Ilce)
+                .MaximumLength(120).WithMessage("İlçe en fazla 120 karakter olabilir.");
+
+            RuleFor(x => x.Enlem)
+                .InclusiveBetween(-90, 90).When(x => x.Enlem.HasValue).WithMessage("Geçerli bir enlem değeri giriniz.");
+
+            RuleFor(x => x.Boylam)
+                .InclusiveBetween(-180, 180).When(x => x.Boylam.HasValue).WithMessage("Geçerli bir boylam değeri giriniz.");
+
             RuleFor(x => x.PhotoPaths)
                 .NotEmpty().WithMessage("En az bir fotoğraf yükleyiniz.");
         }
