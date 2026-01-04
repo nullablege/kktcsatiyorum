@@ -16,6 +16,8 @@ build_debug*.txt
 error*.txt
 AGENTS.MD
 
+wwwroot/uploads/**
+
 # User-specific files
 *.rsuser
 *.suo

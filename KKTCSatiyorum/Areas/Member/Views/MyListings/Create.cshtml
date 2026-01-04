@@ -1,8 +1,23 @@
 @model KKTCSatiyorum.Areas.Member.Models.MyListings.CreateIlanViewModel
 @{
     ViewData["Title"] = "Yeni İlan Oluştur";
-        Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
-    var initialStep = Model.KategoriId > 0 ? 2 : 1;
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+    
+    
+    var hasGeneralError = ViewData.ModelState.ContainsKey(string.Empty) && ViewData.ModelState[string.Empty]?.Errors.Count > 0;
+    var hasPhotosError = ViewData.ModelState.ContainsKey("photos") && ViewData.ModelState["photos"]?.Errors.Count > 0;
+    var hasSehirError = ViewData.ModelState.ContainsKey("Sehir") && ViewData.ModelState["Sehir"]?.Errors.Count > 0;
+    var hasStep2Error = (ViewData.ModelState.ContainsKey("Baslik") && ViewData.ModelState["Baslik"]?.Errors.Count > 0) ||
+                        (ViewData.ModelState.ContainsKey("Fiyat") && ViewData.ModelState["Fiyat"]?.Errors.Count > 0) ||
+                        (ViewData.ModelState.ContainsKey("ParaBirimi") && ViewData.ModelState["ParaBirimi"]?.Errors.Count > 0) ||
+                        ViewData.ModelState.Keys.Any(k => k.StartsWith("Attributes"));
+    
+    int initialStep;
+    if (hasGeneralError) { initialStep = 5; }
+    else if (hasPhotosError) { initialStep = 3; }
+    else if (hasSehirError) { initialStep = 4; }
+    else if (hasStep2Error) { initialStep = 2; }
+    else { initialStep = Model.KategoriId > 0 ? 2 : 1; }
 }
 
 <main class="py-4">
@@ -18,6 +33,20 @@
 
                 <form asp-area="Member" asp-controller="MyListings" asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
                     @Html.AntiForgeryToken()
+
+                    @if (hasGeneralError)
+                    {
+                        <div class="alert alert-danger mb-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            <strong>İlan oluşturulamadı:</strong>
+                            <ul class="mb-0 mt-2">
+                                @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                                {
+                                    <li>@error.ErrorMessage</li>
+                                }
+                            </ul>
+                        </div>
+                    }
 
                     <div class="wizard-steps mb-4">
                         <div class="wizard-step@(initialStep > 1 ? " completed" : initialStep == 1 ? " active" : "")" data-step="1">
@@ -46,15 +75,33 @@
                             </div>
                             <span class="step-label">Detaylar</span>
                         </div>
-                        <div class="wizard-step" data-step="3">
-                            <div class="step-number">3</div>
+                        <div class="wizard-step@(initialStep > 3 ? " completed" : initialStep == 3 ? " active" : "")" data-step="3">
+                            <div class="step-number">
+                                @if (initialStep > 3)
+                                {
+                                    <i class="bi bi-check"></i>
+                                }
+                                else
+                                {
+                                    @:3
+                                }
+                            </div>
                             <span class="step-label">Fotoğraf</span>
                         </div>
-                        <div class="wizard-step" data-step="4">
-                            <div class="step-number">4</div>
+                        <div class="wizard-step@(initialStep > 4 ? " completed" : initialStep == 4 ? " active" : "")" data-step="4">
+                            <div class="step-number">
+                                @if (initialStep > 4)
+                                {
+                                    <i class="bi bi-check"></i>
+                                }
+                                else
+                                {
+                                    @:4
+                                }
+                            </div>
                             <span class="step-label">Konum</span>
                         </div>
-                        <div class="wizard-step" data-step="5">
+                        <div class="wizard-step@(initialStep == 5 ? " active" : "")" data-step="5">
                             <div class="step-number">5</div>
                             <span class="step-label">Önizleme</span>
                         </div>
@@ -130,9 +177,16 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4 step-content" id="step3" style="display: none;">
+                    <div class="card mb-4 step-content" id="step3" style="display: @(initialStep == 3 ? "block" : "none");">
                         <div class="card-body p-4">
                             <h4 class="mb-4">Fotoğraf Ekle</h4>
+                            @if (hasPhotosError)
+                            {
+                                <div class="alert alert-danger mb-3">
+                                    <i class="bi bi-exclamation-circle me-2"></i>
+                                    @ViewData.ModelState["photos"]!.Errors.FirstOrDefault()?.ErrorMessage
+                                </div>
+                            }
                             <div class="upload-zone mb-4">
                                 <i class="bi bi-cloud-arrow-up"></i>
                                 <p><strong>Fotoğrafları buraya sürükleyin</strong></p>
@@ -148,7 +202,7 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4 step-content" id="step4" style="display: none;">
+                    <div class="card mb-4 step-content" id="step4" style="display: @(initialStep == 4 ? "block" : "none");">
                         <div class="card-body p-4">
                             <h4 class="mb-4">Konum Belirle</h4>
                             <div class="row g-3 mb-4">
@@ -166,7 +220,7 @@
                         </div>
                     </div>
 
-                    <div class="card mb-4 step-content" id="step5" style="display: none;">
+                    <div class="card mb-4 step-content" id="step5" style="display: @(initialStep == 5 ? "block" : "none");">
                         <div class="card-body p-4">
                             <h4 class="mb-4">Önizleme ve Onay</h4>
                             <div class="alert alert-info d-flex align-items-center">
