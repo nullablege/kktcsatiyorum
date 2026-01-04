@@ -121,6 +121,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 Fiyat = request.Fiyat,
                 ParaBirimi = request.ParaBirimi,
                 Sehir = request.Sehir?.Trim(),
+                Ilce = request.Ilce?.Trim(),
+                Enlem = request.Enlem,
+                Boylam = request.Boylam,
                 Durum = IlanDurumu.OnayBekliyor,
                 OlusturmaTarihi = DateTime.UtcNow
             };

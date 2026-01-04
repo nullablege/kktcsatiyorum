@@ -27,6 +27,17 @@ namespace BusinessLayer.Features.Ilanlar.Validators
 
             RuleFor(x => x.PhotoPaths)
                 .NotEmpty().WithMessage("En az bir fotoğraf yükleyiniz.");
+
+            RuleFor(x => x.Ilce)
+                .MaximumLength(120).WithMessage("İlçe en fazla 120 karakter olabilir.");
+
+            RuleFor(x => x.Enlem)
+                .InclusiveBetween(-90m, 90m).WithMessage("Enlem -90 ile 90 arasında olmalıdır.")
+                .When(x => x.Enlem.HasValue);
+
+            RuleFor(x => x.Boylam)
+                .InclusiveBetween(-180m, 180m).WithMessage("Boylam -180 ile 180 arasında olmalıdır.")
+                .When(x => x.Boylam.HasValue);
         }
     }
 }

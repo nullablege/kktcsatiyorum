@@ -150,6 +150,9 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                     model.Fiyat,
                     model.ParaBirimi,
                     model.Sehir,
+                    model.Ilce,
+                    model.Enlem,
+                    model.Boylam,
                     model.Attributes.Select(a => new AttributeValueInput(a.KategoriAlaniId, a.Value)).ToList(),
                     photoPaths
                 );

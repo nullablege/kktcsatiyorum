@@ -213,7 +213,14 @@
                                     <input asp-for="Sehir" class="form-control" />
                                     <span asp-validation-for="Sehir" class="text-danger small"></span>
                                 </div>
+                                <div class="col-md-4">
+                                    <label asp-for="Ilce" class="form-label">İlçe</label>
+                                    <input asp-for="Ilce" class="form-control" />
+                                    <span asp-validation-for="Ilce" class="text-danger small"></span>
+                                </div>
                             </div>
+                            <input type="hidden" asp-for="Enlem" id="enlemInput" />
+                            <input type="hidden" asp-for="Boylam" id="boylamInput" />
                             <div id="locationMap" class="map-container mb-3"></div>
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)"><i class="bi bi-arrow-left me-1"></i> Geri</button>
@@ -275,9 +282,35 @@
             currentStep = step;
             if (step === 4 && !map) {
                 setTimeout(() => {
-                    map = L.map('locationMap').setView([41.04, 29.01], 14);
+                    const modelLat = @(Model.Enlem?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
+                    const modelLng = @(Model.Boylam?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
+                    const defaultLat = 35.185;
+                    const defaultLng = 33.382;
+                    
+                    const initLat = modelLat ?? defaultLat;
+                    const initLng = modelLng ?? defaultLng;
+                    
+                    map = L.map('locationMap').setView([initLat, initLng], 10);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                    L.marker([41.04, 29.01], { draggable: true }).addTo(map);
+                    
+                    const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+                    
+                    if (modelLat !== null && modelLng !== null) {
+                        document.getElementById('enlemInput').value = initLat.toFixed(6);
+                        document.getElementById('boylamInput').value = initLng.toFixed(6);
+                    }
+                    
+                    map.on('click', function(e) {
+                        marker.setLatLng(e.latlng);
+                        document.getElementById('enlemInput').value = e.latlng.lat.toFixed(6);
+                        document.getElementById('boylamInput').value = e.latlng.lng.toFixed(6);
+                    });
+                    
+                    marker.on('dragend', function(e) {
+                        const pos = marker.getLatLng();
+                        document.getElementById('enlemInput').value = pos.lat.toFixed(6);
+                        document.getElementById('boylamInput').value = pos.lng.toFixed(6);
+                    });
                 }, 100);
             }
         }

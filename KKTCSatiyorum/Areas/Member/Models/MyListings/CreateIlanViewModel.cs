@@ -25,6 +25,18 @@ namespace KKTCSatiyorum.Areas.Member.Models.MyListings
         [Display(Name = "Şehir")]
         public string Sehir { get; set; } = "";
 
+        [Display(Name = "İlçe")]
+        [StringLength(120, ErrorMessage = "İlçe en fazla 120 karakter olabilir.")]
+        public string? Ilce { get; set; }
+
+        [Display(Name = "Enlem")]
+        [Range(-90, 90, ErrorMessage = "Enlem -90 ile 90 arasında olmalıdır.")]
+        public decimal? Enlem { get; set; }
+
+        [Display(Name = "Boylam")]
+        [Range(-180, 180, ErrorMessage = "Boylam -180 ile 180 arasında olmalıdır.")]
+        public decimal? Boylam { get; set; }
+
         public List<AttributeInputModel> Attributes { get; set; } = new();
 
         public IReadOnlyList<SelectListItem> KategoriOptions { get; set; } = Array.Empty<SelectListItem>();
