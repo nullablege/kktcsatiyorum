@@ -282,6 +282,9 @@
             currentStep = step;
             if (step === 4 && !map) {
                 setTimeout(() => {
+                    const decimalSep = '@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator';
+                    const formatCoord = (val) => val.toFixed(6).replace('.', decimalSep);
+                    
                     const modelLat = @(Model.Enlem?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
                     const modelLng = @(Model.Boylam?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
                     const defaultLat = 35.185;
@@ -296,20 +299,20 @@
                     const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
                     
                     if (modelLat !== null && modelLng !== null) {
-                        document.getElementById('enlemInput').value = initLat.toFixed(6);
-                        document.getElementById('boylamInput').value = initLng.toFixed(6);
+                        document.getElementById('enlemInput').value = formatCoord(initLat);
+                        document.getElementById('boylamInput').value = formatCoord(initLng);
                     }
                     
                     map.on('click', function(e) {
                         marker.setLatLng(e.latlng);
-                        document.getElementById('enlemInput').value = e.latlng.lat.toFixed(6);
-                        document.getElementById('boylamInput').value = e.latlng.lng.toFixed(6);
+                        document.getElementById('enlemInput').value = formatCoord(e.latlng.lat);
+                        document.getElementById('boylamInput').value = formatCoord(e.latlng.lng);
                     });
                     
                     marker.on('dragend', function(e) {
                         const pos = marker.getLatLng();
-                        document.getElementById('enlemInput').value = pos.lat.toFixed(6);
-                        document.getElementById('boylamInput').value = pos.lng.toFixed(6);
+                        document.getElementById('enlemInput').value = formatCoord(pos.lat);
+                        document.getElementById('boylamInput').value = formatCoord(pos.lng);
                     });
                 }, 100);
             }
