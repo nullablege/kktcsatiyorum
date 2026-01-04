@@ -1,4 +1,4 @@
-﻿@model ListingsIndexViewModel
+@model ListingsIndexViewModel
 @{
     ViewData["Title"] = string.IsNullOrEmpty(Model.Query.Q) ? "İlanlar" : $"\"{Model.Query.Q}\" için Arama Sonuçları";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
@@ -11,6 +11,7 @@
     var kategoriText = Model.Query.KategoriId.HasValue
         ? Model.KategoriOptions.FirstOrDefault(x => x.Value == Model.Query.KategoriId.Value.ToString())?.Text
         : null;
+    var filtersUrl = Url.Action("GetFilters", "Listings");
 }
 
 <div class="bg-white py-3 border-bottom">
@@ -97,6 +98,7 @@
                                     <option value="500">500 km</option>
                                 </select>
                             </div>
+                            <div id="nearMeError" class="alert alert-warning py-2 small d-none mt-2 mb-0"></div>
                         </div>
 
                         <div class="filter-section">
@@ -358,6 +360,8 @@
 
 @section Scripts {
 <script>
+    const filtersUrl = '@filtersUrl';
+
     document.getElementById('kategoriSelect')?.addEventListener('change', function() {
         const kategoriId = this.value;
         const container = document.getElementById('dynamicFilters');
@@ -366,7 +370,7 @@
 
         if (!kategoriId) return;
 
-        fetch(`/ilanlar/filters?kategoriId=${kategoriId}`)
+        fetch(`${filtersUrl}?kategoriId=${encodeURIComponent(kategoriId)}`)
             .then(res => res.json())
             .then(attrs => {
                 attrs.forEach(attr => {
@@ -412,12 +416,29 @@
     const nearMeToggle = document.getElementById('nearMeToggle');
     const distanceControl = document.getElementById('distanceControl');
     const maxDistanceSelect = document.getElementById('maxDistanceSelect');
+    const nearMeError = document.getElementById('nearMeError');
+
+    function showNearMeError(msg) {
+        if (nearMeError) {
+            nearMeError.textContent = msg;
+            nearMeError.classList.remove('d-none');
+        }
+    }
+
+    function hideNearMeError() {
+        if (nearMeError) {
+            nearMeError.textContent = '';
+            nearMeError.classList.add('d-none');
+        }
+    }
 
     if (nearMeToggle) {
         nearMeToggle.addEventListener('change', function() {
             if (this.checked) {
+                hideNearMeError();
+
                 if (!navigator.geolocation) {
-                    alert('Tarayıcınız konum servisini desteklemiyor.');
+                    showNearMeError('Tarayıcınız konum servisini desteklemiyor.');
                     this.checked = false;
                     return;
                 }
@@ -427,6 +448,7 @@
 
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
+                        hideNearMeError();
                         const lat = position.coords.latitude;
                         const lng = position.coords.longitude;
 
@@ -444,7 +466,7 @@
                     },
                     (error) => {
                         console.error(error);
-                        alert('Konum alınamadı. Lütfen konum izni verdiğinizden emin olun.');
+                        showNearMeError('Konum alınamadı. Lütfen konum izni verdiğinizden emin olun.');
                         this.checked = false;
                         this.disabled = false;
                         document.body.style.cursor = 'default';
@@ -452,6 +474,7 @@
                     }
                 );
             } else {
+                hideNearMeError();
                 const form = this.closest('form');
                 if (form) {
                     form.querySelector('input[name="Query.UserLat"]').value = '';
