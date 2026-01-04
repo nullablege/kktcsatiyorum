@@ -37,7 +37,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
+                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
                                             <div class="product-location">@(item.Sehir ?? "KKTC")</div>
                                         </div>
                                     </a>
@@ -67,7 +67,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
+                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
                                             <div class="product-location">@(item.Sehir ?? "KKTC")</div>
                                         </div>
                                     </a>
@@ -105,7 +105,7 @@
                                         </div>
                                         <div class="card-body">
                                             <div class="product-title">@item.Baslik</div>
-                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
+                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
                                             <div class="product-location">@(item.Sehir ?? "KKTC")</div>
                                         </div>
                                     </a>
