@@ -201,6 +201,9 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                 Fiyat = dto.Fiyat,
                 ParaBirimi = dto.ParaBirimi,
                 Sehir = dto.Sehir ?? "",
+                Ilce = dto.Ilce,
+                Enlem = dto.Enlem,
+                Boylam = dto.Boylam,
                 CurrentPhotos = dto.Photos,
                 // Map existing attributes to input model
                 Attributes = dto.Attributes.Select(a => new AttributeInputModel 
@@ -274,6 +277,9 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
                 model.Fiyat,
                 model.ParaBirimi,
                 model.Sehir,
+                model.Ilce,
+                model.Enlem,
+                model.Boylam,
                 model.Attributes.Select(a => new AttributeValueInput(a.KategoriAlaniId, a.Value)).ToList()
             );
 

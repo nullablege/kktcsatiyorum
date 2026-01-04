@@ -64,10 +64,25 @@
                             </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
-                            <input asp-for="Sehir" class="form-control" />
-                            <span asp-validation-for="Sehir" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
+                                <input asp-for="Sehir" class="form-control" />
+                                <span asp-validation-for="Sehir" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ilce" class="form-label fw-bold">İlçe</label>
+                                <input asp-for="Ilce" class="form-control" />
+                                <span asp-validation-for="Ilce" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i>Konum (Haritadan Seçin)</h5>
+                            <input type="hidden" asp-for="Enlem" id="enlemInput" />
+                            <input type="hidden" asp-for="Boylam" id="boylamInput" />
+                            <div id="locationMap" style="height: 300px; border-radius: 8px; border: 1px solid #dee2e6;"></div>
+                            <small class="text-muted">Haritaya tıklayarak veya işaretçiyi sürükleyerek konum belirleyebilirsiniz.</small>
                         </div>
 
                         <!-- Dinamik EAV Alanları -->
@@ -175,8 +190,13 @@
     </div>
 </div>
 
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         const VeriTipi = {
             Metin: @((int)VeriTipi.Metin),
@@ -187,8 +207,6 @@
             TekSecim: @((int)VeriTipi.TekSecim)
         };
 
-        // Note: Initial render is Server Side (Razor).
-        // Client side logic handles category CHANGE.
         document.getElementById('kategoriSelect').addEventListener('change', async function() {
             const kategoriId = this.value;
             const container = document.getElementById('dynamicAttributesContainer');
@@ -199,9 +217,6 @@
                 fieldsDiv.innerHTML = '';
                 return;
             }
-
-            // Confirm if user really wants to change category (clears attributes)
-            // But for now let's just do it.
             
             try {
                 const response = await fetch(`/Member/MyListings/GetAttributesForCategory?kategoriId=${kategoriId}`);
@@ -266,5 +281,41 @@
                 </div>
             `;
         }
+
+        (function initLocationMap() {
+            const decimalSep = '@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator';
+            const formatCoord = (val) => val.toFixed(6).replace('.', decimalSep);
+            
+            const modelLat = @(Model.Enlem?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
+            const modelLng = @(Model.Boylam?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "null");
+            const defaultLat = 35.185;
+            const defaultLng = 33.382;
+            
+            const initLat = modelLat ?? defaultLat;
+            const initLng = modelLng ?? defaultLng;
+            
+            const map = L.map('locationMap').setView([initLat, initLng], modelLat !== null ? 13 : 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+            
+            const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+            
+            if (modelLat !== null && modelLng !== null) {
+                document.getElementById('enlemInput').value = formatCoord(initLat);
+                document.getElementById('boylamInput').value = formatCoord(initLng);
+            }
+            
+            map.on('click', function(e) {
+                marker.setLatLng(e.latlng);
+                document.getElementById('enlemInput').value = formatCoord(e.latlng.lat);
+                document.getElementById('boylamInput').value = formatCoord(e.latlng.lng);
+            });
+            
+            marker.on('dragend', function(e) {
+                const pos = marker.getLatLng();
+                document.getElementById('enlemInput').value = formatCoord(pos.lat);
+                document.getElementById('boylamInput').value = formatCoord(pos.lng);
+            });
+        })();
     </script>
 }
+

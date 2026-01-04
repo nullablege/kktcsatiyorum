@@ -522,6 +522,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.Fiyat,
                 ilan.ParaBirimi,
                 ilan.Sehir,
+                ilan.Ilce,
+                ilan.Enlem,
+                ilan.Boylam,
                 attributes,
                 ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList()
             );
@@ -635,6 +638,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
             ilan.Fiyat = request.Fiyat;
             ilan.ParaBirimi = request.ParaBirimi;
             ilan.Sehir = request.Sehir?.Trim();
+            ilan.Ilce = request.Ilce?.Trim();
+            ilan.Enlem = request.Enlem;
+            ilan.Boylam = request.Boylam;
             ilan.GuncellemeTarihi = DateTime.UtcNow;
 
             // Update Slug if Title changed
