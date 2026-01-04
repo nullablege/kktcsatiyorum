@@ -3,15 +3,20 @@
     ViewData["Title"] = string.IsNullOrEmpty(Model.Query.Q) ? "İlanlar" : $"\"{Model.Query.Q}\" için Arama Sonuçları";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 
+    var eavFilters = Model.Query.EavFilters ?? new Dictionary<int, string>();
+    var filledEavCount = eavFilters.Count(x => !string.IsNullOrWhiteSpace(x.Value));
     var hasFilters = !string.IsNullOrWhiteSpace(Model.Query.Q)
         || Model.Query.KategoriId.HasValue
         || !string.IsNullOrWhiteSpace(Model.Query.Sehir)
         || Model.Query.MinFiyat.HasValue
-        || Model.Query.MaxFiyat.HasValue;
+        || Model.Query.MaxFiyat.HasValue
+        || Model.Query.UserLat.HasValue
+        || filledEavCount > 0;
     var kategoriText = Model.Query.KategoriId.HasValue
         ? Model.KategoriOptions.FirstOrDefault(x => x.Value == Model.Query.KategoriId.Value.ToString())?.Text
         : null;
     var filtersUrl = Url.Action("GetFilters", "Listings");
+    var eavFiltersJson = System.Text.Json.JsonSerializer.Serialize(eavFilters);
 }
 
 <div class="bg-white py-3 border-bottom">
@@ -57,6 +62,10 @@
             <input type="hidden" asp-for="Query.UserLat" id="userLat">
             <input type="hidden" asp-for="Query.UserLng" id="userLng">
             <input type="hidden" asp-for="Query.MaxDistanceKm">
+            @foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+            {
+                <input type="hidden" name="Query.EavFilters[@eav.Key]" value="@eav.Value">
+            }
         </form>
     </div>
 </div>
@@ -121,6 +130,7 @@
                         </div>
 
                         <div id="dynamicFilters"></div>
+                        <div id="eavData" data-eav="@eavFiltersJson" class="d-none"></div>
 
                         <button class="btn btn-primary w-100" type="submit">
                             <i class="bi bi-funnel me-1"></i> Filtrele
@@ -145,6 +155,10 @@
                             <input type="hidden" asp-for="Query.UserLat">
                             <input type="hidden" asp-for="Query.UserLng">
                             <input type="hidden" asp-for="Query.MaxDistanceKm">
+                            @foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+                            {
+                                <input type="hidden" name="Query.EavFilters[@eav.Key]" value="@eav.Value">
+                            }
                             <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()"></select>
                         </form>
                         <div class="btn-group">
@@ -183,6 +197,18 @@
                         {
                             <span class="badge bg-primary d-flex align-items-center gap-1">
                                 @(Model.Query.MinFiyat?.ToString("N0") ?? "0") - @(Model.Query.MaxFiyat?.ToString("N0") ?? "∞") ₺
+                            </span>
+                        }
+                        @if (Model.Query.UserLat.HasValue)
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                <i class="bi bi-geo-alt-fill"></i> Yakınımda@(Model.Query.MaxDistanceKm.HasValue ? $" ({Model.Query.MaxDistanceKm} km)" : "")
+                            </span>
+                        }
+                        @if (filledEavCount > 0)
+                        {
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                <i class="bi bi-sliders"></i> Ek Filtreler (@filledEavCount)
                             </span>
                         }
                     </div>
@@ -245,20 +271,29 @@
 
                 @if (Model.Listings.TotalPages > 1)
                 {
+                    var baseRouteValues = new Dictionary<string, string?>
+                    {
+                        ["Query.Q"] = Model.Query.Q,
+                        ["Query.KategoriId"] = Model.Query.KategoriId?.ToString(),
+                        ["Query.Sehir"] = Model.Query.Sehir,
+                        ["Query.MinFiyat"] = Model.Query.MinFiyat?.ToString(),
+                        ["Query.MaxFiyat"] = Model.Query.MaxFiyat?.ToString(),
+                        ["Query.Sort"] = Model.Query.Sort,
+                        ["Query.UserLat"] = Model.Query.UserLat?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        ["Query.UserLng"] = Model.Query.UserLng?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        ["Query.MaxDistanceKm"] = Model.Query.MaxDistanceKm?.ToString()
+                    };
+                    foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+                    {
+                        baseRouteValues[$"Query.EavFilters[{eav.Key}]"] = eav.Value;
+                    }
                     <nav class="mt-5">
                         <ul class="pagination pagination-custom justify-content-center">
                             <li class="page-item @(!Model.Listings.HasPreviousPage ? "disabled" : "")">
-                                <a class="page-link" asp-action="Index"
-                                   asp-route-Q="@Model.Query.Q"
-                                   asp-route-KategoriId="@Model.Query.KategoriId"
-                                   asp-route-Sehir="@Model.Query.Sehir"
-                                   asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                   asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                   asp-route-Sort="@Model.Query.Sort"
-                                   asp-route-UserLat="@Model.Query.UserLat"
-                                   asp-route-UserLng="@Model.Query.UserLng"
-                                   asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                   asp-route-Page="@(Model.Listings.Page - 1)">
+                                @{
+                                    var prevRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = (Model.Listings.Page - 1).ToString() };
+                                }
+                                <a class="page-link" asp-action="Index" asp-all-route-data="prevRouteValues">
                                     <i class="bi bi-chevron-left"></i>
                                 </a>
                             </li>
@@ -270,32 +305,16 @@
                                     pageNum = Model.Listings.Page - 3 + i;
                                     if (pageNum > Model.Listings.TotalPages) continue;
                                 }
+                                var pageRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = pageNum.ToString() };
                                 <li class="page-item @(pageNum == Model.Listings.Page ? "active" : "")">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-Q="@Model.Query.Q"
-                                       asp-route-KategoriId="@Model.Query.KategoriId"
-                                       asp-route-Sehir="@Model.Query.Sehir"
-                                       asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                       asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                       asp-route-Sort="@Model.Query.Sort"
-                                       asp-route-UserLat="@Model.Query.UserLat"
-                                       asp-route-UserLng="@Model.Query.UserLng"
-                                       asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                       asp-route-Page="@pageNum">@pageNum</a>
+                                    <a class="page-link" asp-action="Index" asp-all-route-data="pageRouteValues">@pageNum</a>
                                 </li>
                             }
                             <li class="page-item @(!Model.Listings.HasNextPage ? "disabled" : "")">
-                                <a class="page-link" asp-action="Index"
-                                   asp-route-Q="@Model.Query.Q"
-                                   asp-route-KategoriId="@Model.Query.KategoriId"
-                                   asp-route-Sehir="@Model.Query.Sehir"
-                                   asp-route-MinFiyat="@Model.Query.MinFiyat"
-                                   asp-route-MaxFiyat="@Model.Query.MaxFiyat"
-                                   asp-route-Sort="@Model.Query.Sort"
-                                   asp-route-UserLat="@Model.Query.UserLat"
-                                   asp-route-UserLng="@Model.Query.UserLng"
-                                   asp-route-MaxDistanceKm="@Model.Query.MaxDistanceKm"
-                                   asp-route-Page="@(Model.Listings.Page + 1)">
+                                @{
+                                    var nextRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = (Model.Listings.Page + 1).ToString() };
+                                }
+                                <a class="page-link" asp-action="Index" asp-all-route-data="nextRouteValues">
                                     <i class="bi bi-chevron-right"></i>
                                 </a>
                             </li>
@@ -313,7 +332,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
     </div>
     <div class="offcanvas-body">
-        <form method="get" asp-controller="Listings" asp-action="Index">
+        <form method="get" asp-controller="Listings" asp-action="Index" id="offcanvasFilterForm">
             <input type="hidden" asp-for="Query.Q">
             <input type="hidden" asp-for="Query.Sort">
             <input type="hidden" asp-for="Query.UserLat">
@@ -322,7 +341,7 @@
 
             <div class="filter-section">
                 <h6>Kategori</h6>
-                <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
+                <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm" id="kategoriSelectOffcanvas">
                     <option value="">Tüm Kategoriler</option>
                 </select>
             </div>
@@ -351,6 +370,8 @@
                 </select>
             </div>
 
+            <div id="dynamicFiltersOffcanvas"></div>
+
             <button class="btn btn-primary w-100 mt-3" type="submit" data-bs-dismiss="offcanvas">
                 <i class="bi bi-funnel me-1"></i> Filtrele (@Model.Listings.TotalCount sonuç)
             </button>
@@ -361,56 +382,95 @@
 @section Scripts {
 <script>
     const filtersUrl = '@filtersUrl';
+    const eavDataEl = document.getElementById('eavData');
+    const savedEavFilters = eavDataEl ? JSON.parse(eavDataEl.dataset.eav || '{}') : {};
 
-    document.getElementById('kategoriSelect')?.addEventListener('change', function() {
-        const kategoriId = this.value;
-        const container = document.getElementById('dynamicFilters');
-
+    function renderDynamicFilters(attrs, container, selectedValues) {
         container.innerHTML = '';
+        attrs.forEach(attr => {
+            const section = document.createElement('div');
+            section.className = 'filter-section';
+
+            const heading = document.createElement('h6');
+            heading.textContent = attr.ad;
+            section.appendChild(heading);
+
+            const savedVal = selectedValues[attr.id] || '';
+
+            if (attr.secenekler && attr.secenekler.length > 0) {
+                const select = document.createElement('select');
+                select.name = `Query.EavFilters[${attr.id}]`;
+                select.className = 'form-select form-select-sm';
+
+                const defaultOpt = document.createElement('option');
+                defaultOpt.value = '';
+                defaultOpt.textContent = 'Seçiniz';
+                select.appendChild(defaultOpt);
+
+                attr.secenekler.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s.id;
+                    opt.textContent = s.deger;
+                    if (String(s.id) === String(savedVal)) {
+                        opt.selected = true;
+                    }
+                    select.appendChild(opt);
+                });
+
+                section.appendChild(select);
+            } else {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.name = `Query.EavFilters[${attr.id}]`;
+                input.className = 'form-control form-control-sm';
+                input.placeholder = attr.ad;
+                input.value = savedVal;
+                section.appendChild(input);
+            }
+
+            container.appendChild(section);
+        });
+    }
+
+    function loadDynamicFilters(kategoriId) {
+        const desktopContainer = document.getElementById('dynamicFilters');
+        const offcanvasContainer = document.getElementById('dynamicFiltersOffcanvas');
+
+        if (desktopContainer) desktopContainer.innerHTML = '';
+        if (offcanvasContainer) offcanvasContainer.innerHTML = '';
 
         if (!kategoriId) return;
 
         fetch(`${filtersUrl}?kategoriId=${encodeURIComponent(kategoriId)}`)
             .then(res => res.json())
             .then(attrs => {
-                attrs.forEach(attr => {
-                    const section = document.createElement('div');
-                    section.className = 'filter-section';
-
-                    const heading = document.createElement('h6');
-                    heading.textContent = attr.ad;
-                    section.appendChild(heading);
-
-                    if (attr.secenekler && attr.secenekler.length > 0) {
-                        const select = document.createElement('select');
-                        select.name = `Query.EavFilters[${attr.id}]`;
-                        select.className = 'form-select form-select-sm';
-
-                        const defaultOpt = document.createElement('option');
-                        defaultOpt.value = '';
-                        defaultOpt.textContent = 'Seçiniz';
-                        select.appendChild(defaultOpt);
-
-                        attr.secenekler.forEach(s => {
-                            const opt = document.createElement('option');
-                            opt.value = s.id;
-                            opt.textContent = s.deger;
-                            select.appendChild(opt);
-                        });
-
-                        section.appendChild(select);
-                    } else {
-                        const input = document.createElement('input');
-                        input.type = 'text';
-                        input.name = `Query.EavFilters[${attr.id}]`;
-                        input.className = 'form-control form-control-sm';
-                        input.placeholder = attr.ad;
-                        section.appendChild(input);
-                    }
-
-                    container.appendChild(section);
-                });
+                if (desktopContainer) renderDynamicFilters(attrs, desktopContainer, savedEavFilters);
+                if (offcanvasContainer) renderDynamicFilters(attrs, offcanvasContainer, savedEavFilters);
             });
+    }
+
+    const kategoriSelect = document.getElementById('kategoriSelect');
+    const kategoriSelectOffcanvas = document.getElementById('kategoriSelectOffcanvas');
+
+    if (kategoriSelect) {
+        kategoriSelect.addEventListener('change', function() {
+            loadDynamicFilters(this.value);
+            if (kategoriSelectOffcanvas) kategoriSelectOffcanvas.value = this.value;
+        });
+    }
+
+    if (kategoriSelectOffcanvas) {
+        kategoriSelectOffcanvas.addEventListener('change', function() {
+            loadDynamicFilters(this.value);
+            if (kategoriSelect) kategoriSelect.value = this.value;
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const initialKategoriId = kategoriSelect?.value || kategoriSelectOffcanvas?.value;
+        if (initialKategoriId) {
+            loadDynamicFilters(initialKategoriId);
+        }
     });
 
     const nearMeToggle = document.getElementById('nearMeToggle');
