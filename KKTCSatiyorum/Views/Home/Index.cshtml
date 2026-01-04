@@ -87,90 +87,21 @@
                         </div>
 
                         <div class="row g-2">
-                            <!-- Card 1 -->
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
-                                            alt="Daire">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">Sahibinden Temiz Daire</div>
-                                        <div class="product-price">2.100.000 TL</div>
-                                        <div class="product-location">Lefkoşa</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
-                                            alt="Villa">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">Bebek Den 2015 Triplex</div>
-                                        <div class="product-price">15.500.000 TL</div>
-                                        <div class="product-location">Girne</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
-                                            alt="Ev">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">İvedik Osb De Plaza</div>
-                                        <div class="product-price">4.800.000 TL</div>
-                                        <div class="product-location">Lefkoşa</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=200&h=150&fit=crop"
-                                            alt="Daire">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">Kiralık Plaza Katı</div>
-                                        <div class="product-price">45.000 TL/Ay</div>
-                                        <div class="product-location">Girne</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=200&h=150&fit=crop"
-                                            alt="Villa">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">Casarent - Kiralık</div>
-                                        <div class="product-price">85.000 TL/Ay</div>
-                                        <div class="product-location">Girne</div>
-                                    </div>
-                                </a>
-                            </div>
-
-                            <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-                                <a asp-controller="Listings" asp-action="Detail" asp-route-slug="ornek-ilan" class="card card-product-compact">
-                                    <div class="card-img-wrapper">
-                                        <img src="https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=200&h=150&fit=crop"
-                                            alt="Ev">
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="product-title">Adaklik Koyun Site</div>
-                                        <div class="product-price">3.600.000 TL</div>
-                                        <div class="product-location">İskele</div>
-                                    </div>
-                                </a>
-                            </div>
+                            @foreach (var item in Model.LatestListings.Take(6))
+                            {
+                                <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                    <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="card card-product-compact">
+                                        <div class="card-img-wrapper">
+                                            <img src="@item.KapakFotoUrl" alt="@item.Baslik">
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="product-title">@item.Baslik</div>
+                                            <div class="product-price">@item.Fiyat.ToString("N0") @(item.ParaBirimi == ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</div>
+                                            <div class="product-location">@(item.Sehir ?? "KKTC")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                            }
                         </div>
                     </section>
 
