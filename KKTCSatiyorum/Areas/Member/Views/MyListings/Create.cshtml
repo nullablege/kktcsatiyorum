@@ -222,6 +222,7 @@
                             <input type="hidden" asp-for="Enlem" id="enlemInput" />
                             <input type="hidden" asp-for="Boylam" id="boylamInput" />
                             <div id="locationMap" class="map-container mb-3"></div>
+                            <button type="button" class="btn btn-outline-primary mb-3" id="findMyLocationBtn"><i class="bi bi-geo me-2"></i>Konumumu Bul</button>
                             <div class="d-flex justify-content-between">
                                 <button type="button" class="btn btn-outline-secondary" onclick="goToStep(3)"><i class="bi bi-arrow-left me-1"></i> Geri</button>
                                 <button type="button" class="btn btn-primary" onclick="goToStep(5)">Devam Et <i class="bi bi-arrow-right ms-1"></i></button>
@@ -269,7 +270,7 @@
     <partial name="_ValidationScriptsPartial" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
-        let currentStep = @initialStep, map = null;
+        let currentStep = @initialStep, map = null, marker = null;
         function goToStep(step) {
             document.getElementById('step' + currentStep).style.display = 'none';
             document.getElementById('step' + step).style.display = 'block';
@@ -296,7 +297,7 @@
                     map = L.map('locationMap').setView([initLat, initLng], 10);
                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
                     
-                    const marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
+                    marker = L.marker([initLat, initLng], { draggable: true }).addTo(map);
                     
                     if (modelLat !== null && modelLng !== null) {
                         document.getElementById('enlemInput').value = formatCoord(initLat);
@@ -313,6 +314,27 @@
                         const pos = marker.getLatLng();
                         document.getElementById('enlemInput').value = formatCoord(pos.lat);
                         document.getElementById('boylamInput').value = formatCoord(pos.lng);
+                    });
+                    
+                    document.getElementById('findMyLocationBtn').addEventListener('click', function() {
+                        if (!navigator.geolocation) {
+                            alert('Tarayıcınız konum özelliğini desteklemiyor.');
+                            return;
+                        }
+                        navigator.geolocation.getCurrentPosition(
+                            function(position) {
+                                const lat = position.coords.latitude;
+                                const lng = position.coords.longitude;
+                                map.setView([lat, lng], 13);
+                                marker.setLatLng([lat, lng]);
+                                document.getElementById('enlemInput').value = formatCoord(lat);
+                                document.getElementById('boylamInput').value = formatCoord(lng);
+                            },
+                            function(error) {
+                                alert('Konum alınamadı. Lütfen konum iznini kontrol edin.');
+                            },
+                            { enableHighAccuracy: true, timeout: 8000 }
+                        );
                     });
                 }, 100);
             }

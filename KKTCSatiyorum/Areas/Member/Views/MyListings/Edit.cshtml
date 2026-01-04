@@ -82,6 +82,9 @@
                             <input type="hidden" asp-for="Enlem" id="enlemInput" />
                             <input type="hidden" asp-for="Boylam" id="boylamInput" />
                             <div id="locationMap" style="height: 300px; border-radius: 8px; border: 1px solid #dee2e6;"></div>
+                            <div class="mt-2 mb-2">
+                                <button type="button" class="btn btn-outline-primary" id="findMyLocationBtn"><i class="bi bi-geo me-2"></i>Konumumu Bul</button>
+                            </div>
                             <small class="text-muted">Haritaya tıklayarak veya işaretçiyi sürükleyerek konum belirleyebilirsiniz.</small>
                         </div>
 
@@ -314,6 +317,27 @@
                 const pos = marker.getLatLng();
                 document.getElementById('enlemInput').value = formatCoord(pos.lat);
                 document.getElementById('boylamInput').value = formatCoord(pos.lng);
+            });
+            
+            document.getElementById('findMyLocationBtn').addEventListener('click', function() {
+                if (!navigator.geolocation) {
+                    alert('Tarayıcınız konum özelliğini desteklemiyor.');
+                    return;
+                }
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        map.setView([lat, lng], 13);
+                        marker.setLatLng([lat, lng]);
+                        document.getElementById('enlemInput').value = formatCoord(lat);
+                        document.getElementById('boylamInput').value = formatCoord(lng);
+                    },
+                    function(error) {
+                        alert('Konum alınamadı. Lütfen konum iznini kontrol edin.');
+                    },
+                    { enableHighAccuracy: true, timeout: 8000 }
+                );
             });
         })();
     </script>
