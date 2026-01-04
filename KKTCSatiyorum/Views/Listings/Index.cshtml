@@ -26,16 +26,16 @@
                 <div class="col-lg-5">
                     <div class="input-group">
                         <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
-                        <input asp-for="Query.Q" class="form-control border-start-0" placeholder="Araba, telefon, ev...">
+                        <input asp-for="Query.Q" name="Q" class="form-control border-start-0" placeholder="Araba, telefon, ev...">
                     </div>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect">
+                    <select asp-for="Query.KategoriId" name="KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect">
                         <option value="">Tüm Kategoriler</option>
                     </select>
                 </div>
                 <div class="col-6 col-lg-2">
-                    <select asp-for="Query.Sehir" class="form-select">
+                    <select asp-for="Query.Sehir" name="Sehir" class="form-select">
                         <option value="">Tüm KKTC</option>
                         <option>Girne</option>
                         <option>Lefkoşa</option>
@@ -56,15 +56,15 @@
                 </div>
             </div>
 
-            <input type="hidden" asp-for="Query.Sort">
-            <input type="hidden" asp-for="Query.MinFiyat">
-            <input type="hidden" asp-for="Query.MaxFiyat">
-            <input type="hidden" asp-for="Query.UserLat" id="userLat">
-            <input type="hidden" asp-for="Query.UserLng" id="userLng">
-            <input type="hidden" asp-for="Query.MaxDistanceKm">
+            <input type="hidden" asp-for="Query.Sort" name="Sort">
+            <input type="hidden" asp-for="Query.MinFiyat" name="MinFiyat">
+            <input type="hidden" asp-for="Query.MaxFiyat" name="MaxFiyat">
+            <input type="hidden" asp-for="Query.UserLat" name="UserLat" id="userLat">
+            <input type="hidden" asp-for="Query.UserLng" name="UserLng" id="userLng">
+            <input type="hidden" asp-for="Query.MaxDistanceKm" name="MaxDistanceKm">
             @foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
             {
-                <input type="hidden" name="Query.EavFilters[@eav.Key]" value="@eav.Value">
+                <input type="hidden" name="EavFilters[@eav.Key]" value="@eav.Value">
             }
         </form>
     </div>
@@ -76,13 +76,13 @@
             <div class="col-lg-3 d-none d-lg-block">
                 <div class="filter-sidebar">
                     <form method="get" asp-controller="Listings" asp-action="Index">
-                        <input type="hidden" asp-for="Query.Q">
-                        <input type="hidden" asp-for="Query.KategoriId">
-                        <input type="hidden" asp-for="Query.Sehir">
-                        <input type="hidden" asp-for="Query.Sort">
-                        <input type="hidden" asp-for="Query.UserLat">
-                        <input type="hidden" asp-for="Query.UserLng">
-                        <input type="hidden" asp-for="Query.MaxDistanceKm">
+                        <input type="hidden" asp-for="Query.Q" name="Q">
+                        <input type="hidden" asp-for="Query.KategoriId" name="KategoriId">
+                        <input type="hidden" asp-for="Query.Sehir" name="Sehir">
+                        <input type="hidden" asp-for="Query.Sort" name="Sort">
+                        <input type="hidden" asp-for="Query.UserLat" name="UserLat">
+                        <input type="hidden" asp-for="Query.UserLng" name="UserLng">
+                        <input type="hidden" asp-for="Query.MaxDistanceKm" name="MaxDistanceKm">
 
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Filtreler</h5>
@@ -96,7 +96,7 @@
                             </div>
                             <div id="distanceControl" class="@(Model.Query.UserLat.HasValue ? "" : "d-none")">
                                 <label class="form-label small text-muted mb-1">Mesafe (km)</label>
-                                <select asp-for="Query.MaxDistanceKm" class="form-select form-select-sm" id="maxDistanceSelect">
+                                <select asp-for="Query.MaxDistanceKm" name="MaxDistanceKm" class="form-select form-select-sm" id="maxDistanceSelect">
                                     <option value="">Seçiniz</option>
                                     <option value="5">5 km</option>
                                     <option value="10">10 km</option>
@@ -112,7 +112,7 @@
 
                         <div class="filter-section">
                             <h6>Kategori</h6>
-                            <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
+                            <select asp-for="Query.KategoriId" name="KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm">
                                 <option value="">Tüm Kategoriler</option>
                             </select>
                         </div>
@@ -121,10 +121,10 @@
                             <h6>Fiyat Aralığı</h6>
                             <div class="row g-2 mb-2">
                                 <div class="col-6">
-                                    <input asp-for="Query.MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
+                                    <input asp-for="Query.MinFiyat" name="MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
                                 </div>
                                 <div class="col-6">
-                                    <input asp-for="Query.MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
+                                    <input asp-for="Query.MaxFiyat" name="MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
                                 </div>
                             </div>
                         </div>
@@ -147,19 +147,19 @@
                     </div>
                     <div class="d-flex gap-2">
                         <form method="get" id="sortForm">
-                            <input type="hidden" asp-for="Query.Q">
-                            <input type="hidden" asp-for="Query.KategoriId">
-                            <input type="hidden" asp-for="Query.Sehir">
-                            <input type="hidden" asp-for="Query.MinFiyat">
-                            <input type="hidden" asp-for="Query.MaxFiyat">
-                            <input type="hidden" asp-for="Query.UserLat">
-                            <input type="hidden" asp-for="Query.UserLng">
-                            <input type="hidden" asp-for="Query.MaxDistanceKm">
+                            <input type="hidden" asp-for="Query.Q" name="Q">
+                            <input type="hidden" asp-for="Query.KategoriId" name="KategoriId">
+                            <input type="hidden" asp-for="Query.Sehir" name="Sehir">
+                            <input type="hidden" asp-for="Query.MinFiyat" name="MinFiyat">
+                            <input type="hidden" asp-for="Query.MaxFiyat" name="MaxFiyat">
+                            <input type="hidden" asp-for="Query.UserLat" name="UserLat">
+                            <input type="hidden" asp-for="Query.UserLng" name="UserLng">
+                            <input type="hidden" asp-for="Query.MaxDistanceKm" name="MaxDistanceKm">
                             @foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
                             {
-                                <input type="hidden" name="Query.EavFilters[@eav.Key]" value="@eav.Value">
+                                <input type="hidden" name="EavFilters[@eav.Key]" value="@eav.Value">
                             }
-                            <select asp-for="Query.Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()"></select>
+                            <select asp-for="Query.Sort" name="Sort" asp-items="Model.SortOptions" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()"></select>
                         </form>
                         <div class="btn-group">
                             <button class="btn btn-outline-secondary btn-sm active" title="Grid" type="button">
@@ -273,25 +273,25 @@
                 {
                     var baseRouteValues = new Dictionary<string, string?>
                     {
-                        ["Query.Q"] = Model.Query.Q,
-                        ["Query.KategoriId"] = Model.Query.KategoriId?.ToString(),
-                        ["Query.Sehir"] = Model.Query.Sehir,
-                        ["Query.MinFiyat"] = Model.Query.MinFiyat?.ToString(),
-                        ["Query.MaxFiyat"] = Model.Query.MaxFiyat?.ToString(),
-                        ["Query.Sort"] = Model.Query.Sort,
-                        ["Query.UserLat"] = Model.Query.UserLat?.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                        ["Query.UserLng"] = Model.Query.UserLng?.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                        ["Query.MaxDistanceKm"] = Model.Query.MaxDistanceKm?.ToString()
+                        ["Q"] = Model.Query.Q,
+                        ["KategoriId"] = Model.Query.KategoriId?.ToString(),
+                        ["Sehir"] = Model.Query.Sehir,
+                        ["MinFiyat"] = Model.Query.MinFiyat?.ToString(),
+                        ["MaxFiyat"] = Model.Query.MaxFiyat?.ToString(),
+                        ["Sort"] = Model.Query.Sort,
+                        ["UserLat"] = Model.Query.UserLat?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        ["UserLng"] = Model.Query.UserLng?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        ["MaxDistanceKm"] = Model.Query.MaxDistanceKm?.ToString()
                     };
                     foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
                     {
-                        baseRouteValues[$"Query.EavFilters[{eav.Key}]"] = eav.Value;
+                        baseRouteValues[$"EavFilters[{eav.Key}]"] = eav.Value;
                     }
                     <nav class="mt-5">
                         <ul class="pagination pagination-custom justify-content-center">
                             <li class="page-item @(!Model.Listings.HasPreviousPage ? "disabled" : "")">
                                 @{
-                                    var prevRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = (Model.Listings.Page - 1).ToString() };
+                                    var prevRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Page"] = (Model.Listings.Page - 1).ToString() };
                                 }
                                 <a class="page-link" asp-action="Index" asp-all-route-data="prevRouteValues">
                                     <i class="bi bi-chevron-left"></i>
@@ -305,14 +305,14 @@
                                     pageNum = Model.Listings.Page - 3 + i;
                                     if (pageNum > Model.Listings.TotalPages) continue;
                                 }
-                                var pageRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = pageNum.ToString() };
+                                var pageRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Page"] = pageNum.ToString() };
                                 <li class="page-item @(pageNum == Model.Listings.Page ? "active" : "")">
                                     <a class="page-link" asp-action="Index" asp-all-route-data="pageRouteValues">@pageNum</a>
                                 </li>
                             }
                             <li class="page-item @(!Model.Listings.HasNextPage ? "disabled" : "")">
                                 @{
-                                    var nextRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Query.Page"] = (Model.Listings.Page + 1).ToString() };
+                                    var nextRouteValues = new Dictionary<string, string?>(baseRouteValues) { ["Page"] = (Model.Listings.Page + 1).ToString() };
                                 }
                                 <a class="page-link" asp-action="Index" asp-all-route-data="nextRouteValues">
                                     <i class="bi bi-chevron-right"></i>
@@ -333,15 +333,15 @@
     </div>
     <div class="offcanvas-body">
         <form method="get" asp-controller="Listings" asp-action="Index" id="offcanvasFilterForm">
-            <input type="hidden" asp-for="Query.Q">
-            <input type="hidden" asp-for="Query.Sort">
-            <input type="hidden" asp-for="Query.UserLat">
-            <input type="hidden" asp-for="Query.UserLng">
-            <input type="hidden" asp-for="Query.MaxDistanceKm">
+            <input type="hidden" asp-for="Query.Q" name="Q">
+            <input type="hidden" asp-for="Query.Sort" name="Sort">
+            <input type="hidden" asp-for="Query.UserLat" name="UserLat">
+            <input type="hidden" asp-for="Query.UserLng" name="UserLng">
+            <input type="hidden" asp-for="Query.MaxDistanceKm" name="MaxDistanceKm">
 
             <div class="filter-section">
                 <h6>Kategori</h6>
-                <select asp-for="Query.KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm" id="kategoriSelectOffcanvas">
+                <select asp-for="Query.KategoriId" name="KategoriId" asp-items="Model.KategoriOptions" class="form-select form-select-sm" id="kategoriSelectOffcanvas">
                     <option value="">Tüm Kategoriler</option>
                 </select>
             </div>
@@ -350,17 +350,17 @@
                 <h6>Fiyat Aralığı</h6>
                 <div class="row g-2 mb-2">
                     <div class="col-6">
-                        <input asp-for="Query.MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
+                        <input asp-for="Query.MinFiyat" name="MinFiyat" type="number" class="form-control form-control-sm" placeholder="Min">
                     </div>
                     <div class="col-6">
-                        <input asp-for="Query.MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
+                        <input asp-for="Query.MaxFiyat" name="MaxFiyat" type="number" class="form-control form-control-sm" placeholder="Max">
                     </div>
                 </div>
             </div>
 
             <div class="filter-section">
                 <h6>Konum</h6>
-                <select asp-for="Query.Sehir" class="form-select form-select-sm mb-2">
+                <select asp-for="Query.Sehir" name="Sehir" class="form-select form-select-sm mb-2">
                     <option value="">Tüm KKTC</option>
                     <option>Girne</option>
                     <option>Lefkoşa</option>
@@ -399,7 +399,7 @@
 
             if (attr.secenekler && attr.secenekler.length > 0) {
                 const select = document.createElement('select');
-                select.name = `Query.EavFilters[${attr.id}]`;
+                select.name = `EavFilters[${attr.id}]`;
                 select.className = 'form-select form-select-sm';
 
                 const defaultOpt = document.createElement('option');
@@ -421,7 +421,7 @@
             } else {
                 const input = document.createElement('input');
                 input.type = 'text';
-                input.name = `Query.EavFilters[${attr.id}]`;
+                input.name = `EavFilters[${attr.id}]`;
                 input.className = 'form-control form-control-sm';
                 input.placeholder = attr.ad;
                 input.value = savedVal;
@@ -514,11 +514,11 @@
 
                         const form = this.closest('form');
                         if (form) {
-                            form.querySelector('input[name="Query.UserLat"]').value = lat;
-                            form.querySelector('input[name="Query.UserLng"]').value = lng;
-                            form.querySelector('input[name="Query.Sort"]').value = 'distance';
+                            form.querySelector('input[name="UserLat"]').value = lat;
+                            form.querySelector('input[name="UserLng"]').value = lng;
+                            form.querySelector('input[name="Sort"]').value = 'distance';
 
-                            const distSelect = form.querySelector('select[name="Query.MaxDistanceKm"]');
+                            const distSelect = form.querySelector('select[name="MaxDistanceKm"]');
                             if (!distSelect.value) distSelect.value = '50';
 
                             form.submit();
@@ -537,12 +537,12 @@
                 hideNearMeError();
                 const form = this.closest('form');
                 if (form) {
-                    form.querySelector('input[name="Query.UserLat"]').value = '';
-                    form.querySelector('input[name="Query.UserLng"]').value = '';
-                    if (form.querySelector('input[name="Query.Sort"]').value === 'distance') {
-                        form.querySelector('input[name="Query.Sort"]').value = '';
+                    form.querySelector('input[name="UserLat"]').value = '';
+                    form.querySelector('input[name="UserLng"]').value = '';
+                    if (form.querySelector('input[name="Sort"]').value === 'distance') {
+                        form.querySelector('input[name="Sort"]').value = '';
                     }
-                    form.querySelector('select[name="Query.MaxDistanceKm"]').value = '';
+                    form.querySelector('select[name="MaxDistanceKm"]').value = '';
 
                     form.submit();
                 }
