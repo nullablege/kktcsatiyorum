@@ -1,0 +1,22 @@
+@model EntityLayer.DTOs.Public.ListingCardDto
+@using EntityLayer.Enums
+<a asp-controller="Listings" asp-action="Detail" asp-route-slug="@Model.Slug" class="card card-product-compact">
+    <div class="card-img-wrapper">
+        @if (!string.IsNullOrEmpty(Model.KapakFotoUrl))
+        {
+            <img src="@Model.KapakFotoUrl" alt="@Model.Baslik">
+        }
+        else
+        {
+            <div class="bg-light d-flex align-items-center justify-content-center h-100">
+                <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+            </div>
+        }
+    </div>
+    <div class="card-body">
+        <div class="product-title">@Model.Baslik</div>
+        <div class="product-price">@Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())</div>
+        <div class="product-location">@(Model.Sehir ?? "KKTC")</div>
+    </div>
+</a>
+

@@ -507,6 +507,7 @@
         }
 
         if (filtersCache.has(kategoriId)) {
+            setLoadingState(false);
             applyFiltersToContainers(filtersCache.get(kategoriId));
             return;
         }
