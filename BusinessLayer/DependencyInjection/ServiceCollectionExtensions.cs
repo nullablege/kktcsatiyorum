@@ -42,6 +42,7 @@ namespace BusinessLayer.DependencyInjection
             // Ilan
             services.AddScoped<IIlanService, IlanService>();
             services.AddScoped<IValidator<CreateIlanRequest>, CreateIlanValidator>();
+            services.AddScoped<IValidator<UpdateIlanRequest>, UpdateIlanValidator>();
 
             // DenetimKayitlari
             services.AddScoped<IDenetimKaydiService, DenetimKaydiManager>();

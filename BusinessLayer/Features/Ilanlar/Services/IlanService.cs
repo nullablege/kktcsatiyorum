@@ -36,6 +36,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
         private readonly INotificationPublisher _notificationPublisher;
         private readonly IDenetimKaydiService _denetimKaydiService;
         private readonly ILogger<IlanService> _logger;
+        private readonly IValidator<UpdateIlanRequest> _updateValidator;
 
         public IlanService(
             IIlanDal ilanDal,
@@ -43,6 +44,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             IKategoriAlaniDal kategoriAlaniDal,
             IUnitOfWork unitOfWork,
             IValidator<CreateIlanRequest> createValidator,
+            IValidator<UpdateIlanRequest> updateValidator,
             ICacheService cache,
             IMapper mapper,
             INotificationPublisher notificationPublisher,
@@ -55,6 +57,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
             _kategoriAlaniDal = kategoriAlaniDal;
             _unitOfWork = unitOfWork;
             _createValidator = createValidator;
+            _updateValidator = updateValidator;
             _cache = cache;
             _mapper = mapper;
             _notificationPublisher = notificationPublisher;
@@ -549,9 +552,9 @@ namespace BusinessLayer.Features.Ilanlar.Services
             if (string.IsNullOrWhiteSpace(userId))
                 return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
 
-            // Basic Validation
-            if (string.IsNullOrWhiteSpace(request.Baslik)) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Başlık zorunludur.");
-            if (request.Fiyat < 0) return Result.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Fiyat 0'dan küçük olamaz.");
+            var validationResult = await _updateValidator.ValidateAsync(request, ct);
+            if (!validationResult.IsValid)
+                return Result.FromValidation(validationResult);
 
             var inputAttributes = request.Attributes ?? new List<AttributeValueInput>();
 
