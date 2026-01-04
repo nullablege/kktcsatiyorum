@@ -3,14 +3,20 @@
     ViewData["Title"] = "Ana Sayfa";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }
-<partial name="Partials/_HomeCategoryQuickLinks" />
+@if (Model.Categories.Count > 0)
+{
+    <partial name="Partials/_HomeCategoryQuickLinks" model="Model.Categories" />
+}
 
     <!-- Main Content with Sidebar Layout -->
     <main class="main-content">
         <div class="container-fluid px-3">
             <div class="row g-2">
 
-<partial name="Partials/_HomeCategorySidebar" />
+@if (Model.Categories.Count > 0)
+{
+    <partial name="Partials/_HomeCategorySidebar" model="Model.Categories" />
+}
 
                 <!-- MAIN CONTENT AREA -->
                 <div class="col-lg-10 col-md-9">

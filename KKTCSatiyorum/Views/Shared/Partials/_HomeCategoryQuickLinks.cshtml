@@ -1,15 +1,12 @@
+@model IReadOnlyList<KKTCSatiyorum.Models.Home.CategoryNavItemViewModel>
     <!-- Secondary Nav - Category Quick Links -->
     <nav class="secondary-nav">
         <div class="container-fluid px-3">
             <div class="secondary-nav-inner">
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Emlak</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Vasıta</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Yedek Parça</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İkinci El</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Elektronik</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş Makineleri</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">Ustalar</a>
-                <a asp-controller="Listings" asp-action="Index" class="secondary-nav-link">İş İlanları</a>
+                @foreach (var c in Model)
+                {
+                    <a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@c.Id" class="secondary-nav-link">@c.Name</a>
+                }
                 <span class="secondary-nav-divider"></span>
                 <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori İlanlarım</a>
                 <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori Aramalarım</a>
