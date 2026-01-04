@@ -129,6 +129,13 @@
                             </div>
                         </div>
 
+                        <div id="dynamicFiltersError" class="alert alert-warning py-2 small d-none mb-2"></div>
+                        <div id="dynamicFiltersLoading" class="d-none mb-2">
+                            <div class="d-flex align-items-center gap-2 text-muted small">
+                                <span class="spinner-border spinner-border-sm"></span>
+                                <span>Filtreler yükleniyor...</span>
+                            </div>
+                        </div>
                         <div id="dynamicFilters"></div>
                         <div id="eavData" data-eav="@eavFiltersJson" class="d-none"></div>
 
@@ -370,6 +377,13 @@
                 </select>
             </div>
 
+            <div id="dynamicFiltersOffcanvasError" class="alert alert-warning py-2 small d-none mb-2"></div>
+            <div id="dynamicFiltersOffcanvasLoading" class="d-none mb-2">
+                <div class="d-flex align-items-center gap-2 text-muted small">
+                    <span class="spinner-border spinner-border-sm"></span>
+                    <span>Filtreler yükleniyor...</span>
+                </div>
+            </div>
             <div id="dynamicFiltersOffcanvas"></div>
 
             <button class="btn btn-primary w-100 mt-3" type="submit" data-bs-dismiss="offcanvas">
@@ -384,6 +398,45 @@
     const filtersUrl = '@filtersUrl';
     const eavDataEl = document.getElementById('eavData');
     const savedEavFilters = eavDataEl ? JSON.parse(eavDataEl.dataset.eav || '{}') : {};
+
+    const filtersCache = new Map();
+    let currentAbortController = null;
+
+    const filterElements = {
+        desktop: {
+            container: document.getElementById('dynamicFilters'),
+            loading: document.getElementById('dynamicFiltersLoading'),
+            error: document.getElementById('dynamicFiltersError')
+        },
+        offcanvas: {
+            container: document.getElementById('dynamicFiltersOffcanvas'),
+            loading: document.getElementById('dynamicFiltersOffcanvasLoading'),
+            error: document.getElementById('dynamicFiltersOffcanvasError')
+        }
+    };
+
+    function setLoadingState(show) {
+        Object.values(filterElements).forEach(els => {
+            if (els.loading) els.loading.classList.toggle('d-none', !show);
+            if (show && els.error) els.error.classList.add('d-none');
+        });
+    }
+
+    function showError(message) {
+        Object.values(filterElements).forEach(els => {
+            if (els.container) els.container.innerHTML = '';
+            if (els.error) {
+                els.error.textContent = message;
+                els.error.classList.remove('d-none');
+            }
+        });
+    }
+
+    function hideError() {
+        Object.values(filterElements).forEach(els => {
+            if (els.error) els.error.classList.add('d-none');
+        });
+    }
 
     function renderDynamicFilters(attrs, container, selectedValues) {
         container.innerHTML = '';
@@ -432,21 +485,58 @@
         });
     }
 
-    function loadDynamicFilters(kategoriId) {
-        const desktopContainer = document.getElementById('dynamicFilters');
-        const offcanvasContainer = document.getElementById('dynamicFiltersOffcanvas');
+    function applyFiltersToContainers(attrs) {
+        Object.values(filterElements).forEach(els => {
+            if (els.container) renderDynamicFilters(attrs, els.container, savedEavFilters);
+        });
+    }
 
-        if (desktopContainer) desktopContainer.innerHTML = '';
-        if (offcanvasContainer) offcanvasContainer.innerHTML = '';
+    async function loadDynamicFilters(kategoriId) {
+        if (currentAbortController) {
+            currentAbortController.abort();
+        }
 
-        if (!kategoriId) return;
+        Object.values(filterElements).forEach(els => {
+            if (els.container) els.container.innerHTML = '';
+        });
+        hideError();
 
-        fetch(`${filtersUrl}?kategoriId=${encodeURIComponent(kategoriId)}`)
-            .then(res => res.json())
-            .then(attrs => {
-                if (desktopContainer) renderDynamicFilters(attrs, desktopContainer, savedEavFilters);
-                if (offcanvasContainer) renderDynamicFilters(attrs, offcanvasContainer, savedEavFilters);
-            });
+        if (!kategoriId) {
+            setLoadingState(false);
+            return;
+        }
+
+        if (filtersCache.has(kategoriId)) {
+            applyFiltersToContainers(filtersCache.get(kategoriId));
+            return;
+        }
+
+        currentAbortController = new AbortController();
+        const signal = currentAbortController.signal;
+
+        setLoadingState(true);
+
+        try {
+            const response = await fetch(`${filtersUrl}?kategoriId=${encodeURIComponent(kategoriId)}`, { signal });
+
+            if (!response.ok) {
+                throw new Error('Filtreler yüklenemedi.');
+            }
+
+            const attrs = await response.json();
+
+            if (!Array.isArray(attrs)) {
+                throw new Error('Geçersiz filtre verisi.');
+            }
+
+            filtersCache.set(kategoriId, attrs);
+            applyFiltersToContainers(attrs);
+        } catch (err) {
+            if (err.name === 'AbortError') return;
+            showError(err.message || 'Filtreler yüklenirken bir hata oluştu.');
+        } finally {
+            setLoadingState(false);
+        }
     }
 
     const kategoriSelect = document.getElementById('kategoriSelect');
