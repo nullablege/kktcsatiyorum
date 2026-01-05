@@ -210,6 +210,7 @@ namespace DataAccessLayer.Concrete
                 return null;
 
             var ilan = await _context.Ilanlar
+                .Include(x => x.Kategori)
                 .Include(x => x.Fotografler)
                 .Include(x => x.AlanDegerleri)
                     .ThenInclude(ad => ad.KategoriAlani)
@@ -249,7 +250,10 @@ namespace DataAccessLayer.Concrete
                 fotograflar,
                 attributes,
                 ilan.Enlem,
-                ilan.Boylam
+                ilan.Boylam,
+                ilan.KategoriId,
+                ilan.Kategori.Ad,
+                ilan.GoruntulenmeSayisi
             );
         }
 
