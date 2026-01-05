@@ -186,8 +186,8 @@
                     if (!string.IsNullOrWhiteSpace(Model.Query.Q)) baseRoute["Q"] = Model.Query.Q;
                     if (Model.Query.KategoriId.HasValue) baseRoute["KategoriId"] = Model.Query.KategoriId.Value.ToString();
                     if (!string.IsNullOrWhiteSpace(Model.Query.Sehir)) baseRoute["Sehir"] = Model.Query.Sehir;
-                    if (Model.Query.MinFiyat.HasValue) baseRoute["MinFiyat"] = Model.Query.MinFiyat.Value.ToString();
-                    if (Model.Query.MaxFiyat.HasValue) baseRoute["MaxFiyat"] = Model.Query.MaxFiyat.Value.ToString();
+                    if (Model.Query.MinFiyat.HasValue) baseRoute["MinFiyat"] = Model.Query.MinFiyat.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (Model.Query.MaxFiyat.HasValue) baseRoute["MaxFiyat"] = Model.Query.MaxFiyat.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     if (!string.IsNullOrWhiteSpace(Model.Query.Sort)) baseRoute["Sort"] = Model.Query.Sort;
                     if (Model.Query.UserLat.HasValue) baseRoute["UserLat"] = Model.Query.UserLat.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
                     if (Model.Query.UserLng.HasValue) baseRoute["UserLng"] = Model.Query.UserLng.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
