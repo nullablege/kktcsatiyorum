@@ -31,7 +31,7 @@ else
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
                     <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">İlanlar</a></li>
-                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">Kategori</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@Model.KategoriId">@Model.KategoriAd</a></li>
                     <li class="breadcrumb-item active" aria-current="page">@Model.Baslik</li>
                 </ol>
             </nav>
@@ -100,7 +100,7 @@ else
                                     <div class="d-flex align-items-center gap-3 text-muted">
                                         <span><i class="bi bi-geo-alt me-1"></i>@(Model.Sehir ?? "KKTC")</span>
                                         <span><i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd MMMM yyyy")</span>
-                                        <span><i class="bi bi-eye me-1"></i>0 görüntülenme</span>
+                                        <span><i class="bi bi-eye me-1"></i>@Model.GoruntulenmeSayisi görüntülenme</span>
                                     </div>
                                 </div>
                                 @{
@@ -161,51 +161,9 @@ else
                     <div class="card">
                         <div class="card-body">
                             <h5 class="mb-4"><i class="bi bi-chat-dots me-2"></i>Satıcıya Soru Sor</h5>
-
-                            <div class="mb-4">
-                                <div class="border rounded p-3 mb-3">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bg-light rounded-circle p-2 me-2">
-                                            <i class="bi bi-person"></i>
-                                        </div>
-                                        <div>
-                                            <strong>Ahmet Y.</strong>
-                                            <span class="text-muted small ms-2">2 gün önce</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-2">Aidat ne kadar? Takas düşünür müsünüz?</p>
-
-                                    <div class="bg-light rounded p-3 ms-4 mt-3">
-                                        <div class="d-flex align-items-center mb-2">
-                                            <span class="badge bg-primary me-2">Satıcı</span>
-                                            <span class="text-muted small">1 gün önce</span>
-                                        </div>
-                                        <p class="mb-0">Aidat 2.500 TL civarında. Takas düşünmüyorum, nakit satış yapıyorum.</p>
-                                    </div>
-                                </div>
-
-                                <div class="border rounded p-3 mb-3">
-                                    <div class="d-flex align-items-center mb-2">
-                                        <div class="bg-light rounded-circle p-2 me-2">
-                                            <i class="bi bi-person"></i>
-                                        </div>
-                                        <div>
-                                            <strong>Zeynep K.</strong>
-                                            <span class="text-muted small ms-2">3 saat önce</span>
-                                        </div>
-                                    </div>
-                                    <p class="mb-0">Pazarlık payı var mı?</p>
-                                </div>
+                            <div class="alert alert-light mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Henüz soru yok.
                             </div>
-
-                            <form>
-                                <div class="mb-3">
-                                    <textarea class="form-control" rows="3" placeholder="Sorunuzu buraya yazın..."></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-send me-1"></i> Soru Gönder
-                                </button>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -234,37 +192,15 @@ else
                             </div>
                             <div>
                                 <div class="seller-name">@(Model.SaticiAd ?? "Satıcı")</div>
-                                <div class="seller-since">
-                                    <i class="bi bi-patch-check-fill text-primary me-1"></i>
-                                    Üye: Mart 2019
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="d-flex gap-3 mb-4 text-center">
-                            <div class="flex-fill p-2 bg-light rounded">
-                                <div class="h5 mb-0 text-primary">24</div>
-                                <small class="text-muted">Aktif İlan</small>
-                            </div>
-                            <div class="flex-fill p-2 bg-light rounded">
-                                <div class="h5 mb-0 text-primary">4.8</div>
-                                <small class="text-muted">Puan</small>
-                            </div>
-                            <div class="flex-fill p-2 bg-light rounded">
-                                <div class="h5 mb-0 text-primary">156</div>
-                                <small class="text-muted">Satış</small>
                             </div>
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-cta btn-lg">
-                                <i class="bi bi-telephone me-2"></i>0555 123 45 67
-                            </button>
                             <button type="button" class="btn btn-outline-primary">
                                 <i class="bi bi-chat me-2"></i>Mesaj Gönder
                             </button>
                             <a asp-controller="Listings" asp-action="Index" class="btn btn-outline-secondary">
-                                <i class="bi bi-grid me-2"></i>Diğer İlanlarını Gör
+                                <i class="bi bi-grid me-2"></i>Tüm İlanları Gör
                             </a>
                         </div>
                     </div>

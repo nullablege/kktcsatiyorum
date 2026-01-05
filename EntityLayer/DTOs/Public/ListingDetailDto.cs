@@ -15,7 +15,10 @@ namespace EntityLayer.DTOs.Public
         List<PhotoDto> Fotograflar,
         List<AttributeValueDisplayDto> Attributes,
         decimal? Enlem,
-        decimal? Boylam
+        decimal? Boylam,
+        int KategoriId,
+        string KategoriAd,
+        int GoruntulenmeSayisi
     );
 
     public sealed record PhotoDto(string Url, bool KapakMi, int SiraNo);
