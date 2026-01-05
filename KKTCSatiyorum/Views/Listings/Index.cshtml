@@ -10,6 +10,7 @@
         || !string.IsNullOrWhiteSpace(Model.Query.Sehir)
         || Model.Query.MinFiyat.HasValue
         || Model.Query.MaxFiyat.HasValue
+        || !string.IsNullOrWhiteSpace(Model.Query.Sort)
         || Model.Query.UserLat.HasValue
         || filledEavCount > 0;
     var kategoriText = Model.Query.KategoriId.HasValue
@@ -181,43 +182,111 @@
 
                 @if (hasFilters)
                 {
-                    <div class="d-flex flex-wrap gap-2 mb-4">
+                    var baseRoute = new Dictionary<string, string?>();
+                    if (!string.IsNullOrWhiteSpace(Model.Query.Q)) baseRoute["Q"] = Model.Query.Q;
+                    if (Model.Query.KategoriId.HasValue) baseRoute["KategoriId"] = Model.Query.KategoriId.Value.ToString();
+                    if (!string.IsNullOrWhiteSpace(Model.Query.Sehir)) baseRoute["Sehir"] = Model.Query.Sehir;
+                    if (Model.Query.MinFiyat.HasValue) baseRoute["MinFiyat"] = Model.Query.MinFiyat.Value.ToString();
+                    if (Model.Query.MaxFiyat.HasValue) baseRoute["MaxFiyat"] = Model.Query.MaxFiyat.Value.ToString();
+                    if (!string.IsNullOrWhiteSpace(Model.Query.Sort)) baseRoute["Sort"] = Model.Query.Sort;
+                    if (Model.Query.UserLat.HasValue) baseRoute["UserLat"] = Model.Query.UserLat.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (Model.Query.UserLng.HasValue) baseRoute["UserLng"] = Model.Query.UserLng.Value.ToString(System.Globalization.CultureInfo.InvariantCulture);
+                    if (Model.Query.MaxDistanceKm.HasValue) baseRoute["MaxDistanceKm"] = Model.Query.MaxDistanceKm.Value.ToString();
+                    foreach (var eav in eavFilters.Where(x => !string.IsNullOrWhiteSpace(x.Value)))
+                    {
+                        baseRoute[$"EavFilters[{eav.Key}]"] = eav.Value;
+                    }
+
+                    var sortDisplayText = Model.Query.Sort switch
+                    {
+                        "eski" => "Eskiden Yeniye",
+                        "fiyat_artan" => "Fiyat: Artan",
+                        "fiyat_azalan" => "Fiyat: Azalan",
+                        "distance" => "Mesafe: En Yakın",
+                        _ => (string?)null
+                    };
+
+                    <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
                         @if (!string.IsNullOrWhiteSpace(Model.Query.Q))
                         {
+                            var routeWithoutQ = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutQ.Remove("Q");
                             <span class="badge bg-primary d-flex align-items-center gap-1">
-                                @Model.Query.Q
+                                Arama: @Model.Query.Q
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutQ" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
                         @if (!string.IsNullOrWhiteSpace(kategoriText))
                         {
+                            var routeWithoutKategori = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutKategori.Remove("KategoriId");
+                            foreach (var key in routeWithoutKategori.Keys.Where(k => k.StartsWith("EavFilters[")).ToList())
+                            {
+                                routeWithoutKategori.Remove(key);
+                            }
                             <span class="badge bg-primary d-flex align-items-center gap-1">
                                 @kategoriText
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutKategori" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
                         @if (!string.IsNullOrWhiteSpace(Model.Query.Sehir))
                         {
+                            var routeWithoutSehir = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutSehir.Remove("Sehir");
                             <span class="badge bg-primary d-flex align-items-center gap-1">
                                 @Model.Query.Sehir
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutSehir" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
                         @if (Model.Query.MinFiyat.HasValue || Model.Query.MaxFiyat.HasValue)
                         {
+                            var routeWithoutFiyat = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutFiyat.Remove("MinFiyat");
+                            routeWithoutFiyat.Remove("MaxFiyat");
                             <span class="badge bg-primary d-flex align-items-center gap-1">
-                                @(Model.Query.MinFiyat?.ToString("N0") ?? "0") - @(Model.Query.MaxFiyat?.ToString("N0") ?? "∞") ₺
+                                Fiyat: @(Model.Query.MinFiyat?.ToString("N0") ?? "0") - @(Model.Query.MaxFiyat?.ToString("N0") ?? "∞") ₺
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutFiyat" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
                         @if (Model.Query.UserLat.HasValue)
                         {
+                            var routeWithoutNearMe = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutNearMe.Remove("UserLat");
+                            routeWithoutNearMe.Remove("UserLng");
+                            routeWithoutNearMe.Remove("MaxDistanceKm");
+                            if (routeWithoutNearMe.TryGetValue("Sort", out var sortVal) && sortVal == "distance")
+                            {
+                                routeWithoutNearMe.Remove("Sort");
+                            }
                             <span class="badge bg-primary d-flex align-items-center gap-1">
-                                <i class="bi bi-geo-alt-fill"></i> Yakınımda@(Model.Query.MaxDistanceKm.HasValue ? $" ({Model.Query.MaxDistanceKm} km)" : "")
+                                <i class="bi bi-geo-alt-fill"></i> Yakınımda@(Model.Query.MaxDistanceKm.HasValue ? $": {Model.Query.MaxDistanceKm} km" : "")
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutNearMe" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
+                            </span>
+                        }
+                        @if (!string.IsNullOrWhiteSpace(sortDisplayText) && Model.Query.Sort != "distance")
+                        {
+                            var routeWithoutSort = new Dictionary<string, string?>(baseRoute);
+                            routeWithoutSort.Remove("Sort");
+                            <span class="badge bg-primary d-flex align-items-center gap-1">
+                                Sıralama: @sortDisplayText
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutSort" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
                         @if (filledEavCount > 0)
                         {
+                            var routeWithoutEav = new Dictionary<string, string?>(baseRoute);
+                            foreach (var key in routeWithoutEav.Keys.Where(k => k.StartsWith("EavFilters[")).ToList())
+                            {
+                                routeWithoutEav.Remove(key);
+                            }
                             <span class="badge bg-primary d-flex align-items-center gap-1">
-                                <i class="bi bi-sliders"></i> Ek Filtreler (@filledEavCount)
+                                <i class="bi bi-sliders"></i> Ek Filtreler: @filledEavCount
+                                <a asp-controller="Listings" asp-action="Index" asp-all-route-data="routeWithoutEav" class="text-white ms-1" title="Kaldır"><i class="bi bi-x"></i></a>
                             </span>
                         }
+                        <a asp-controller="Listings" asp-action="Index" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle me-1"></i>Filtreleri temizle
+                        </a>
                     </div>
                 }
 
