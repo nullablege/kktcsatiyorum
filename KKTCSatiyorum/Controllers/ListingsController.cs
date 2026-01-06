@@ -99,6 +99,13 @@ namespace KKTCSatiyorum.Controllers
             }
             ViewBag.IsFavorite = isFavorite;
 
+            var relatedQuery = new ListingSearchQuery { KategoriId = result.Data.KategoriId, Page = 1, PageSize = 7 };
+            var relatedResult = await _ilanService.SearchAsync(relatedQuery, ct);
+            var relatedListings = relatedResult.IsSuccess && relatedResult.Data != null
+                ? relatedResult.Data.Items.Where(x => x.Slug != result.Data.Slug).Take(6).ToList()
+                : new List<ListingCardDto>();
+            ViewBag.RelatedListings = relatedListings;
+
             return View(result.Data);
         }
 
