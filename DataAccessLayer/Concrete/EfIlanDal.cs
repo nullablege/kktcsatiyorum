@@ -252,7 +252,7 @@ namespace DataAccessLayer.Concrete
                 ilan.Enlem,
                 ilan.Boylam,
                 ilan.KategoriId,
-                ilan.Kategori.Ad,
+                ilan.Kategori?.Ad ?? "",
                 ilan.GoruntulenmeSayisi
             );
         }
