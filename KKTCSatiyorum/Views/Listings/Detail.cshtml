@@ -31,7 +31,10 @@ else
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
                     <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">İlanlar</a></li>
-                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@Model.KategoriId">@Model.KategoriAd</a></li>
+                    @if (!string.IsNullOrWhiteSpace(Model.KategoriAd))
+                    {
+                        <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@Model.KategoriId">@Model.KategoriAd</a></li>
+                    }
                     <li class="breadcrumb-item active" aria-current="page">@Model.Baslik</li>
                 </ol>
             </nav>
