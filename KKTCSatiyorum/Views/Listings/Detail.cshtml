@@ -31,7 +31,10 @@ else
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
                     <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index">İlanlar</a></li>
-                    <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@Model.KategoriId">@Model.KategoriAd</a></li>
+                    @if (!string.IsNullOrWhiteSpace(Model.KategoriAd))
+                    {
+                        <li class="breadcrumb-item"><a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@Model.KategoriId">@Model.KategoriAd</a></li>
+                    }
                     <li class="breadcrumb-item active" aria-current="page">@Model.Baslik</li>
                 </ol>
             </nav>
@@ -224,6 +227,30 @@ else
                     </div>
                 </div>
             </div>
+
+            @{
+                var relatedListings = ViewBag.RelatedListings as List<ListingCardDto>;
+            }
+            @if (relatedListings != null && relatedListings.Count > 0)
+            {
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="mb-3"><i class="bi bi-grid me-2"></i>Benzer İlanlar</h5>
+                                <div class="row g-2">
+                                    @foreach (var item in relatedListings)
+                                    {
+                                        <div class="col-6 col-sm-4 col-md-3 col-lg-2">
+                                            <partial name="~/Views/Home/Partials/_ListingCardCompact.cshtml" model="item" />
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
     </main>
 }
