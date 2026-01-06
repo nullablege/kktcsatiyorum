@@ -178,10 +178,10 @@ else
                                 @Model.Fiyat.ToString("N0") @(Model.ParaBirimi == ParaBirimi.TRY ? "₺" : Model.ParaBirimi.ToString())
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="button" class="btn btn-cta btn-lg">
+                                <button type="button" class="btn btn-cta btn-lg" data-bs-toggle="modal" data-bs-target="#featureNotAvailableModal">
                                     <i class="bi bi-telephone me-2"></i>Ara
                                 </button>
-                                <button type="button" class="btn btn-outline-primary">
+                                <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#featureNotAvailableModal">
                                     <i class="bi bi-chat me-2"></i>Mesaj Gönder
                                 </button>
                             </div>
@@ -199,7 +199,7 @@ else
                         </div>
 
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-primary">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#featureNotAvailableModal">
                                 <i class="bi bi-chat me-2"></i>Mesaj Gönder
                             </button>
                             <a asp-controller="Listings" asp-action="Index" class="btn btn-outline-secondary">
@@ -221,7 +221,7 @@ else
                     </div>
 
                     <div class="text-center">
-                        <button type="button" class="btn btn-link text-muted">
+                        <button type="button" class="btn btn-link text-muted" data-bs-toggle="modal" data-bs-target="#featureNotAvailableModal">
                             <i class="bi bi-flag me-1"></i>İlanı Şikayet Et
                         </button>
                     </div>
@@ -253,6 +253,23 @@ else
             }
         </div>
     </main>
+
+    <div class="modal fade" id="featureNotAvailableModal" tabindex="-1" aria-labelledby="featureNotAvailableModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="featureNotAvailableModalLabel">Bilgi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+                </div>
+                <div class="modal-body">
+                    Bu demo sürümünde bu özellik aktif değil.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
 @section Styles {
