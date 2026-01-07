@@ -23,7 +23,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">Ýlanlar</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Listings" asp-action="Index">ï¿½lanlar</a>
                         </li>
 
                         @if (User.Identity?.IsAuthenticated == true)
@@ -32,10 +32,10 @@
                                 <a class="nav-link text-dark" asp-area="Member" asp-controller="Dashboard" asp-action="Index">Panel</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Member" asp-controller="MyListings" asp-action="Index">Ýlanlarým</a>
+                                <a class="nav-link text-dark" asp-area="Member" asp-controller="MyListings" asp-action="Index">ï¿½lanlarï¿½m</a>
                             </li>
                              <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="Member" asp-controller="MyListings" asp-action="Create">Ýlan Ver</a>
+                                <a class="nav-link text-dark" asp-area="Member" asp-controller="MyListings" asp-action="Create">ï¿½lan Ver</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="Member" asp-controller="Favorites" asp-action="Index">Favorilerim</a>
@@ -49,30 +49,30 @@
                             @if (User.IsInRole(RoleNames.Admin))
                             {
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle text-dark fw-bold" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Yönetim
-                                    </a>
+                                    <button class="nav-link dropdown-toggle text-dark fw-bold btn" type="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                        YÃ¶netim
+                                    </button>
                                     <ul class="dropdown-menu" aria-labelledby="adminDropdown">
                                         <li><a class="dropdown-item" asp-area="Admin" asp-controller="Home" asp-action="Index">Dashboard</a></li>
                                         <li><a class="dropdown-item" asp-area="Admin" asp-controller="Moderasyon" asp-action="Index">Moderasyon</a></li>
-                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Logs" asp-action="Index">Sistem Loglarý</a></li>
+                                        <li><a class="dropdown-item" asp-area="Admin" asp-controller="Logs" asp-action="Index">Sistem Loglarï¿½</a></li>
                                     </ul>
                                 </li>
                             }
 
                              <li class="nav-item ms-auto">
                                 <form class="form-inline" asp-area="" asp-controller="Account" asp-action="Logout" method="post">
-                                    <button type="submit" class="nav-link btn btn-link text-dark">Çýkýþ Yap</button>
+                                    <button type="submit" class="nav-link btn btn-link text-dark">ï¿½ï¿½kï¿½ï¿½ Yap</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item ms-auto">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Giriþ Yap</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Giriï¿½ Yap</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Kayýt Ol</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Kayï¿½t Ol</a>
                             </li>
                         }
                     </ul>
