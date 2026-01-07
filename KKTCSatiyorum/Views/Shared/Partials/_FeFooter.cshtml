@@ -1,3 +1,9 @@
+@using BusinessLayer.Features.Kategoriler.Services
+@using EntityLayer.Entities
+@using Microsoft.AspNetCore.Identity
+@inject IKategoriService KategoriService
+@inject SignInManager<UygulamaKullanicisi> SignInManager
+
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
@@ -8,15 +14,40 @@
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Kategoriler</h5>
-                <a asp-controller="Listings" asp-action="Index">Emlak</a>
-                <a asp-controller="Listings" asp-action="Index">Vasıta</a>
-                <a asp-controller="Listings" asp-action="Index">Elektronik</a>
+                @{
+                    var kategoriResult = await KategoriService.GetListAsync();
+                    var categories = kategoriResult.IsSuccess 
+                        ? kategoriResult.Data.Where(c => c.UstKategoriId == null && c.AktifMi).Take(6).ToList()
+                        : new List<BusinessLayer.Features.Kategoriler.DTOs.KategoriListItemDto>();
+                }
+                
+                @if (categories.Any())
+                {
+                    @foreach (var cat in categories)
+                    {
+                        <a asp-controller="Listings" asp-action="Index" asp-route-KategoriId="@cat.Id">@cat.Ad</a>
+                    }
+                }
+                else
+                {
+                    <span class="text-muted small">Kategori bulunamadı.</span>
+                }
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Hesabım</h5>
-                <a asp-controller="Account" asp-action="Login">Giriş Yap</a>
-                <a asp-controller="Account" asp-action="Register">Kayıt Ol</a>
-                <a asp-area="Member" asp-controller="MyListings" asp-action="Index">İlanlarım</a>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-area="Member" asp-controller="MyListings" asp-action="Index">İlanlarım</a>
+                    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                         @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-link p-0 text-decoration-none text-muted" style="font-weight: 400; font-size: inherit;">Çıkış Yap</button>
+                    </form>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login">Giriş Yap</a>
+                    <a asp-controller="Account" asp-action="Register">Kayıt Ol</a>
+                }
             </div>
             <div class="col-6 col-lg-2">
                 <h5>Yardım</h5>
