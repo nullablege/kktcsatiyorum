@@ -9,25 +9,7 @@
                 }
                 <span class="secondary-nav-divider"></span>
                 <a asp-area="Member" asp-controller="Favorites" asp-action="Index" class="secondary-nav-link">Favori İlanlarım</a>
-                <a href="#" class="secondary-nav-link" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">Favori Aramalarım</a>
+                <button type="button" class="secondary-nav-link" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">Favori Aramalarım</button>
             </div>
         </div>
     </nav>
-
-    <!-- Demo Not Available Modal -->
-    <div class="modal fade" id="demoNotAvailableModal" tabindex="-1" aria-labelledby="demoNotAvailableModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="demoNotAvailableModalLabel"><i class="bi bi-info-circle me-2"></i>Bilgi</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Bu özellik demo sürümünde aktif değildir.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
-                </div>
-            </div>
-        </div>
-    </div>
