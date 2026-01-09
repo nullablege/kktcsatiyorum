@@ -1,4 +1,4 @@
-@model RegisterViewModel
+ï»¿@model RegisterViewModel
 
 @{
     ViewData["Title"] = "Kayit Ol";
@@ -8,13 +8,13 @@
         <div class="auth-card" style="max-width: 500px;">
             <div class="auth-logo">
                 <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
-                    <i class="bi bi-shop"></i> KKTCSatýyorum
+                    <i class="bi bi-shop"></i> KKTCSatï¿½yorum
                 </a>
             </div>
 
-            <h1 class="h2">Hesap Oluþtur</h1>
+            <h1 class="h2">Hesap Oluï¿½tur</h1>
 
-            <p class="text-muted text-center mb-4">Hemen ücretsiz kayýt olun ve ilan vermeye baþlayýn</p>
+            <p class="text-muted text-center mb-4">Hemen ï¿½cretsiz kayï¿½t olun ve ilan vermeye baï¿½layï¿½n</p>
 
             <form asp-action="Register" asp-controller="Account" method="post">
                 <div style="color:red; text-align:center;" asp-validation-summary="All"></div>
@@ -22,12 +22,12 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="firstName" class="form-label">Ad</label>
-                        <input type="text" class="form-control" asp-for="Ad" id="firstName" placeholder="Adýnýz" required
+                        <input type="text" class="form-control" asp-for="Ad" id="firstName" placeholder="Adï¿½nï¿½z" required
                                autocomplete="given-name">
                     </div>
                     <div class="col-md-6">
                         <label for="lastName" class="form-label">Soyad</label>
-                        <input type="text" class="form-control" asp-for="Soyad" id="lastName" placeholder="Soyadýnýz" required
+                        <input type="text" class="form-control" asp-for="Soyad" id="lastName" placeholder="Soyadï¿½nï¿½z" required
                                autocomplete="family-name">
                     </div>
                 </div>
@@ -43,7 +43,7 @@
 
                 <div class="mb-3">
                     <label for="phone" class="form-label">
-                        Telefon Numarasý <span class="text-muted">(Opsiyonel)</span>
+                        Telefon Numarasï¿½ <span class="text-muted">(Opsiyonel)</span>
                     </label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-phone"></i></span>
@@ -53,28 +53,28 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Þifre</label>
+                    <label for="password" class="form-label">ï¿½ifre</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
                         <input type="password" class="form-control" asp-for="Password" id="password" placeholder="En az 8 karakter"
                                required autocomplete="new-password">
                     </div>
-                    <div class="form-text">En az 8 karakter, bir büyük harf ve bir rakam içermeli.</div>
+                    <div class="form-text">En az 8 karakter, bir bï¿½yï¿½k harf ve bir rakam iï¿½ermeli.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="passwordConfirm" class="form-label">Þifre Tekrar</label>
+                    <label for="passwordConfirm" class="form-label">ï¿½ifre Tekrar</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
                         <input type="password" class="form-control" asp-for="ConfirmPassword" id="passwordConfirm"
-                               placeholder="Þifrenizi tekrar girin" required autocomplete="new-password">
+                               placeholder="ï¿½ifrenizi tekrar girin" required autocomplete="new-password">
                     </div>
                 </div>
 
                 <div class="form-check mb-3">
                     <input class="form-check-input" type="checkbox" id="terms" required>
                     <label class="form-check-label" for="terms">
-                        <a asp-controller="Home" asp-action="Terms">Kullaným Koþullarý</a> ve <a asp-controller="Home" asp-action="Privacy">Gizlilik Politikasý</a>'ný okudum, kabul
+                        <a asp-controller="Home" asp-action="Terms">Kullanï¿½m Koï¿½ullarï¿½</a> ve <a asp-controller="Home" asp-action="Privacy">Gizlilik Politikasï¿½</a>'nï¿½ okudum, kabul
                         ediyorum.
                     </label>
                 </div>
@@ -82,12 +82,12 @@
                 <div class="form-check mb-4">
                     <input class="form-check-input" type="checkbox" id="newsletter">
                     <label class="form-check-label" for="newsletter">
-                        Kampanya ve fýrsatlardan haberdar olmak istiyorum.
+                        Kampanya ve fï¿½rsatlardan haberdar olmak istiyorum.
                     </label>
                 </div>
 
                 <button type="submit" class="btn btn-cta w-100 btn-lg mb-3">
-                    <i class="bi bi-person-plus me-2"></i>Kayýt Ol
+                    <i class="bi bi-person-plus me-2"></i>Kayï¿½t Ol
                 </button>
 
                 <div class="text-center mb-4">
@@ -95,21 +95,21 @@
                 </div>
 
                 <button type="button" disabled class="btn btn-outline-secondary w-100 mb-2">
-                    <i class="bi bi-google me-2"></i>Google ile Kayýt Ol
+                    <i class="bi bi-google me-2"></i>Google ile Kayï¿½t Ol
                 </button>
 
                 <button type="button" disabled class="btn btn-outline-secondary w-100">
-                    <i class="bi bi-facebook me-2"></i>Facebook ile Kayýt Ol
+                    <i class="bi bi-facebook me-2"></i>Facebook ile Kayï¿½t Ol
                 </button>
             </form>
 
             <hr class="my-4">
 
             <p class="text-center mb-0">
-                Zaten hesabýnýz var mý? <a asp-controller="Account" asp-action="Login" class="text-primary fw-semibold">Giriþ Yap</a>
+                Zaten hesabï¿½nï¿½z var mï¿½? <a asp-controller="Account" asp-action="Login" class="text-primary fw-semibold">Giriï¿½ Yap</a>
             </p>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

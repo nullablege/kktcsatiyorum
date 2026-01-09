@@ -1,4 +1,4 @@
-@model KKTCSatiyorum.Areas.Member.Models.MyListings.EditIlanViewModel
+﻿@model KKTCSatiyorum.Areas.Member.Models.MyListings.EditIlanViewModel
 @using BusinessLayer.Features.KategoriAlanlari.DTOs
 @using EntityLayer.Enums
 
@@ -32,14 +32,14 @@
                         
                         <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
 
-                        <!-- Kategori -->
+
                         <div class="mb-3">
                             <label asp-for="KategoriId" class="form-label fw-bold">Kategori *</label>
                             <select asp-for="KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect"></select>
                             <span asp-validation-for="KategoriId" class="text-danger"></span>
                         </div>
 
-                        <!-- Temel Alanlar -->
+
                         <div class="mb-3">
                             <label asp-for="Baslik" class="form-label fw-bold">İlan Başlığı *</label>
                             <input asp-for="Baslik" class="form-control" />
@@ -89,7 +89,7 @@
                             <small class="text-muted">Haritaya tıklayarak veya işaretçiyi sürükleyerek konum belirleyebilirsiniz.</small>
                         </div>
 
-                        <!-- Dinamik EAV Alanları -->
+
                         <div id="dynamicAttributesContainer" class="mb-4" style="@(Model.KategoriId > 0 ? "display:block" : "display:none")">
                             <hr />
                             <h5 class="mb-3"><i class="bi bi-list-ul me-2"></i>Kategori Özellikleri</h5>
@@ -149,7 +149,7 @@
                             </div>
                         </div>
 
-                        <!-- Fotoğraflar (Read Only for now) -->
+
                         <div class="mb-4">
                             <hr />
                             <h5 class="mb-3"><i class="bi bi-images me-2"></i>Mevcut Fotoğraflar</h5>

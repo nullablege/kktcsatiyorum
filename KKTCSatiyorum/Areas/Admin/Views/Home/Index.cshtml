@@ -1,4 +1,4 @@
-
+ï»¿
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -10,14 +10,14 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
             <h3 class="mb-1">Dashboard</h3>
-            <p class="text-muted mb-0">Hoþ geldin, Admin! Bugün 13 Aralýk 2024</p>
+            <p class="text-muted mb-0">Hoï¿½ geldin, Admin! Bugï¿½n 13 Aralï¿½k 2024</p>
         </div>
         <div class="dropdown">
             <button class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
                 <i class="bi bi-person-circle me-1"></i> Admin
             </button>
             <ul class="dropdown-menu dropdown-menu-end">
-                <li><a class="dropdown-item" href="#">Profil</a></li>
+                <li><button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">Profil</button></li>
                 <li>
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post">
         @Html.AntiForgeryToken()
@@ -28,13 +28,13 @@
         </div>
     </div>
 
-    <!-- Stats Cards -->
+
     <div class="row g-4 mb-4">
         <div class="col-sm-6 col-xl-3">
             <div class="stat-card">
                 <div class="stat-icon primary"><i class="bi bi-people"></i></div>
                 <div class="stat-number">12.458</div>
-                <div class="stat-label">Toplam Kullanýcý</div>
+                <div class="stat-label">Toplam Kullanï¿½cï¿½</div>
                 <small class="text-success"><i class="bi bi-arrow-up"></i> +124 bu hafta</small>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <div class="stat-card">
                 <div class="stat-icon success"><i class="bi bi-megaphone"></i></div>
                 <div class="stat-number">45.892</div>
-                <div class="stat-label">Toplam Ýlan</div>
+                <div class="stat-label">Toplam ï¿½lan</div>
                 <small class="text-success"><i class="bi bi-arrow-up"></i> +342 bu hafta</small>
             </div>
         </div>
@@ -51,29 +51,29 @@
                 <div class="stat-icon warning"><i class="bi bi-hourglass-split"></i></div>
                 <div class="stat-number">12</div>
                 <div class="stat-label">Bekleyen Onay</div>
-                <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="small text-primary">Ýncele ›</a>
+                <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="small text-primary">ï¿½ncele ï¿½</a>
             </div>
         </div>
         <div class="col-sm-6 col-xl-3">
             <div class="stat-card">
                 <div class="stat-icon danger"><i class="bi bi-exclamation-triangle"></i></div>
                 <div class="stat-number">3</div>
-                <div class="stat-label">Þikayet Edilen</div>
-                <a href="#" class="small text-primary">Ýncele ›</a>
+                <div class="stat-label">ï¿½ikayet Edilen</div>
+                <button type="button" class="btn btn-link btn-sm p-0 small text-primary" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">Ä°ncele </button>
             </div>
         </div>
     </div>
 
     <div class="row g-4">
-        <!-- Chart Area -->
+
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Ýlan & Kullanýcý Ýstatistikleri</h5>
+                    <h5 class="mb-0">ï¿½lan & Kullanï¿½cï¿½ ï¿½statistikleri</h5>
                     <select class="form-select form-select-sm" style="width:auto;">
-                        <option>Son 7 Gün</option>
-                        <option selected>Son 30 Gün</option>
-                        <option>Son 90 Gün</option>
+                        <option>Son 7 Gï¿½n</option>
+                        <option selected>Son 30 Gï¿½n</option>
+                        <option>Son 90 Gï¿½n</option>
                     </select>
                 </div>
                 <div class="card-body">
@@ -82,11 +82,11 @@
             </div>
         </div>
 
-        <!-- Quick Actions & Recent -->
+
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Hýzlý Ýþlemler</h5>
+                    <h5 class="mb-0">Hï¿½zlï¿½ ï¿½ï¿½lemler</h5>
                 </div>
                 <div class="card-body">
                     <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="btn btn-warning w-100 mb-2">
@@ -95,15 +95,15 @@
                     <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="btn btn-outline-primary w-100 mb-2">
                         <i class="bi bi-folder-plus me-2"></i>Kategori Ekle
                     </a>
-                    <a href="#" class="btn btn-outline-secondary w-100">
-                        <i class="bi bi-file-earmark-text me-2"></i>Rapor Oluþtur
+                    <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">
+                        <i class="bi bi-file-earmark-text me-2"></i>Rapor Oluï¿½tur
                     </a>
                 </div>
             </div>
 
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Kategori Daðýlýmý</h5>
+                    <h5 class="mb-0">Kategori Daï¿½ï¿½lï¿½mï¿½</h5>
                 </div>
                 <div class="card-body">
                     <canvas id="categoryChart" height="200"></canvas>
@@ -112,12 +112,12 @@
         </div>
     </div>
 
-    <!-- Recent Activity -->
+
     <div class="row g-4 mt-2">
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Son Eklenen Ýlanlar</h5>
+                    <h5 class="mb-0">Son Eklenen ï¿½lanlar</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
@@ -126,7 +126,7 @@
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
                                 <strong>2021 BMW 320i M Sport</strong>
-                                <div class="small text-muted">Mehmet Y. • 10 dk önce</div>
+                                <div class="small text-muted">Mehmet Y. ï¿½ 10 dk ï¿½nce</div>
                             </div>
                             <span class="badge bg-warning">Bekliyor</span>
                         </div>
@@ -134,19 +134,19 @@
                             <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&h=40&fit=crop"
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
-                                <strong>3+1 Deniz Manzaralý Daire</strong>
-                                <div class="small text-muted">Ayþe K. • 25 dk önce</div>
+                                <strong>3+1 Deniz Manzaralï¿½ Daire</strong>
+                                <div class="small text-muted">Ayï¿½e K. ï¿½ 25 dk ï¿½nce</div>
                             </div>
-                            <span class="badge bg-success">Onaylý</span>
+                            <span class="badge bg-success">Onaylï¿½</span>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=60&h=40&fit=crop"
                                  class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
                             <div class="flex-grow-1">
                                 <strong>iPhone 15 Pro Max</strong>
-                                <div class="small text-muted">Ali M. • 1 saat önce</div>
+                                <div class="small text-muted">Ali M. ï¿½ 1 saat ï¿½nce</div>
                             </div>
-                            <span class="badge bg-success">Onaylý</span>
+                            <span class="badge bg-success">Onaylï¿½</span>
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,7 @@
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-header bg-white">
-                    <h5 class="mb-0">Son Kayýt Olan Kullanýcýlar</h5>
+                    <h5 class="mb-0">Son Kayï¿½t Olan Kullanï¿½cï¿½lar</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
@@ -168,7 +168,7 @@
                                 <strong>Zeynep Kaya</strong>
                                 <div class="small text-muted">zeynep@email.com</div>
                             </div>
-                            <small class="text-muted">5 dk önce</small>
+                            <small class="text-muted">5 dk ï¿½nce</small>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
@@ -178,17 +178,17 @@
                                 <strong>Can Demir</strong>
                                 <div class="small text-muted">can@email.com</div>
                             </div>
-                            <small class="text-muted">15 dk önce</small>
+                            <small class="text-muted">15 dk ï¿½nce</small>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
                             <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
                                 <i class="bi bi-person text-warning"></i>
                             </div>
                             <div class="flex-grow-1">
-                                <strong>Elif Yýldýz</strong>
+                                <strong>Elif Yï¿½ldï¿½z</strong>
                                 <div class="small text-muted">elif@email.com</div>
                             </div>
-                            <small class="text-muted">1 saat önce</small>
+                            <small class="text-muted">1 saat ï¿½nce</small>
                         </div>
                     </div>
                 </div>
@@ -207,14 +207,14 @@
             data: {
                 labels: ['1 Ara', '5 Ara', '10 Ara', '15 Ara', '20 Ara', '25 Ara', '30 Ara'],
                 datasets: [{
-                    label: 'Yeni Ýlanlar',
+                    label: 'Yeni ï¿½lanlar',
                     data: [120, 190, 150, 220, 180, 250, 342],
                     borderColor: '#0D6EFD',
                     backgroundColor: 'rgba(13, 110, 253, 0.1)',
                     fill: true,
                     tension: 0.4
                 }, {
-                    label: 'Yeni Kullanýcýlar',
+                    label: 'Yeni Kullanï¿½cï¿½lar',
                     data: [40, 55, 45, 70, 60, 85, 124],
                     borderColor: '#198754',
                     backgroundColor: 'rgba(25, 135, 84, 0.1)',
@@ -233,7 +233,7 @@
         new Chart(document.getElementById('categoryChart'), {
             type: 'doughnut',
             data: {
-                labels: ['Emlak', 'Vasýta', 'Elektronik', 'Ev & Yaþam', 'Diðer'],
+                labels: ['Emlak', 'Vasï¿½ta', 'Elektronik', 'Ev & Yaï¿½am', 'Diï¿½er'],
                 datasets: [{
                     data: [12450, 8320, 15780, 6940, 2402],
                     backgroundColor: ['#0D6EFD', '#198754', '#FFC107', '#DC3545', '#6C757D']

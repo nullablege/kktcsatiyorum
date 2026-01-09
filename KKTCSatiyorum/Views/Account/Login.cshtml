@@ -1,4 +1,4 @@
-@model LoginViewModel
+ï»¿@model LoginViewModel
 
 @{
     ViewData["Title"] = "Giris Yap";
@@ -8,12 +8,12 @@
         <div class="auth-card">
             <div class="auth-logo">
                 <a asp-controller="Home" asp-action="Index" class="text-decoration-none">
-                    <i class="bi bi-shop"></i> KKTCSatýyorum
+                    <i class="bi bi-shop"></i> KKTCSatï¿½yorum
                 </a>
             </div>
 
-            <h1 class="h2">Giriþ Yap</h1>
-            <p class="text-muted text-center mb-4">Hesabýnýza giriþ yaparak ilanlara eriþin</p>
+            <h1 class="h2">Giriï¿½ Yap</h1>
+            <p class="text-muted text-center mb-4">Hesabï¿½nï¿½za giriï¿½ yaparak ilanlara eriï¿½in</p>
 
             <form asp-action="Login" asp-controller="Account" asp-route-returnUrl="@(ViewData["ReturnUrl"] as string)"  method="post">
                 <div class="mb-3">
@@ -26,10 +26,10 @@
                 </div>
                 <div style="color:red; text-align:center" asp-validation-summary="All"></div>
                 <div class="mb-3">
-                    <label for="password" class="form-label">Þifre</label>
+                    <label for="password" class="form-label">ï¿½ifre</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                        <input type="password" class="form-control" asp-for="Password" id="password" placeholder="••••••••" required
+                        <input type="password" class="form-control" asp-for="Password" id="password" placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½" required
                                autocomplete="current-password">
                         <button type="button" class="btn btn-outline-secondary" onclick="togglePassword()">
                             <i class="bi bi-eye" id="toggleIcon"></i>
@@ -40,13 +40,13 @@
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <div class="form-check">
                         <input class="form-check-input" asp-for="RememberMe" id="remember">
-                        <label class="form-check-label" for="remember">Beni hatýrla</label>
+                        <label class="form-check-label" for="remember">Beni hatï¿½rla</label>
                     </div>
-                    <a asp-controller="Home" asp-action="Contact" class="text-primary small">Þifremi unuttum?</a>
+                    <a asp-controller="Home" asp-action="Contact" class="text-primary small">ï¿½ifremi unuttum?</a>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100 btn-lg mb-3">
-                    <i class="bi bi-box-arrow-in-right me-2"></i>Giriþ Yap
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Giriï¿½ Yap
                 </button>
 
                 <div class="text-center mb-4">
@@ -54,23 +54,23 @@
                 </div>
 
                 <button type="button" disabled class="btn btn-outline-secondary w-100 mb-2">
-                    <i class="bi bi-google me-2"></i>Google ile Giriþ Yap
+                    <i class="bi bi-google me-2"></i>Google ile Giriï¿½ Yap
                 </button>
 
                 <button type="button" disabled class="btn btn-outline-secondary w-100">
-                    <i class="bi bi-facebook me-2"></i>Facebook ile Giriþ Yap
+                    <i class="bi bi-facebook me-2"></i>Facebook ile Giriï¿½ Yap
                 </button>
             </form>
 
             <hr class="my-4">
 
             <p class="text-center mb-0">
-                Hesabýnýz yok mu? <a asp-controller="Account" asp-action="Register" class="text-primary fw-semibold">Kayýt Ol</a>
+                Hesabï¿½nï¿½z yok mu? <a asp-controller="Account" asp-action="Register" class="text-primary fw-semibold">Kayï¿½t Ol</a>
             </p>
         </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 @section Scripts {
