@@ -1,4 +1,4 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function () {
     var deleteConfirmModal = document.getElementById('deleteConfirmModal');
     if (deleteConfirmModal) {
         deleteConfirmModal.addEventListener('show.bs.modal', function (event) {
