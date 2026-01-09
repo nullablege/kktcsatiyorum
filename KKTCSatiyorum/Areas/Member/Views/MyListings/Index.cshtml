@@ -116,7 +116,16 @@
                                     <a asp-area="Member" asp-controller="MyListings" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle">
                                         <i class="bi bi-pencil"></i>
                                     </a>
-                                    <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-listing-id="@item.Id" title="Sil">
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#genericConfirmModal" 
+                                            data-confirm-title="İlanı Sil"
+                                            data-confirm-body="Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
+                                            data-confirm-action="@Url.Action("Delete", "MyListings", new { area = "Member" })"
+                                            data-confirm-id="@item.Id"
+                                            data-confirm-btn-text="Sil"
+                                            data-confirm-btn-class="btn btn-danger"
+                                            title="Sil">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
@@ -152,35 +161,4 @@
     }
     </div>
 </main>
-    <div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">İlanı Sil</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="mb-0">Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">İptal</button>
-                    <form asp-area="Member" asp-controller="MyListings" asp-action="Delete" method="post" id="deleteForm">
-                        <input type="hidden" name="id" id="deleteListingId" value="" />
-                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i>Sil</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    @section Scripts {
-        <script>
-            var deleteConfirmModal = document.getElementById('deleteConfirmModal')
-            deleteConfirmModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget
-                var listingId = button.getAttribute('data-listing-id')
-                var input = document.getElementById('deleteListingId')
-                input.value = listingId
-            })
-        </script>
-    }
