@@ -81,7 +81,7 @@
                                         <span class="badge bg-danger small">Reddedildi</span>
                                         break;
                                     default:
-                                        <span class="badge bg-dark small">@item.Durum</span>
+                                        <span class="badge bg-secondary small">@item.Durum</span>
                                         break;
                                 }
                                 <h6 class="mb-1 mt-1">@item.Baslik</h6>
@@ -95,7 +95,7 @@
                                 </small>
                                 @if (!string.IsNullOrEmpty(item.RedNedeni))
                                 {
-                                    <div class="text-danger small mt-1">
+                                    <div class="text-danger small mt-1 text-truncate" title="@item.RedNedeni">
                                         <i class="bi bi-exclamation-circle me-1"></i>@item.RedNedeni
                                     </div>
                                 }
