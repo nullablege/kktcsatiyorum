@@ -8,12 +8,13 @@
         <div class="content-section text-center" style="max-width: 600px; margin: 0 auto;">
             @{
                 ViewData["StateIcon"] = "bi-search";
+                ViewData["StateIconClass"] = "text-muted";
                 ViewData["StateTitle"] = "404 - Sayfa Bulunamadı";
                 ViewData["StateMessage"] = "Aradığınız sayfa mevcut değil veya taşındı. Lütfen URL adresini kontrol edin ya da ana sayfaya dönün.";
-                ViewData["StateType"] = "default";
                 ViewData["StateActionText"] = "Ana Sayfa";
                 ViewData["StateActionController"] = "Home";
                 ViewData["StateActionAction"] = "Index";
+                ViewData["StateActionBtnClass"] = "btn-cta";
                 ViewData["StateSecActionText"] = "İlanlara Göz At";
                 ViewData["StateSecActionController"] = "Listings";
                 ViewData["StateSecActionAction"] = "Index";

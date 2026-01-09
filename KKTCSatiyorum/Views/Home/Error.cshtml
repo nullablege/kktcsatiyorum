@@ -9,12 +9,13 @@
         <div class="content-section text-center" style="max-width: 600px; margin: 0 auto;">
                 @{
                     ViewData["StateIcon"] = "bi-exclamation-triangle";
+                    ViewData["StateIconClass"] = "text-danger";
                     ViewData["StateTitle"] = "Bir Hata Oluştu";
                     ViewData["StateMessage"] = "İstediğiniz sayfa yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.";
-                    ViewData["StateType"] = "danger";
                     ViewData["StateActionText"] = "Ana Sayfa";
                     ViewData["StateActionController"] = "Home";
                     ViewData["StateActionAction"] = "Index";
+                    ViewData["StateActionBtnClass"] = "btn-cta";
                     ViewData["StateSecActionText"] = "İletişim";
                     ViewData["StateSecActionController"] = "Home";
                     ViewData["StateSecActionAction"] = "Contact";
