@@ -105,10 +105,10 @@
                                 <div class="d-flex justify-content-md-end justify-content-start flex-wrap gap-1">
                                     @if (isPublished)
                                     {
-                                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Detay">
+                                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Görüntüle" aria-label="Görüntüle">
                                             <i class="bi bi-eye"></i> <span class="d-md-none">Görüntüle</span>
                                         </a>
-                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Yayından Kaldır">
+                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Durdur" aria-label="Durdur">
                                             <i class="bi bi-pause-circle"></i> <span class="d-md-none">Durdur</span>
                                         </button>
                                     }
@@ -118,14 +118,15 @@
                                             <i class="bi bi-eye-slash"></i>
                                         </button>
                                     }
-                                    <a asp-area="Member" asp-controller="MyListings" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle">
+                                    <a asp-area="Member" asp-controller="MyListings" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle" aria-label="Düzenle">
                                         <i class="bi bi-pencil"></i> <span class="d-md-none">Düzenle</span>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#deleteConfirmModal" 
                                             data-listing-id="@item.Id"
-                                            title="Sil">
+                                            title="Sil"
+                                            aria-label="Sil">
                                         <i class="bi bi-trash"></i> <span class="d-md-none">Sil</span>
                                     </button>
                                 </div>

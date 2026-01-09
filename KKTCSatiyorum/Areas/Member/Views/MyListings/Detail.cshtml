@@ -51,10 +51,10 @@
         <div class="d-flex gap-1">
              @if (isPublished)
             {
-                <a asp-area="" asp-controller="Listings" asp-action="Detail" asp-route-slug="@Model.SeoSlug" class="btn btn-sm btn-outline-primary" title="Detay" target="_blank">
+                <a asp-area="" asp-controller="Listings" asp-action="Detail" asp-route-slug="@Model.SeoSlug" class="btn btn-sm btn-outline-primary" title="Görüntüle" aria-label="Görüntüle" target="_blank">
                     <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Görüntüle</span>
                 </a>
-                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Yayından Kaldır">
+                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Durdur" aria-label="Durdur">
                     <i class="bi bi-pause-circle"></i> <span class="d-none d-md-inline">Durdur</span>
                 </button>
             }
@@ -65,7 +65,7 @@
                 </button>
             }
             
-            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle" aria-label="Düzenle">
                 <i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Düzenle</span>
             </a>
             
@@ -73,7 +73,8 @@
                     data-bs-toggle="modal" 
                     data-bs-target="#deleteConfirmModal" 
                     data-listing-id="@Model.Id"
-                    title="Sil">
+                    title="Sil"
+                    aria-label="Sil">
                 <i class="bi bi-trash"></i> <span class="d-none d-md-inline">Sil</span>
             </button>
         </div>
