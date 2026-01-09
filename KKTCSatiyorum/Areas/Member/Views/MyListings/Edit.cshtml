@@ -30,7 +30,21 @@
                         @Html.AntiForgeryToken()
                         <input type="hidden" asp-for="Id" />
                         
-                        <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
+                        @if (!ViewData.ModelState.IsValid && ViewData.ModelState[string.Empty]?.Errors.Count > 0)
+                        {
+                            <div class="alert alert-danger d-flex align-items-center mb-4">
+                                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="alert-heading fw-bold mb-1">İlan güncellenemedi</h6>
+                                    <ul class="mb-0 ps-3">
+                                        @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                                        {
+                                            <li>@error.ErrorMessage</li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        }
 
 
                         <div class="mb-3">

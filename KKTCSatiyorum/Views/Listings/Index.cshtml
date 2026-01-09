@@ -296,8 +296,15 @@
                         <div class="col-12">
                             <div class="card card-product">
                                 <div class="card-body">
-                                    <h5 class="product-title">Sonuç bulunamadı</h5>
-                                    <div class="text-muted">Arama kriterlerinizi değiştirip tekrar deneyin.</div>
+                                    @{
+                                        ViewData["StateIcon"] = "bi-box-seam";
+                                        ViewData["StateTitle"] = "Sonuç bulunamadı";
+                                        ViewData["StateMessage"] = "Arama kriterlerinizi değiştirip tekrar deneyin.";
+                                        ViewData["StateType"] = "default";
+                                        ViewData["StateActionText"] = null;
+                                        ViewData["StateSecActionText"] = null;
+                                    }
+                                    <partial name="_StateMessage" />
                                 </div>
                             </div>
                         </div>

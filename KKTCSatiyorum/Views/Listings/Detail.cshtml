@@ -12,12 +12,17 @@
     <main class="py-4">
         <div class="container">
             <div class="card">
-                <div class="card-body text-center">
-                    <h1 class="h4 mb-2">İlan bulunamadı</h1>
-                    <p class="text-muted mb-0">Aradığınız ilan yayında değil veya kaldırılmış olabilir.</p>
-                    <div class="mt-3">
-                        <a asp-controller="Listings" asp-action="Index" class="btn btn-primary">İlanlara Dön</a>
-                    </div>
+                <div class="card-body">
+                     @{
+                        ViewData["StateIcon"] = "bi-archive";
+                        ViewData["StateTitle"] = "İlan bulunamadı";
+                        ViewData["StateMessage"] = "Aradığınız ilan yayında değil veya kaldırılmış olabilir.";
+                        ViewData["StateType"] = "default";
+                        ViewData["StateActionText"] = "İlanlara Dön";
+                        ViewData["StateActionController"] = "Listings";
+                        ViewData["StateActionAction"] = "Index";
+                    }
+                    <partial name="_StateMessage" />
                 </div>
             </div>
         </div>

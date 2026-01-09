@@ -38,15 +38,17 @@
 
                     @if (hasGeneralError)
                     {
-                        <div class="alert alert-danger mb-4">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            <strong>İlan oluşturulamadı:</strong>
-                            <ul class="mb-0 mt-2">
-                                @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
-                                {
-                                    <li>@error.ErrorMessage</li>
-                                }
-                            </ul>
+                        <div class="alert alert-danger d-flex align-items-center mb-4">
+                            <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                            <div>
+                                <h6 class="alert-heading fw-bold mb-1">İlan oluşturulamadı</h6>
+                                <ul class="mb-0 ps-3">
+                                    @foreach (var error in ViewData.ModelState[string.Empty]!.Errors)
+                                    {
+                                        <li>@error.ErrorMessage</li>
+                                    }
+                                </ul>
+                            </div>
                         </div>
                     }
 

@@ -1,0 +1,64 @@
+@{
+    var icon = ViewData["StateIcon"] as string ?? "bi-info-circle";
+    var title = ViewData["StateTitle"] as string ?? "Bilgi";
+    var message = ViewData["StateMessage"] as string ?? "İşlem hakkında bilgi bulunamadı.";
+    var type = ViewData["StateType"] as string ?? "default"; // default, danger, warning, success
+    
+    // Action Link Configuration
+    var actionText = ViewData["StateActionText"] as string;
+    var actionController = ViewData["StateActionController"] as string;
+    var actionAction = ViewData["StateActionAction"] as string;
+    var actionArea = ViewData["StateActionArea"] as string ?? "";
+    var actionRouteData = ViewData["StateActionRouteData"] as Dictionary<string, string>;
+    
+    // Secondary Action
+    var secActionText = ViewData["StateSecActionText"] as string;
+    var secActionController = ViewData["StateSecActionController"] as string;
+    var secActionAction = ViewData["StateSecActionAction"] as string;
+
+    var iconClass = type switch
+    {
+        "danger" => "text-danger",
+        "warning" => "text-warning",
+        "success" => "text-success",
+        _ => "text-muted"
+    };
+
+    var btnClass = type switch
+    {
+        "danger" => "btn-danger",
+        "warning" => "btn-warning",
+        "success" => "btn-success",
+        _ => "btn-primary" // Default CTA
+    };
+}
+
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="bi @icon @iconClass" style="font-size: 4rem;"></i>
+    </div>
+    <h3 class="h4 mb-3">@title</h3>
+    <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">@message</p>
+    
+    @if (!string.IsNullOrEmpty(actionText) && !string.IsNullOrEmpty(actionAction))
+    {
+        <div class="d-flex justify-content-center gap-2">
+            <a asp-area="@actionArea" asp-controller="@actionController" asp-action="@actionAction" asp-all-route-data="@actionRouteData" class="btn @btnClass">
+                @if (actionText.Contains("Dön", StringComparison.OrdinalIgnoreCase) || actionText.Contains("Back", StringComparison.OrdinalIgnoreCase))
+                { <i class="bi bi-arrow-left me-2"></i> }
+                else if (actionText.Contains("Ana Sayfa", StringComparison.OrdinalIgnoreCase))
+                { <i class="bi bi-house me-2"></i> }
+                else 
+                { <i class="bi bi-check-lg me-2"></i> }
+                @actionText
+            </a>
+            
+            @if (!string.IsNullOrEmpty(secActionText))
+            {
+                 <a asp-area="@actionArea" asp-controller="@secActionController" asp-action="@secActionAction" class="btn btn-outline-secondary">
+                    @secActionText
+                 </a>
+            }
+        </div>
+    }
+</div>
