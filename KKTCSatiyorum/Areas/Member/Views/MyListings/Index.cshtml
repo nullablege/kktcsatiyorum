@@ -118,13 +118,8 @@
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal" 
-                                            data-bs-target="#genericConfirmModal" 
-                                            data-confirm-title="İlanı Sil"
-                                            data-confirm-body="Bu ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
-                                            data-confirm-action="@Url.Action("Delete", "MyListings", new { area = "Member" })"
-                                            data-confirm-id="@item.Id"
-                                            data-confirm-btn-text="Sil"
-                                            data-confirm-btn-class="btn btn-danger"
+                                            data-bs-target="#deleteConfirmModal" 
+                                            data-listing-id="@item.Id"
                                             title="Sil">
                                         <i class="bi bi-trash"></i>
                                     </button>
