@@ -529,45 +529,6 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.Enlem,
                 ilan.Boylam,
                 attributes,
-                ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList()
-            );
-
-            return Result<EditIlanDto>.Success(dto);
-        }
-
-        public async Task<Result<MemberListingDetailDto>> GetMemberListingDetailAsync(int ilanId, string userId, CancellationToken ct = default)
-        {
-            if (ilanId <= 0)
-                return Result<MemberListingDetailDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Geçersiz ilan ID.");
-            if (string.IsNullOrWhiteSpace(userId))
-                return Result<MemberListingDetailDto>.Fail(ErrorType.Validation, ErrorCodes.Common.ValidationError, "Kullanıcı ID boş olamaz.");
-
-            var ilan = await _ilanDal.GetForEditAsync(ilanId, userId, ct);
-            if (ilan == null)
-            {
-                return Result<MemberListingDetailDto>.Fail(ErrorType.NotFound, ErrorCodes.Ilan.NotFound, "İlan bulunamadı veya erişim yetkiniz yok.");
-            }
-
-            var attributes = ilan.AlanDegerleri.Select(ad => new EditAttributeDto(
-                 ad.KategoriAlaniId,
-                 ad.KategoriAlani?.Ad ?? "",
-                 GetRawValue(ad),
-                 ad.KategoriAlani?.VeriTipi ?? VeriTipi.Metin,
-                 ad.KategoriAlani?.Secenekler?.Select(s => new SecenekDto { Id = s.Id, Deger = s.Deger }).ToList()
-             )).ToList();
-
-            var dto = new MemberListingDetailDto(
-                ilan.Id,
-                ilan.KategoriId,
-                ilan.Baslik,
-                ilan.Aciklama,
-                ilan.Fiyat,
-                ilan.ParaBirimi,
-                ilan.Sehir,
-                ilan.Ilce,
-                ilan.Enlem,
-                ilan.Boylam,
-                attributes,
                 ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList(),
                 ilan.Durum,
                 ilan.RedNedeni,
@@ -576,7 +537,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.YayinTarihi
             );
 
-            return Result<MemberListingDetailDto>.Success(dto);
+            return Result<EditIlanDto>.Success(dto);
         }
 
         private static string? GetRawValue(IlanAlanDegeri ad)
