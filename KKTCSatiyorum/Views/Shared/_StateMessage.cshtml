@@ -2,7 +2,7 @@
     var icon = ViewData["StateIcon"] as string ?? "bi-info-circle";
     var iconClass = ViewData["StateIconClass"] as string ?? "text-muted";
     var title = ViewData["StateTitle"] as string ?? "Bilgi";
-    var message = ViewData["StateMessage"] as string ?? "";
+    var message = ViewData["StateMessage"] as string ?? "İşlem hakkında bilgi bulunamadı.";
     
     // Action Link
     var actionText = ViewData["StateActionText"] as string;
@@ -10,6 +10,7 @@
     var actionAction = ViewData["StateActionAction"] as string;
     var actionArea = ViewData["StateActionArea"] as string ?? "";
     var actionBtnClass = ViewData["StateActionBtnClass"] as string ?? "btn-primary";
+    var actionIcon = ViewData["StateActionIcon"] as string;
     
     // Secondary Action
     var secActionText = ViewData["StateSecActionText"] as string;
@@ -25,20 +26,18 @@
     <h3 class="h4 mb-3">@title</h3>
     <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">@message</p>
     
-    @if (!string.IsNullOrEmpty(actionText) && !string.IsNullOrEmpty(actionAction))
+    @if (!string.IsNullOrEmpty(actionText) && !string.IsNullOrEmpty(actionAction) && !string.IsNullOrEmpty(actionController))
     {
         <div class="d-flex justify-content-center gap-2">
             <a asp-area="@actionArea" asp-controller="@actionController" asp-action="@actionAction" class="btn @actionBtnClass">
-                @if (actionText.Contains("Dön") || actionText.Contains("Back"))
-                { <i class="bi bi-arrow-left me-2"></i> }
-                else if (actionText.Contains("Ana Sayfa"))
-                { <i class="bi bi-house me-2"></i> }
-                else 
-                { <i class="bi bi-check-lg me-2"></i> }
+                @if (!string.IsNullOrEmpty(actionIcon))
+                {
+                    <i class="bi @actionIcon me-2"></i>
+                }
                 @actionText
             </a>
             
-            @if (!string.IsNullOrEmpty(secActionText) && !string.IsNullOrEmpty(secActionAction))
+            @if (!string.IsNullOrEmpty(secActionText) && !string.IsNullOrEmpty(secActionAction) && !string.IsNullOrEmpty(secActionController))
             {
                  <a asp-area="@secActionArea" asp-controller="@secActionController" asp-action="@secActionAction" class="btn btn-outline-secondary">
                     @secActionText
