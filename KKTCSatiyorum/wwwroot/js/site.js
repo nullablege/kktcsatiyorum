@@ -4,8 +4,15 @@ document.addEventListener('DOMContentLoaded', function () {
         deleteConfirmModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var listingId = button.getAttribute('data-listing-id');
+            var url = button.getAttribute('data-url');
+
             var input = deleteConfirmModal.querySelector('#deleteListingId');
             if (input) input.value = listingId;
+
+            var form = deleteConfirmModal.querySelector('form');
+            if (form && url) {
+                form.action = url;
+            }
         });
     }
     var mapEl = document.getElementById('staticMap');

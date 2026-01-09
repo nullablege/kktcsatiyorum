@@ -1,106 +1,83 @@
+@using EntityLayer.Enums
 @model KKTCSatiyorum.Areas.Admin.Models.CreateKategoriAlaniViewModel
-
 @{
-    ViewData["Title"] = "Yeni Alan Oluştur";
+    ViewData["Title"] = "Yeni Özellik";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<main class="admin-content">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Yeni Alan Oluştur</h1>
-            <p class="text-muted mb-0">@Model.KategoriAdi kategorisine yeni alan ekle</p>
-        </div>
-        <a class="btn btn-outline-secondary"
-           asp-action="Index"
-           asp-route-kategoriId="@Model.KategoriId">
-            <i class="bi bi-arrow-left me-1"></i> Geri
-        </a>
+         <h1 class="h3 mb-0 text-gray-800">Yeni Özellik Ekle</h1>
     </div>
 
-    <div class="card">
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Özellik Detayları</h6>
+        </div>
         <div class="card-body">
-            <form asp-action="Create" method="post" novalidate>
-                @Html.AntiForgeryToken()
+            <form asp-action="Create" method="post">
                 <input type="hidden" asp-for="KategoriId" />
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
-
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Ad" class="form-label"></label>
-                        <input asp-for="Ad" class="form-control" placeholder="örn: Marka" />
-                        <span asp-validation-for="Ad" class="text-danger"></span>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <label asp-for="Anahtar" class="form-label"></label>
-                        <input asp-for="Anahtar" class="form-control" placeholder="örn: marka" />
-                        <small class="text-muted">Sadece küçük harf, rakam ve alt çizgi</small>
-                        <span asp-validation-for="Anahtar" class="text-danger"></span>
-                    </div>
+                <div class="mb-3">
+                    <label asp-for="Ad" class="form-label">Özellik Adı</label>
+                    <input asp-for="Ad" class="form-control" />
+                    <span asp-validation-for="Ad" class="text-danger small"></span>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label asp-for="VeriTipi" class="form-label"></label>
-                        <select asp-for="VeriTipi" asp-items="Model.VeriTipiOptions" class="form-select" id="veriTipiSelect"></select>
-                        <span asp-validation-for="VeriTipi" class="text-danger"></span>
-                    </div>
+                <div class="mb-3">
+                    <label asp-for="Anahtar" class="form-label">Anahtar (Kod)</label>
+                    <input asp-for="Anahtar" class="form-control" placeholder="orn-renk" />
+                    <span asp-validation-for="Anahtar" class="text-danger small"></span>
+                </div>
 
-                    <div class="col-md-4 mb-3">
-                        <label asp-for="SiraNo" class="form-label"></label>
-                        <input asp-for="SiraNo" class="form-control" type="number" min="0" />
-                        <span asp-validation-for="SiraNo" class="text-danger"></span>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label asp-for="VeriTipi" class="form-label">Veri Tipi</label>
+                        <select asp-for="VeriTipi" asp-items="Html.GetEnumSelectList<VeriTipi>()" class="form-select" id="veriTipiSelect"></select>
+                        <span asp-validation-for="VeriTipi" class="text-danger small"></span>
                     </div>
-
-                    <div class="col-md-4 mb-3 d-flex align-items-end gap-4">
-                        <div class="form-check">
-                            <input class="form-check-input" asp-for="ZorunluMu" />
-                            <label class="form-check-label" asp-for="ZorunluMu"></label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" asp-for="FiltrelenebilirMi" />
-                            <label class="form-check-label" asp-for="FiltrelenebilirMi"></label>
+                     <div class="col-md-6 d-flex align-items-end">
+                        <div class="form-check mb-2">
+                            <input asp-for="ZorunluMu" class="form-check-input" />
+                            <label asp-for="ZorunluMu" class="form-check-label">Zorunlu Alan</label>
                         </div>
                     </div>
                 </div>
 
-                <div class="mb-3" id="seceneklerDiv" style="display:none;">
-                    <label asp-for="SeceneklerText" class="form-label"></label>
-                    <textarea asp-for="SeceneklerText" class="form-control" rows="3" placeholder="Kırmızı, Mavi, Yeşil, Siyah"></textarea>
-                    <small class="text-muted">Her seçeneği virgülle ayırın</small>
-                    <span asp-validation-for="SeceneklerText" class="text-danger"></span>
+                <div class="mb-3" id="seceneklerWrapper" style="display:none;">
+                    <label asp-for="SeceneklerText" class="form-label">Seçenekler (Tire ile ayırın: Kırmızı-Mavi-Yeşil)</label>
+                    <textarea asp-for="SeceneklerText" class="form-control" rows="3"></textarea>
+                    <span asp-validation-for="SeceneklerText" class="text-danger small"></span>
+                    <div class="form-text">Sadece "Tek Seçim" veri tipi için gereklidir.</div>
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-check-lg me-1"></i> Oluştur
-                    </button>
-                    <a class="btn btn-secondary" asp-action="Index" asp-route-kategoriId="@Model.KategoriId">
-                        İptal
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" asp-route-kategoriId="@Model.KategoriId" class="btn btn-outline-secondary">
+                        <i class="bi bi-x-lg me-1"></i> İptal
                     </a>
+                    <button type="submit" class="btn btn-cta btn-lg">
+                        <i class="bi bi-check-lg me-1"></i> Kaydet
+                    </button>
                 </div>
             </form>
         </div>
     </div>
-</main>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script>
-        const tekSecimValue = '@((int)VeriTipi.TekSecim)';
-        document.getElementById('veriTipiSelect').addEventListener('change', function() {
-            var seceneklerDiv = document.getElementById('seceneklerDiv');
-            if (this.value === tekSecimValue) {
-                seceneklerDiv.style.display = 'block';
+        function toggleSecenekler() {
+            var val = document.getElementById('veriTipiSelect').value;
+            var wrapper = document.getElementById('seceneklerWrapper');
+            if (val == '@((int)VeriTipi.TekSecim)') {
+                wrapper.style.display = 'block';
             } else {
-                seceneklerDiv.style.display = 'none';
+                wrapper.style.display = 'none';
             }
-        });
-        // Initial check
-        if (document.getElementById('veriTipiSelect').value === tekSecimValue) {
-            document.getElementById('seceneklerDiv').style.display = 'block';
         }
+        document.getElementById('veriTipiSelect').addEventListener('change', toggleSecenekler);
+        toggleSecenekler();
     </script>
 }

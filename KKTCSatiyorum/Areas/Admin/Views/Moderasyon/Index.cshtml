@@ -1,177 +1,137 @@
 @model KKTCSatiyorum.Areas.Admin.Models.Moderasyon.ModerasyonIndexViewModel
 @{
-    ViewData["Title"] = "Moderasyon";
+    ViewData["Title"] = "Ä°lan Moderasyonu";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<main class="admin-content">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Moderasyon Havuzu</h1>
-            <p class="text-muted mb-0">Onay bekleyen ilanlar</p>
-        </div>
+         <h1 class="h3 mb-0 text-gray-800">Ä°lan Moderasyonu</h1>
+         <span class="badge bg-warning text-dark">@Model.Listings.TotalCount Bekleyen Ä°lan</span>
     </div>
 
     @if (TempData["SuccessMessage"] != null)
     {
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-            @TempData["SuccessMessage"]
+            <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
         </div>
     }
 
-    @if (TempData["ErrorMessage"] != null)
-    {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            @TempData["ErrorMessage"]
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Kapat"></button>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Onay Bekleyen Ä°lanlar</h6>
         </div>
-    }
-
-    @if (Model.Listings.Items.Count == 0)
-    {
-        <div class="card">
-            <div class="card-body text-center py-5">
-                <i class="bi bi-check-circle text-success" style="font-size: 3rem;"></i>
-                <h5 class="mt-3">Onay bekleyen ilan yok</h5>
-                <p class="text-muted">Tüm ilanlar iþlenmiþ durumda.</p>
-            </div>
-        </div>
-    }
-    else
-    {
-        <div class="table-custom">
-            <table class="table table-hover mb-0">
-                <thead>
-                    <tr>
-                        <th>Ýlan</th>
-                        <th>Kategori</th>
-                        <th>Satýcý</th>
-                        <th>Tarih</th>
-                        <th>Ýþlem</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Listings.Items)
-                    {
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center">
-                                    @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
-                                    {
-                                        <img src="@item.KapakFotoUrl" class="rounded me-3" style="width:60px;height:40px;object-fit:cover;" alt="@item.Baslik">
-                                    }
-                                    else
-                                    {
-                                        <div class="rounded me-3 bg-secondary d-flex align-items-center justify-content-center" style="width:60px;height:40px;">
-                                            <i class="bi bi-image text-white"></i>
+        <div class="card-body">
+            @if(Model.Listings.Items.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ä°lan BaÅŸlÄ±ÄŸÄ±</th>
+                                <th>KullanÄ±cÄ±</th>
+                                <th>Tarih</th>
+                                <th>Kategori</th>
+                                <th class="text-end">Ä°ÅŸlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in Model.Listings.Items)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold">@item.Baslik</div>
+                                        <small class="text-muted">ID: @item.Id</small>
+                                    </td>
+                                    <td>@item.SahipAdSoyad</td>
+                                    <td>@item.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</td>
+                                    <td>@item.KategoriAdi</td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="@Url.Action("Detail", "Moderasyon", new { id = item.Id })" class="btn btn-outline-primary" target="_blank">
+                                                <i class="bi bi-eye"></i> Ä°ncele
+                                            </a>
+                                            <form asp-action="Approve" method="post" class="d-inline">
+                                                <input type="hidden" name="id" value="@item.Id" />
+                                                <button type="submit" class="btn btn-success" onclick="return confirm('Bu ilanÄ± onaylamak istediÄŸinize emin misiniz?')">
+                                                    <i class="bi bi-check-lg"></i> Onayla
+                                                </button>
+                                            </form>
+                                            <button type="button" class="btn btn-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#rejectModal" 
+                                                    data-id="@item.Id"
+                                                    data-title="@item.Baslik">
+                                                <i class="bi bi-x-lg"></i> Reddet
+                                            </button>
                                         </div>
-                                    }
-                                    <div>
-                                        <strong>@item.Baslik</strong>
-                                        <div class="small text-muted">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "?" : item.ParaBirimi.ToString())</div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td><span class="badge bg-primary">@item.KategoriAdi</span></td>
-                            <td>
-                                <div>@item.SahipAdSoyad</div>
-                                <small class="text-muted">@item.SahipEmail</small>
-                            </td>
-                            <td><small>@item.OlusturmaTarihi.ToString("dd.MM.yyyy HH:mm")</small></td>
-                            <td>
-                                <form asp-action="Approve" method="post" class="d-inline">
-                                    <input type="hidden" name="id" value="@item.Id" />
-                                    <button type="submit" class="btn btn-sm btn-success me-1" title="Onayla">
-                                        <i class="bi bi-check-lg"></i>
-                                    </button>
-                                </form>
-                                <button type="button" class="btn btn-sm btn-danger" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#rejectModal"
-                                        data-listing-id="@item.Id"
-                                        data-listing-title="@item.Baslik" 
-                                        title="Reddet">
-                                    <i class="bi bi-x-lg"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @if(Model.Listings.TotalPages > 1)
+                {
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                             <li class="page-item disabled"><span class="page-link">Sayfa @Model.Listings.Page / @((int)Math.Ceiling(Model.Listings.TotalCount / (double)Model.Listings.PageSize))</span></li>
+                        </ul>
+                    </nav>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-check2-all fs-1 text-success"></i>
+                    <p class="text-muted mt-2">Bekleyen ilan yok. Hepsi gÃ¼ncel!</p>
+                </div>
+            }
         </div>
+    </div>
+</div>
 
-        @if (Model.Listings.TotalPages > 1)
-        {
-            <nav class="mt-4">
-                <ul class="pagination pagination-custom justify-content-center">
-                    <li class="page-item @(Model.Listings.HasPreviousPage ? "" : "disabled")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.Listings.Page - 1)">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    @for (int i = 1; i <= Model.Listings.TotalPages; i++)
-                    {
-                        <li class="page-item @(i == Model.Listings.Page ? "active" : "")">
-                            <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                        </li>
-                    }
-                    <li class="page-item @(Model.Listings.HasNextPage ? "" : "disabled")">
-                        <a class="page-link" asp-action="Index" asp-route-page="@(Model.Listings.Page + 1)">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        }
-    }
-</main>
-
-<div class="modal fade" id="rejectModal" tabindex="-1" aria-labelledby="rejectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form asp-action="Reject" method="post">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="rejectModalLabel">Ýlaný Reddet</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
-                </div>
-                <div class="modal-body">
-                    <input type="hidden" name="ListingId" id="rejectListingId" />
-                    <p class="mb-3">
-                        <strong id="rejectListingTitle"></strong> ilanýný reddetmek üzeresiniz.
-                    </p>
+            <div class="modal-header">
+                <h5 class="modal-title">Ä°lanÄ± Reddet</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="Reject" method="post" id="rejectForm">
+                    <input type="hidden" id="rejectListingId" name="id" />
                     <div class="mb-3">
-                        <label for="RedNedeni" class="form-label">Red Sebebi <span class="text-danger">*</span></label>
-                        <textarea class="form-control" id="RedNedeni" name="RedNedeni" rows="3" 
-                                  placeholder="Kullanýcýya gönderilecek red sebebini yazýn..." 
-                                  required maxlength="200"></textarea>
-                        <div class="form-text">Maksimum 200 karakter</div>
+                        <label for="RedNedeni" class="form-label">Red Nedeni</label>
+                        <textarea class="form-control" id="RedNedeni" name="reason" rows="3" required></textarea>
+                        <div class="form-text">KullanÄ±cÄ±ya bu neden gÃ¶sterilecektir.</div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Ýptal</button>
-                    <button type="submit" class="btn btn-danger">Reddet</button>
-                </div>
-            </form>
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Ä°ptal</button>
+                        <button type="submit" class="btn btn-danger">Reddet</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 @section Scripts {
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var rejectModal = document.getElementById('rejectModal');
-            if (rejectModal) {
-                rejectModal.addEventListener('show.bs.modal', function (event) {
-                    var button = event.relatedTarget;
-                    var listingId = button.getAttribute('data-listing-id');
-                    var listingTitle = button.getAttribute('data-listing-title');
-                    
-                    document.getElementById('rejectListingId').value = listingId;
-                    document.getElementById('rejectListingTitle').textContent = listingTitle;
-                    document.getElementById('RedNedeni').value = '';
-                });
-            }
+        var rejectModal = document.getElementById('rejectModal');
+        rejectModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var listingId = button.getAttribute('data-id');
+            var listingTitle = button.getAttribute('data-title');
+            
+            var modalTitle = rejectModal.querySelector('.modal-title');
+            var inputId = rejectModal.querySelector('#rejectListingId');
+            
+            modalTitle.textContent = 'Ä°lanÄ± Reddet: ' + listingTitle;
+            inputId.value = listingId;
+            document.getElementById('RedNedeni').value = '';
         });
     </script>
 }

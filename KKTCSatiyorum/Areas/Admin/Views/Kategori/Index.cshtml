@@ -1,169 +1,114 @@
 @model KKTCSatiyorum.Areas.Admin.Models.KategoriIndexViewModel
-
-
 @{
-    ViewData["Title"] = "Kategori Yönetimi";
+    ViewData["Title"] = "Kategoriler";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<main class="admin-content">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Kategori Yönetimi</h1>
-            <p class="text-muted mb-0">Kategorileri yönetin</p>
-        </div>
-
-        <a class="btn btn-primary"
-           asp-area="Admin"
-           asp-controller="Kategori"
-           asp-action="Create">
+         <h1 class="h3 mb-0 text-gray-800">Kategori YÃ¶netimi</h1>
+         <a asp-action="Create" class="btn btn-cta">
             <i class="bi bi-plus-lg me-1"></i> Yeni Kategori
-        </a>
+         </a>
     </div>
 
-    @if (TempData["SuccessMessage"] is string ok)
-    {
-        <div class="alert alert-success">@ok</div>
-    }
-    @if (TempData["ErrorMessage"] is string err)
-    {
-        <div class="alert alert-danger">@err</div>
-    }
-
-    <div class="row g-4">
-        <div class="col-lg-5">
-            <div class="card">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">Kategoriler</h5>
-                </div>
-
-                <div class="card-body p-0">
-                    <div class="list-group list-group-flush">
-                        @if (Model.Items.Count == 0)
-                        {
-                            <div class="list-group-item text-muted">
-                                Henüz kategori yok.
-                            </div>
-                        }
-                        else
-                        {
-                            foreach (var item in Model.Items)
-                            {
-                                <div class="list-group-item d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <i class="bi bi-folder text-primary me-2"></i>
-                                        <strong>@item.Ad</strong>
-
-                                        <span class="badge bg-light text-dark ms-2">@item.SeoSlug</span>
-
-                                        <div class="small text-muted mt-1">
-                                            Id: @item.Id • Parent: @(item.UstKategoriId?.ToString() ?? "-") • Sýra: @item.SiraNo
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-column align-items-end gap-2">
-                                        <span class="badge-status @(item.AktifMi ? "badge-success" : "badge-danger")">
-                                            @(item.AktifMi ? "Aktif" : "Pasif")
-                                        </span>
-
-                                        <div class="d-flex gap-1">
-                                            <a class="btn btn-sm btn-outline-secondary"
-                                               asp-area="Admin"
-                                               asp-controller="Kategori"
-                                               asp-action="Index"
-                                               asp-route-id="@item.Id">
-                                                <i class="bi bi-pencil"></i>
-                                            </a>
-
-                                            <form asp-area="Admin"
-                                                  asp-controller="Kategori"
-                                                  asp-action="SoftDelete"
-                                                  asp-route-id="@item.Id"
-                                                  method="post">
-                                                @Html.AntiForgeryToken()
-                                                <button type="submit"
-                                                        class="btn btn-sm btn-outline-danger"
-                                                        onclick="return confirm('Kategori pasife çekilsin mi?');">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            }
-                        }
-                    </div>
-                </div>
-            </div>
-        </div>
-
+    <div class="row">
         <div class="col-lg-7">
-            <div class="card">
-                <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                    <div>
-                        <h5 class="mb-0">Kategori Detay</h5>
-                        <small class="text-muted">Kategori Detaylarý</small>
-                    </div>
+             <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Kategoriler</h6>
                 </div>
                 <div class="card-body">
-                    @if (Model.Selected == null)
+                    @if(Model.Items.Any())
                     {
-                        <div class="alert alert-info mb-0">
-                            Düzenlemek için soldan bir kategori seç.
+                        <div class="list-group">
+                            @foreach(var item in Model.Items)
+                            {
+                                 <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-0">@item.Ad</h6>
+                                        <small class="text-muted">ID: @item.Id</small>
+                                    </div>
+                                    <div class="btn-group btn-group-sm">
+                                        <a asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#deleteConfirmModal" 
+                                                data-listing-id="@item.Id"
+                                                data-url="@Url.Action("Delete", "Kategori", new { area = "Admin", id = item.Id })">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                 </div>
+                            }
                         </div>
                     }
                     else
                     {
-                        <form asp-area="Admin" asp-controller="Kategori" asp-action="Update" method="post" novalidate>
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" asp-for="Selected.Id" />
-
-                            <div asp-validation-summary="ModelOnly" class="alert alert-danger mb-3"></div>
-
-                            <div class="mb-3">
-                                <label asp-for="Selected.Ad" class="form-label"></label>
-                                <input asp-for="Selected.Ad" class="form-control" />
-                                <span asp-validation-for="Selected.Ad" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="Selected.UstKategoriId" class="form-label"></label>
-                                <select asp-for="Selected.UstKategoriId" asp-items="Model.Selected.UstKategoriOptions" class="form-select"></select>
-                                <span asp-validation-for="Selected.UstKategoriId" class="text-danger"></span>
-                            </div>
-
-                            <div class="mb-3">
-                                <label asp-for="Selected.SiraNo" class="form-label"></label>
-                                <input asp-for="Selected.SiraNo" class="form-control" type="number" min="1" />
-                                <span asp-validation-for="Selected.SiraNo" class="text-danger"></span>
-                            </div>
-
-                            <div class="form-check mb-3">
-                                <input class="form-check-input" asp-for="Selected.AktifMi" />
-                                <label class="form-check-label" asp-for="Selected.AktifMi"></label>
-                            </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-check-lg me-1"></i> Güncelle
-                                </button>
-                                <a class="btn btn-secondary"
-                                   asp-area="Admin"
-                                   asp-controller="Kategori"
-                                   asp-action="Index">
-                                    Temizle
-                                </a>
-                            </div>
-                        </form>
+                        <div class="text-center py-4">
+                            <i class="bi bi-folder-x fs-1 text-muted"></i>
+                            <p class="text-muted mt-2">Kategori bulunamadÄ±.</p>
+                        </div>
                     }
-
                 </div>
-            </div>
+             </div>
+        </div>
+        
+        <div class="col-lg-5">
+             @if(Model.Selected != null)
+             {
+                 <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <h6 class="m-0 font-weight-bold text-primary">DÃ¼zenle: @Model.Selected.Ad</h6>
+                         <a asp-action="Index" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x"></i> Kapat</a>
+                    </div>
+                    <div class="card-body">
+                         <form asp-action="Edit" method="post">
+                            <input type="hidden" asp-for="Selected.Id" />
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Selected.Ad" class="form-label">Kategori AdÄ±</label>
+                                <input asp-for="Selected.Ad" class="form-control" />
+                                <span asp-validation-for="Selected.Ad" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Selected.UstKategoriId" class="form-label">Ãœst Kategori</label>
+                                <select asp-for="Selected.UstKategoriId" asp-items="Model.Selected.UstKategoriOptions" class="form-select">
+                                    <option value="">-- Ana Kategori --</option>
+                                </select>
+                                <span asp-validation-for="Selected.UstKategoriId" class="text-danger small"></span>
+                            </div>
+
+                             <div class="d-flex justify-content-end mt-4">
+                                <button type="submit" class="btn btn-cta">
+                                    <i class="bi bi-check-lg me-1"></i> GÃ¼ncelle
+                                </button>
+                            </div>
+                         </form>
+                    </div>
+                 </div>
+             }
+             else
+             {
+                 <div class="card shadow mb-4 border-left-info">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-info-circle fs-4 text-info me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">DÃ¼zenleme Modu</h6>
+                                <p class="mb-0 small text-muted">Bir kategoriyi dÃ¼zenlemek iÃ§in listeden "kalem" ikonuna tÄ±klayÄ±n.</p>
+                            </div>
+                        </div>
+                    </div>
+                 </div>
+             }
         </div>
     </div>
-</main>
-
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

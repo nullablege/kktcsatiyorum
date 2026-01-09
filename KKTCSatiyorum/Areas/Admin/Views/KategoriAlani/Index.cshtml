@@ -1,145 +1,101 @@
+@using EntityLayer.Enums
 @model KKTCSatiyorum.Areas.Admin.Models.KategoriAlaniIndexViewModel
-
 @{
-    ViewData["Title"] = "Kategori Alanları Yönetimi";
+    ViewData["Title"] = "Özellik Yönetimi";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
-<main class="admin-content">
+<div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="h3 mb-1">Kategori Alanları</h1>
-            <p class="text-muted mb-0">EAV (Entity-Attribute-Value) alanlarını yönetin</p>
-        </div>
+         <div>
+             <h1 class="h3 mb-1 text-gray-800">Özellik Yönetimi</h1>
+             <p class="mb-0 text-muted">@Model.KategoriAdi</p>
+         </div>
+         <div>
+             <a asp-controller="Kategori" asp-action="Index" class="btn btn-outline-secondary me-2">
+                 <i class="bi bi-arrow-left me-1"></i> Kategorilere Dön
+             </a>
+             <a asp-action="Create" asp-route-kategoriId="@Context.Request.Query["kategoriId"]" class="btn btn-cta">
+                <i class="bi bi-plus-lg me-1"></i> Yeni Özellik
+             </a>
+         </div>
     </div>
 
-    @if (TempData["SuccessMessage"] is string ok)
-    {
-        <div class="alert alert-success">@ok</div>
-    }
-    @if (TempData["ErrorMessage"] is string err)
-    {
-        <div class="alert alert-danger">@err</div>
-    }
-
-    <div class="card mb-4">
-        <div class="card-header bg-white">
-            <h5 class="mb-0">Kategori Seçin</h5>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Özellikler</h6>
         </div>
         <div class="card-body">
-            <form method="get" asp-action="Index" class="row g-3 align-items-end">
-                <div class="col-md-6">
-                    <label class="form-label">Kategori</label>
-                    <select name="kategoriId" class="form-select" onchange="this.form.submit()">
-                        @foreach (var item in Model.KategoriOptions)
-                        {
-                            <option value="@item.Value" selected="@(item.Value == Model.SelectedKategoriId?.ToString())">@item.Text</option>
-                        }
-                    </select>
+            @if(Model.Items.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ad</th>
+                                <th>Veri Tipi</th>
+                                <th class="text-center">Zorunlu</th>
+                                <th class="text-center">Seçenekler</th>
+                                <th class="text-end">İşlemler</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(var item in Model.Items)
+                            {
+                                <tr>
+                                    <td>@item.Ad</td>
+                                    <td>@item.VeriTipi</td>
+                                    <td class="text-center">
+                                        @if(item.ZorunluMu)
+                                        {
+                                            <i class="bi bi-check-circle-fill text-success"></i>
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-dash-circle text-muted"></i>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        @if(item.VeriTipi == VeriTipi.TekSecim)
+                                        {
+                                            <span class="badge bg-info">@item.SecenekSayisi</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">-</span>
+                                        }
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            <button type="button" class="btn btn-outline-danger" 
+                                                    data-bs-toggle="modal" 
+                                                    data-bs-target="#deleteConfirmModal" 
+                                                    data-listing-id="@item.Id"
+                                                    data-url="@Url.Action("Delete", "KategoriAlani", new { area = "Admin", id = item.Id })">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
                 </div>
-                <div class="col-md-6">
-                    @if (Model.SelectedKategoriId.HasValue)
-                    {
-                        <a class="btn btn-primary"
-                           asp-action="Create"
-                           asp-route-kategoriId="@Model.SelectedKategoriId">
-                            <i class="bi bi-plus-lg me-1"></i> Yeni Alan
-                        </a>
-                    }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-list-check fs-1 text-muted"></i>
+                    <p class="text-muted mt-2">Bu kategoride henüz tanımlanmış özellik yok.</p>
                 </div>
-            </form>
+            }
         </div>
     </div>
+</div>
 
-    @if (Model.SelectedKategoriId.HasValue)
-    {
-        <div class="card">
-            <div class="card-header bg-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">@Model.KategoriAdi - Alanlar</h5>
-                <span class="badge bg-primary">@Model.Items.Count alan</span>
-            </div>
-            <div class="card-body p-0">
-                @if (Model.Items.Count == 0)
-                {
-                    <div class="p-4 text-muted text-center">
-                        Bu kategoride henüz alan tanımlanmamış.
-                    </div>
-                }
-                else
-                {
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Ad</th>
-                                    <th>Anahtar</th>
-                                    <th>Veri Tipi</th>
-                                    <th>Zorunlu</th>
-                                    <th>Filtrelenebilir</th>
-                                    <th>Seçenek</th>
-                                    <th>Sıra</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var item in Model.Items)
-                                {
-                                    <tr>
-                                        <td><strong>@item.Ad</strong></td>
-                                        <td><code>@item.Anahtar</code></td>
-                                        <td>
-                                            <span class="badge bg-secondary">
-                                                @item.VeriTipi
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if (item.ZorunluMu)
-                                            {
-                                                <i class="bi bi-check-circle-fill text-success"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="bi bi-x-circle text-muted"></i>
-                                            }
-                                        </td>
-                                        <td>
-                                            @if (item.FiltrelenebilirMi)
-                                            {
-                                                <i class="bi bi-check-circle-fill text-success"></i>
-                                            }
-                                            else
-                                            {
-                                                <i class="bi bi-x-circle text-muted"></i>
-                                            }
-                                        </td>
-                                        <td>@item.SecenekSayisi</td>
-                                        <td>@item.SiraNo</td>
-                                        <td>
-                                            <div class="d-flex gap-1">
-                                                <a class="btn btn-sm btn-outline-secondary"
-                                                   asp-action="Edit"
-                                                   asp-route-id="@item.Id">
-                                                    <i class="bi bi-pencil"></i>
-                                                </a>
-                                                <form asp-action="Deactivate" method="post" class="d-inline">
-                                                    @Html.AntiForgeryToken()
-                                                    <input type="hidden" name="id" value="@item.Id" />
-                                                    <input type="hidden" name="kategoriId" value="@Model.SelectedKategoriId" />
-                                                    <button type="submit"
-                                                            class="btn btn-sm btn-outline-danger"
-                                                            onclick="return confirm('Alan pasife çekilsin mi?');">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>
-                }
-            </div>
-        </div>
-    }
-</main>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
