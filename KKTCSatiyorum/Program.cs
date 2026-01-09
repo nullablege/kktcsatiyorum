@@ -1,4 +1,4 @@
-﻿using DataAccessLayer;
+using DataAccessLayer;
 using DataAccessLayer.Abstract;
 using DataAccessLayer.Concrete;
 using BusinessLayer.Common;
@@ -13,8 +13,6 @@ using BusinessLayer.Common.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddBusinessLayer();
-
-// DI
 builder.Services.AddScoped<IIlanDal, EfIlanDal>();
 builder.Services.AddScoped<IKategoriDal, EfKategoriDal>();
 builder.Services.AddScoped<IKategoriAlaniDal, EfKategoriAlaniDal>();
@@ -30,15 +28,10 @@ builder.Services.AddScoped<IIlanAlanDegeriDal, EfIlanAlanDegeriDal>();
 
 builder.Services.AddScoped<IUygulamaKullanicisiDal, EfUygulamaKullanicisiDal>();
 builder.Services.AddScoped<IDenetimKaydiDal, EfDenetimKaydiDal>();
-
-// Presentation Layer Services
 builder.Services.AddScoped<IFileStorage, LocalFileStorage>();
 
 builder.Services.AddSignalR();
 builder.Services.AddScoped<INotificationPublisher, KKTCSatiyorum.Services.SignalRNotificationPublisher>();
-
-
-// Moderation Services
 builder.Services.Configure<KKTCSatiyorum.Integrations.Moderation.GeminiOptions>(builder.Configuration.GetSection("Gemini"));
 
 var geminiSection = builder.Configuration.GetSection("Gemini");
@@ -59,49 +52,32 @@ else
 {
     builder.Services.AddScoped<IContentModerationClient, KKTCSatiyorum.Integrations.Moderation.NoOpModerationClient>();
 }
-
-// Automapper
 builder.Services.AddAutoMapper(
     typeof(AccountProfile).Assembly
 );
-
-// Add services to the container.
 builder.Services.AddControllersWithViews();
-
-// DbContext konfigürasyonu
 builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<ICacheService, KKTCSatiyorum.Extensions.MemoryCacheService>();
 
 builder.Services.AddDbContext<Context>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
         x => x.MigrationsAssembly("DataAccessLayer")));
-
-// Identity servislerini ekle
 builder.Services.AddIdentity<UygulamaKullanicisi, IdentityRole>(options =>
 {
-    // Parola gereksinimleri
     options.Password.RequireDigit = true;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = false;
     options.Password.RequiredLength = 6;
-    
-    // Kullanıcı ayarları
     options.User.RequireUniqueEmail = true;
-    
-    // Lockout ayarları
     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
     options.Lockout.MaxFailedAccessAttempts = 5;
     options.Lockout.AllowedForNewUsers = true;
-    
-    // Sign-in ayarları
     options.SignIn.RequireConfirmedEmail = false;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
 .AddEntityFrameworkStores<Context>()
 .AddDefaultTokenProviders();
-
-// Cookie ayarları
 builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
@@ -112,8 +88,6 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
-
-// Authorization policy'leri
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy => policy.RequireRole(EntityLayer.Constants.RoleNames.Admin));
@@ -122,8 +96,6 @@ builder.Services.AddAuthorization(options =>
 });
 
 var app = builder.Build();
-
-// Uygulama başlarken Role ve Admin kullanıcısını seed et (Sadece Dev ortamında Migrate/Seed)
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -137,8 +109,6 @@ using (var scope = app.Services.CreateScope())
         logger.LogError(ex, "Seed işlemi sırasında bir hata oluştu.");
     }
 }
-
-// Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -149,13 +119,9 @@ app.UseStatusCodePagesWithReExecute("/Home/StatusCode", "?code={0}");
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
-// Global Exception Middleware
 app.UseMiddleware<KKTCSatiyorum.Middlewares.GlobalExceptionMiddleware>();
 
 app.UseRouting();
-
-// Authentication middleware (Authorization'dan önce gelmeli!)
 app.UseAuthentication();
 app.UseAuthorization();
 
