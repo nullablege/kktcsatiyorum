@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "Yeni İlan Oluştur";
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+    ViewData["NeedsLeaflet"] = true;
     
     
     var hasGeneralError = ViewData.ModelState.ContainsKey(string.Empty) && ViewData.ModelState[string.Empty]?.Errors.Count > 0;

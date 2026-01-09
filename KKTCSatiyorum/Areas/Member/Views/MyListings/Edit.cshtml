@@ -5,6 +5,7 @@
 @{
     ViewData["Title"] = "İlan Düzenle";
         Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+    ViewData["NeedsLeaflet"] = true;
     var kategoriAlanlari = ViewBag.KategoriAlanlari as List<KategoriAlaniDetailDto>;
 }
 

@@ -1,4 +1,4 @@
-@model BusinessLayer.Features.Ilanlar.DTOs.EditIlanDto
+@model BusinessLayer.Features.Ilanlar.DTOs.MemberListingDetailDto
 @using EntityLayer.Enums
 @using System.Globalization
 
@@ -6,6 +6,7 @@
     ViewData["Title"] = Model.Baslik;
     Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
     var isPublished = Model.Durum == IlanDurumu.Yayinda;
+    ViewData["NeedsLeaflet"] = true;
 }
 
 <div class="container py-4">
