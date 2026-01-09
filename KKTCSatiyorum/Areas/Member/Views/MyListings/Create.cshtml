@@ -274,12 +274,10 @@
 </main>
 
 @section Styles {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 }
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script>
         let currentStep = @initialStep, map = null, marker = null;
         function goToStep(step) {
