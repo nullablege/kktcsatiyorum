@@ -39,7 +39,7 @@
                                 var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
                             }
                             <li>
-                                <a class="dropdown-item @(currentController == "Dashboard" ? "active" : "")" asp-area="Member" asp-controller="Dashboard" asp-action="Index">
+                                <a class="dropdown-item @(currentController == "Dashboard" && currentAction == "Index" ? "active" : "")" asp-area="Member" asp-controller="Dashboard" asp-action="Index">
                                     <i class="bi bi-speedometer2 me-2"></i>Kontrol Paneli
                                 </a>
                             </li>
@@ -49,12 +49,12 @@
                                 </a>
                             </li>
                              <li>
-                                <a class="dropdown-item @(currentController == "Favorites" ? "active" : "")" asp-area="Member" asp-controller="Favorites" asp-action="Index">
+                                <a class="dropdown-item @(currentController == "Favorites" && currentAction == "Index" ? "active" : "")" asp-area="Member" asp-controller="Favorites" asp-action="Index">
                                     <i class="bi bi-heart me-2"></i>Favorilerim
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item @(currentController == "Profile" ? "active" : "")" asp-area="Member" asp-controller="Profile" asp-action="Edit">
+                                <a class="dropdown-item @(currentController == "Profile" && currentAction == "Edit" ? "active" : "")" asp-area="Member" asp-controller="Profile" asp-action="Edit">
                                     <i class="bi bi-gear me-2"></i>Hesap Ayarları
                                 </a>
                             </li>

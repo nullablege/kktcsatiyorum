@@ -6,7 +6,7 @@
 <main class="main-content">
     <div class="container py-5">
         <div class="content-section" style="max-width: 600px; margin: 0 auto;">
-            @await Html.PartialAsync("~/Views/Shared/_StateMessage.cshtml", new KKTCSatiyorum.Models.StateMessageViewModel {
+            <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel {
                 Title = "403 - Erişim Engellendi",
                 Message = "Bu sayfaya erişim yetkiniz bulunmuyor. Farklı bir hesap ile giriş yapmak veya ana sayfaya dönmek isteyebilirsiniz.",
                 Icon = "bi-shield-lock-fill",
@@ -21,7 +21,7 @@
                 SecActionAction = "Login",
                 SecActionController = "Account",
                 SecActionArea = ""
-            })
+            })" />
         </div>
     </div>
 </main>

@@ -31,7 +31,7 @@
 
         @if (Model.Listings.Items.Count == 0)
         {
-            @await Html.PartialAsync("~/Views/Shared/_StateMessage.cshtml", new KKTCSatiyorum.Models.StateMessageViewModel {
+            <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel {
                 Title = "Henüz ilanınız bulunmuyor",
                 Message = "İlk ilanınızı oluşturmak için aşağıdaki butona tıklayın.",
                 Icon = "bi-box-seam",
@@ -42,7 +42,7 @@
                 ActionArea = "Member",
                 ActionBtnClass = "btn-cta",
                 ActionIcon = "bi-plus-lg"
-            })
+            })" />
         }
         else
         {
