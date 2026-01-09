@@ -296,15 +296,12 @@
                         <div class="col-12">
                             <div class="card card-product">
                                 <div class="card-body">
-                                    @{
-                                        ViewData["StateIcon"] = "bi-box-seam";
-                                        ViewData["StateIconClass"] = "text-muted";
-                                        ViewData["StateTitle"] = "Sonuç bulunamadı";
-                                        ViewData["StateMessage"] = "Arama kriterlerinizi değiştirip tekrar deneyin.";
-                                        ViewData["StateActionText"] = null;
-                                        ViewData["StateSecActionText"] = null;
-                                    }
-                                    <partial name="_StateMessage" />
+                                    <partial name="_StateMessage" model='new StateMessageViewModel {
+                                        Icon = "bi-box-seam",
+                                        IconClass = "text-muted",
+                                        Title = "Sonuç bulunamadı",
+                                        Message = "Arama kriterlerinizi değiştirip tekrar deneyin."
+                                    }' />
                                 </div>
                             </div>
                         </div>

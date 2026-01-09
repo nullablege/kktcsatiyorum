@@ -50,27 +50,27 @@
                         <div class="mb-3">
                             <label asp-for="KategoriId" class="form-label fw-bold">Kategori *</label>
                             <select asp-for="KategoriId" asp-items="Model.KategoriOptions" class="form-select" id="kategoriSelect"></select>
-                            <span asp-validation-for="KategoriId" class="text-danger"></span>
+                            <span asp-validation-for="KategoriId" class="text-danger small"></span>
                         </div>
 
 
                         <div class="mb-3">
                             <label asp-for="Baslik" class="form-label fw-bold">İlan Başlığı *</label>
                             <input asp-for="Baslik" class="form-control" />
-                            <span asp-validation-for="Baslik" class="text-danger"></span>
+                            <span asp-validation-for="Baslik" class="text-danger small"></span>
                         </div>
 
                         <div class="mb-3">
                             <label asp-for="Aciklama" class="form-label fw-bold">Açıklama *</label>
                             <textarea asp-for="Aciklama" class="form-control" rows="5"></textarea>
-                            <span asp-validation-for="Aciklama" class="text-danger"></span>
+                            <span asp-validation-for="Aciklama" class="text-danger small"></span>
                         </div>
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Fiyat" class="form-label fw-bold">Fiyat *</label>
                                 <input asp-for="Fiyat" type="number" step="0.01" min="0" class="form-control" />
-                                <span asp-validation-for="Fiyat" class="text-danger"></span>
+                                <span asp-validation-for="Fiyat" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="ParaBirimi" class="form-label fw-bold">Para Birimi</label>
@@ -82,12 +82,12 @@
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Sehir" class="form-label fw-bold">Şehir *</label>
                                 <input asp-for="Sehir" class="form-control" />
-                                <span asp-validation-for="Sehir" class="text-danger"></span>
+                                <span asp-validation-for="Sehir" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label asp-for="Ilce" class="form-label fw-bold">İlçe</label>
                                 <input asp-for="Ilce" class="form-control" />
-                                <span asp-validation-for="Ilce" class="text-danger"></span>
+                                <span asp-validation-for="Ilce" class="text-danger small"></span>
                             </div>
                         </div>
 
@@ -195,11 +195,11 @@
 
                         <hr />
                         
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="btn btn-warning btn-lg">
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg me-1"></i> İptal</a>
+                            <button type="submit" class="btn btn-cta btn-lg">
                                 <i class="bi bi-save me-1"></i> Değişiklikleri Kaydet
                             </button>
-                            <a asp-action="Index" class="btn btn-outline-secondary btn-lg">İptal</a>
                         </div>
                     </form>
                 </div>

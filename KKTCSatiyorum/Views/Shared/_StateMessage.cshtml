@@ -1,46 +1,27 @@
-@{
-    var icon = ViewData["StateIcon"] as string ?? "bi-info-circle";
-    var iconClass = ViewData["StateIconClass"] as string ?? "text-muted";
-    var title = ViewData["StateTitle"] as string ?? "Bilgi";
-    var message = ViewData["StateMessage"] as string ?? "İşlem hakkında bilgi bulunamadı.";
-    
-    // Action Link
-    var actionText = ViewData["StateActionText"] as string;
-    var actionController = ViewData["StateActionController"] as string;
-    var actionAction = ViewData["StateActionAction"] as string;
-    var actionArea = ViewData["StateActionArea"] as string ?? "";
-    var actionBtnClass = ViewData["StateActionBtnClass"] as string ?? "btn-primary";
-    var actionIcon = ViewData["StateActionIcon"] as string;
-    
-    // Secondary Action
-    var secActionText = ViewData["StateSecActionText"] as string;
-    var secActionController = ViewData["StateSecActionController"] as string;
-    var secActionAction = ViewData["StateSecActionAction"] as string;
-    var secActionArea = ViewData["StateSecActionArea"] as string ?? "";
-}
+@model StateMessageViewModel
 
 <div class="text-center py-5">
     <div class="mb-4">
-        <i class="bi @icon @iconClass" style="font-size: 4rem;"></i>
+        <i class="bi @Model.Icon @Model.IconClass" style="font-size: 4rem;"></i>
     </div>
-    <h3 class="h4 mb-3">@title</h3>
-    <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">@message</p>
+    <h3 class="h4 mb-3">@Model.Title</h3>
+    <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">@Model.Message</p>
     
-    @if (!string.IsNullOrEmpty(actionText) && !string.IsNullOrEmpty(actionAction) && !string.IsNullOrEmpty(actionController))
+    @if (!string.IsNullOrEmpty(Model.ActionText) && !string.IsNullOrEmpty(Model.ActionAction) && !string.IsNullOrEmpty(Model.ActionController))
     {
         <div class="d-flex justify-content-center gap-2">
-            <a asp-area="@actionArea" asp-controller="@actionController" asp-action="@actionAction" class="btn @actionBtnClass">
-                @if (!string.IsNullOrEmpty(actionIcon))
+            <a asp-area="@Model.ActionArea" asp-controller="@Model.ActionController" asp-action="@Model.ActionAction" class="btn @Model.ActionBtnClass">
+                @if (!string.IsNullOrEmpty(Model.ActionIcon))
                 {
-                    <i class="bi @actionIcon me-2"></i>
+                    <i class="bi @Model.ActionIcon me-2"></i>
                 }
-                @actionText
+                @Model.ActionText
             </a>
             
-            @if (!string.IsNullOrEmpty(secActionText) && !string.IsNullOrEmpty(secActionAction) && !string.IsNullOrEmpty(secActionController))
+            @if (!string.IsNullOrEmpty(Model.SecActionText) && !string.IsNullOrEmpty(Model.SecActionAction) && !string.IsNullOrEmpty(Model.SecActionController))
             {
-                 <a asp-area="@secActionArea" asp-controller="@secActionController" asp-action="@secActionAction" class="btn btn-outline-secondary">
-                    @secActionText
+                 <a asp-area="@Model.SecActionArea" asp-controller="@Model.SecActionController" asp-action="@Model.SecActionAction" class="btn btn-outline-secondary">
+                    @Model.SecActionText
                  </a>
             }
         </div>

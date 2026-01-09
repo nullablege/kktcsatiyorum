@@ -31,16 +31,18 @@
 
         @if (Model.Listings.Items.Count == 0)
         {
-            <div class="card">
-                <div class="card-body text-center py-5">
-                    <i class="bi bi-box-seam text-muted" style="font-size: 3rem;"></i>
-                    <h5 class="mt-3">Henüz ilanınız bulunmuyor</h5>
-                    <p class="text-muted mb-3">İlk ilanınızı oluşturmak için aşağıdaki butona tıklayın.</p>
-                    <a asp-area="Member" asp-controller="MyListings" asp-action="Create" class="btn btn-cta">
-                        <i class="bi bi-plus-lg me-1"></i> İlan Oluştur
-                    </a>
-                </div>
-            </div>
+            @await Html.PartialAsync("~/Views/Shared/_StateMessage.cshtml", new KKTCSatiyorum.Models.StateMessageViewModel {
+                Title = "Henüz ilanınız bulunmuyor",
+                Message = "İlk ilanınızı oluşturmak için aşağıdaki butona tıklayın.",
+                Icon = "bi-box-seam",
+                IconClass = "text-muted",
+                ActionText = "İlan Oluştur",
+                ActionAction = "Create",
+                ActionController = "MyListings",
+                ActionArea = "Member",
+                ActionBtnClass = "btn-cta",
+                ActionIcon = "bi-plus-lg"
+            })
         }
         else
         {

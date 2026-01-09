@@ -26,7 +26,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
-                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Listings" asp-action="Index">Ilanlar</a></li>
+                    <li class="nav-item"><a class="nav-link" asp-area="" asp-controller="Listings" asp-action="Index">İlanlar</a></li>
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     <div class="dropdown">
@@ -34,23 +34,27 @@
                             <i class="bi bi-person-circle me-1"></i> @(User.Identity?.Name ?? "Hesabım")
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end">
+                            @{
+                                var currentController = ViewContext.RouteData.Values["Controller"]?.ToString();
+                                var currentAction = ViewContext.RouteData.Values["Action"]?.ToString();
+                            }
                             <li>
-                                <a class="dropdown-item" asp-area="Member" asp-controller="Dashboard" asp-action="Index">
+                                <a class="dropdown-item @(currentController == "Dashboard" ? "active" : "")" asp-area="Member" asp-controller="Dashboard" asp-action="Index">
                                     <i class="bi bi-speedometer2 me-2"></i>Kontrol Paneli
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" asp-area="Member" asp-controller="MyListings" asp-action="Index">
+                                <a class="dropdown-item @(currentController == "MyListings" && currentAction == "Index" ? "active" : "")" asp-area="Member" asp-controller="MyListings" asp-action="Index">
                                     <i class="bi bi-grid me-2"></i>İlanlarım
                                 </a>
                             </li>
                              <li>
-                                <a class="dropdown-item" asp-area="Member" asp-controller="Favorites" asp-action="Index">
+                                <a class="dropdown-item @(currentController == "Favorites" ? "active" : "")" asp-area="Member" asp-controller="Favorites" asp-action="Index">
                                     <i class="bi bi-heart me-2"></i>Favorilerim
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" asp-area="Member" asp-controller="Profile" asp-action="Edit">
+                                <a class="dropdown-item @(currentController == "Profile" ? "active" : "")" asp-area="Member" asp-controller="Profile" asp-action="Edit">
                                     <i class="bi bi-gear me-2"></i>Hesap Ayarları
                                 </a>
                             </li>

@@ -6,21 +6,20 @@
 <main class="main-content">
     <div class="container py-5">
         <div class="content-section text-center" style="max-width: 600px; margin: 0 auto;">
-            @{
-                ViewData["StateIcon"] = "bi-search";
-                ViewData["StateIconClass"] = "text-muted";
-                ViewData["StateTitle"] = "404 - Sayfa Bulunamadı";
-                ViewData["StateMessage"] = "Aradığınız sayfa mevcut değil veya taşındı. Lütfen URL adresini kontrol edin ya da ana sayfaya dönün.";
-                ViewData["StateActionText"] = "Ana Sayfa";
-                ViewData["StateActionController"] = "Home";
-                ViewData["StateActionAction"] = "Index";
-                ViewData["StateActionBtnClass"] = "btn-cta";
-                ViewData["StateActionIcon"] = "bi-house";
-                ViewData["StateSecActionText"] = "İlanlara Göz At";
-                ViewData["StateSecActionController"] = "Listings";
-                ViewData["StateSecActionAction"] = "Index";
-            }
-            <partial name="_StateMessage" />
+            <partial name="_StateMessage" model='new StateMessageViewModel {
+                Icon = "bi-search",
+                IconClass = "text-muted",
+                Title = "404 - Sayfa Bulunamadı",
+                Message = "Aradığınız sayfa mevcut değil veya taşındı. Lütfen URL adresini kontrol edin ya da ana sayfaya dönün.",
+                ActionText = "Ana Sayfa",
+                ActionController = "Home",
+                ActionAction = "Index",
+                ActionBtnClass = "btn-cta",
+                ActionIcon = "bi-house",
+                SecActionText = "İlanlara Göz At",
+                SecActionController = "Listings",
+                SecActionAction = "Index"
+            }' />
         </div>
     </div>
 </main>

@@ -7,21 +7,20 @@
 <main class="main-content">
     <div class="container py-5">
         <div class="content-section text-center" style="max-width: 600px; margin: 0 auto;">
-                @{
-                    ViewData["StateIcon"] = "bi-exclamation-triangle";
-                    ViewData["StateIconClass"] = "text-danger";
-                    ViewData["StateTitle"] = "Bir Hata Oluştu";
-                    ViewData["StateMessage"] = "İstediğiniz sayfa yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.";
-                    ViewData["StateActionText"] = "Ana Sayfa";
-                    ViewData["StateActionController"] = "Home";
-                    ViewData["StateActionAction"] = "Index";
-                    ViewData["StateActionBtnClass"] = "btn-cta";
-                    ViewData["StateActionIcon"] = "bi-house";
-                    ViewData["StateSecActionText"] = "İletişim";
-                    ViewData["StateSecActionController"] = "Home";
-                    ViewData["StateSecActionAction"] = "Contact";
-                }
-                <partial name="_StateMessage" />
+                <partial name="_StateMessage" model='new StateMessageViewModel {
+                    Icon = "bi-exclamation-triangle",
+                    IconClass = "text-danger",
+                    Title = "Bir Hata Oluştu",
+                    Message = "İstediğiniz sayfa yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin.",
+                    ActionText = "Ana Sayfa",
+                    ActionController = "Home",
+                    ActionAction = "Index",
+                    ActionBtnClass = "btn-cta",
+                    ActionIcon = "bi-house",
+                    SecActionText = "İletişim",
+                    SecActionController = "Home",
+                    SecActionAction = "Contact"
+                }' />
 
                 @if (Model?.ShowRequestId == true)
                 {

@@ -13,18 +13,17 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                     @{
-                        ViewData["StateIcon"] = "bi-archive";
-                        ViewData["StateIconClass"] = "text-muted";
-                        ViewData["StateTitle"] = "İlan bulunamadı";
-                        ViewData["StateMessage"] = "Aradığınız ilan yayında değil veya kaldırılmış olabilir.";
-                        ViewData["StateActionText"] = "İlanlara Dön";
-                        ViewData["StateActionController"] = "Listings";
-                        ViewData["StateActionAction"] = "Index";
-                        ViewData["StateActionBtnClass"] = "btn-primary";
-                        ViewData["StateActionIcon"] = "bi-arrow-left";
-                    }
-                    <partial name="_StateMessage" />
+                    <partial name="_StateMessage" model='new StateMessageViewModel {
+                        Icon = "bi-archive",
+                        IconClass = "text-muted",
+                        Title = "İlan bulunamadı",
+                        Message = "Aradığınız ilan yayında değil veya kaldırılmış olabilir.",
+                        ActionText = "İlanlara Dön",
+                        ActionController = "Listings",
+                        ActionAction = "Index",
+                        ActionBtnClass = "btn-primary",
+                        ActionIcon = "bi-arrow-left"
+                    }' />
                 </div>
             </div>
         </div>
