@@ -1,0 +1,208 @@
+@model BusinessLayer.Features.Ilanlar.DTOs.EditIlanDto
+@using EntityLayer.Enums
+@using System.Globalization
+
+@{
+    ViewData["Title"] = Model.Baslik;
+    Layout = "~/Areas/Member/Views/Shared/_MemberLayout.cshtml";
+    var isPublished = Model.Durum == IlanDurumu.Yayinda;
+}
+
+<div class="container py-4">
+    <!-- Header & Action Bar -->
+    <div class="d-flex justify-content-between align-items-start mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2 mb-2">
+                @switch (Model.Durum)
+                {
+                    case IlanDurumu.Taslak:
+                        <span class="badge bg-secondary">Taslak</span>
+                        break;
+                    case IlanDurumu.OnayBekliyor:
+                        <span class="badge bg-warning text-dark">Onay Bekliyor</span>
+                        break;
+                    case IlanDurumu.Yayinda:
+                        <span class="badge bg-success">Yayında</span>
+                        break;
+                    case IlanDurumu.Reddedildi:
+                        <span class="badge bg-danger">Reddedildi</span>
+                        break;
+                    default:
+                        <span class="badge bg-secondary">@Model.Durum</span>
+                        break;
+                }
+                <small class="text-muted">
+                   <i class="bi bi-calendar me-1"></i>@Model.OlusturmaTarihi.ToString("dd.MM.yyyy")
+                   @if (Model.YayinTarihi.HasValue)
+                   {
+                       <span> • Yayın: @Model.YayinTarihi.Value.ToString("dd.MM.yyyy")</span>
+                   }
+                </small>
+            </div>
+            <h1 class="h3 mb-1">@Model.Baslik</h1>
+            @if (!string.IsNullOrEmpty(Model.RedNedeni))
+            {
+                <div class="text-danger small mt-1 text-truncate" style="max-width: 600px;" title="@Model.RedNedeni">
+                    <i class="bi bi-exclamation-circle me-1"></i>Red Nedeni: @Model.RedNedeni
+                </div>
+            }
+        </div>
+        
+        <div class="d-flex gap-1">
+             @if (isPublished)
+            {
+                <a asp-area="" asp-controller="Listings" asp-action="Detail" asp-route-slug="@Model.SeoSlug" class="btn btn-sm btn-outline-primary" title="Yayındaki İlanı Gör" target="_blank">
+                    <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Görüntüle</span>
+                </a>
+                <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Yayından Kaldır">
+                    <i class="bi bi-pause-circle"></i> <span class="d-none d-md-inline">Durdur</span>
+                </button>
+            }
+            else
+            {
+                 <button type="button" class="btn btn-sm btn-outline-secondary" disabled title="Yayında değil">
+                    <i class="bi bi-eye-slash"></i>
+                </button>
+            }
+            
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle">
+                <i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Düzenle</span>
+            </a>
+            
+            <button type="button" class="btn btn-sm btn-outline-danger" 
+                    data-bs-toggle="modal" 
+                    data-bs-target="#deleteConfirmModal" 
+                    data-listing-id="@Model.Id"
+                    title="Sil">
+                <i class="bi bi-trash"></i> <span class="d-none d-md-inline">Sil</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <!-- Photos -->
+            <div class="card mb-4">
+                <div class="card-body p-0">
+                     @if (Model.Photos != null && Model.Photos.Any())
+                    {
+                        var cover = Model.Photos.FirstOrDefault(x => x.KapakMi) ?? Model.Photos.First();
+                        <img src="@cover.Url" class="img-fluid rounded-top w-100" style="max-height: 400px; object-fit: cover;" alt="@Model.Baslik" />
+                        
+                        if(Model.Photos.Count > 1) {
+                            <div class="d-flex gap-2 p-2 overflow-auto">
+                                @foreach(var p in Model.Photos) {
+                                    <img src="@p.Url" style="height: 60px; width: 80px; object-fit: cover;" class="rounded border" />
+                                }
+                            </div>
+                        }
+                    } 
+                    else 
+                    {
+                        <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 200px;">
+                            <i class="bi bi-image text-muted fs-1"></i>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Description -->
+             <div class="card mb-4">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Açıklama</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-0" style="white-space: pre-line">@Model.Aciklama</p>
+                </div>
+            </div>
+
+            <!-- Map -->
+            @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
+            {
+                 <div class="card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Konum</h5>
+                    </div>
+                    <div class="card-body p-0">
+                         <div id="staticMap" style="height: 300px;"></div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <span class="text-muted">Fiyat</span>
+                        <span class="h4 text-primary fw-bold mb-0">@Model.Fiyat.ToString("N0") @Model.ParaBirimi</span>
+                    </div>
+                     <hr/>
+                     <div class="mb-3">
+                         <label class="small text-muted d-block">Konum</label>
+                         <div>@(Model.Sehir ?? "-") / @(Model.Ilce ?? "-")</div>
+                     </div>
+                     
+                     <!-- Attributes -->
+                     @if(Model.Attributes != null && Model.Attributes.Any()) {
+                         @foreach(var attr in Model.Attributes) {
+                             if(!string.IsNullOrEmpty(attr.Value)) {
+                                 <div class="mb-2">
+                                     <label class="small text-muted d-block">@attr.Ad</label>
+                                     <div>
+                                         @if(attr.VeriTipi == EntityLayer.Enums.VeriTipi.DogruYanlis) {
+                                             @(attr.Value == "true" ? "Evet" : "Hayır")
+                                         } else if (attr.VeriTipi == EntityLayer.Enums.VeriTipi.TekSecim) {
+                                              @(attr.Secenekler?.FirstOrDefault(s => s.Id.ToString() == attr.Value)?.Deger ?? attr.Value)
+                                         } else {
+                                             @attr.Value
+                                         }
+                                     </div>
+                                 </div>
+                             }
+                         }
+                     }
+                </div>
+            </div>
+            
+             <div class="card">
+                <div class="card-body">
+                     <h6 class="card-title">Yönetim</h6>
+                     <p class="small text-muted">Bu ilanı düzenleyebilir, yayından kaldırabilir veya tamamen silebilirsiniz.</p>
+                     <div class="d-grid gap-2">
+                         <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-secondary">
+                             <i class="bi bi-pencil me-2"></i>Düzenle
+                         </a>
+                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+}
+
+@section Scripts {
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
+        {
+            <text>
+            document.addEventListener('DOMContentLoaded', function() {
+                 const lat = parseFloat('@Model.Enlem.Value.ToString(CultureInfo.InvariantCulture)');
+                 const lng = parseFloat('@Model.Boylam.Value.ToString(CultureInfo.InvariantCulture)');
+                 
+                 if(!isNaN(lat) && !isNaN(lng)) {
+                     const map = L.map('staticMap', { zoomControl: false, scrollWheelZoom: false, dragging: false }).setView([lat, lng], 13);
+                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+                     L.marker([lat, lng]).addTo(map);
+                 }
+            });
+            </text>
+        }
+    </script>
+}

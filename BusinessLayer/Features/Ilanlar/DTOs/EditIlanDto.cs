@@ -15,7 +15,12 @@ namespace BusinessLayer.Features.Ilanlar.DTOs
         decimal? Enlem,
         decimal? Boylam,
         List<EditAttributeDto> Attributes,
-        List<PhotoDto> Photos
+        List<PhotoDto> Photos,
+        IlanDurumu Durum,
+        string? RedNedeni,
+        string SeoSlug,
+        DateTime OlusturmaTarihi,
+        DateTime? YayinTarihi
     );
 
 

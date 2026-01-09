@@ -95,6 +95,23 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> Detail(int id)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Reusing GetMyListingForEditAsync as it provides safe, owned listing data with necessary details
+            // We extended EditIlanDto to include status, rejection reason, etc.
+            var result = await _ilanService.GetMyListingForEditAsync(id, userId!);
+
+            if (!result.IsSuccess)
+            {
+                TempData["ErrorMessage"] = result.Error!.Message;
+                return RedirectToAction("Index");
+            }
+
+            return View(result.Data);
+        }
+
+        [HttpGet]
         public async Task<IActionResult> Create(CancellationToken ct)
         {
             var model = new CreateIlanViewModel

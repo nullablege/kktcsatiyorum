@@ -105,7 +105,7 @@
                                 <div class="d-flex justify-content-md-end justify-content-start flex-wrap gap-1">
                                     @if (isPublished)
                                     {
-                                        <a asp-area="" asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.SeoSlug" class="btn btn-sm btn-outline-primary" title="Görüntüle" target="_blank">
+                                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary" title="Detay">
                                             <i class="bi bi-eye"></i> <span class="d-md-none">Görüntüle</span>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Yayından Kaldır">

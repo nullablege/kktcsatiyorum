@@ -529,7 +529,12 @@ namespace BusinessLayer.Features.Ilanlar.Services
                 ilan.Enlem,
                 ilan.Boylam,
                 attributes,
-                ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList()
+                ilan.Fotografler.OrderBy(f => f.SiraNo).Select(f => new PhotoDto(f.DosyaYolu, f.KapakMi, f.SiraNo)).ToList(),
+                ilan.Durum,
+                ilan.RedNedeni,
+                ilan.SeoSlug,
+                ilan.OlusturmaTarihi,
+                ilan.YayinTarihi
             );
 
             return Result<EditIlanDto>.Success(dto);
