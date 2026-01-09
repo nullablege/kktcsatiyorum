@@ -18,6 +18,7 @@ namespace BusinessLayer.Features.Ilanlar.Services
         Task<Result> DeleteMyListingAsync(int listingId, string userId, CancellationToken ct = default);
 
         Task<Result<EditIlanDto>> GetMyListingForEditAsync(int ilanId, string userId, CancellationToken ct = default);
+        Task<Result<MemberListingDetailDto>> GetMemberListingDetailAsync(int ilanId, string userId, CancellationToken ct = default);
         Task<Result> UpdateMyListingAsync(int ilanId, UpdateIlanRequest request, string userId, CancellationToken ct = default);
     }
 }

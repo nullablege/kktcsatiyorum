@@ -98,9 +98,7 @@ namespace KKTCSatiyorum.Areas.Member.Controllers
         public async Task<IActionResult> Detail(int id)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            // Reusing GetMyListingForEditAsync as it provides safe, owned listing data with necessary details
-            // We extended EditIlanDto to include status, rejection reason, etc.
-            var result = await _ilanService.GetMyListingForEditAsync(id, userId!);
+            var result = await _ilanService.GetMemberListingDetailAsync(id, userId!);
 
             if (!result.IsSuccess)
             {

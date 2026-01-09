@@ -1,4 +1,4 @@
-@model BusinessLayer.Features.Ilanlar.DTOs.EditIlanDto
+@model BusinessLayer.Features.Ilanlar.DTOs.MemberListingDetailDto
 @using EntityLayer.Enums
 @using System.Globalization
 
@@ -9,7 +9,6 @@
 }
 
 <div class="container py-4">
-    <!-- Header & Action Bar -->
     <div class="d-flex justify-content-between align-items-start mb-4">
         <div>
             <div class="d-flex align-items-center gap-2 mb-2">
@@ -80,9 +79,7 @@
     </div>
 
     <div class="row">
-        <!-- Main Content -->
         <div class="col-lg-8">
-            <!-- Photos -->
             <div class="card mb-4">
                 <div class="card-body p-0">
                      @if (Model.Photos != null && Model.Photos.Any())
@@ -107,7 +104,6 @@
                 </div>
             </div>
 
-            <!-- Description -->
              <div class="card mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Açıklama</h5>
@@ -117,7 +113,6 @@
                 </div>
             </div>
 
-            <!-- Map -->
             @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
             {
                  <div class="card mb-4">
@@ -125,13 +120,15 @@
                         <h5 class="mb-0">Konum</h5>
                     </div>
                     <div class="card-body p-0">
-                         <div id="staticMap" style="height: 300px;"></div>
+                         <div id="staticMap" style="height: 300px;" 
+                              data-lat="@Model.Enlem.Value.ToString(CultureInfo.InvariantCulture)"
+                              data-lng="@Model.Boylam.Value.ToString(CultureInfo.InvariantCulture)">
+                         </div>
                     </div>
                 </div>
             }
         </div>
 
-        <!-- Sidebar -->
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-body">
@@ -145,7 +142,6 @@
                          <div>@(Model.Sehir ?? "-") / @(Model.Ilce ?? "-")</div>
                      </div>
                      
-                     <!-- Attributes -->
                      @if(Model.Attributes != null && Model.Attributes.Any()) {
                          @foreach(var attr in Model.Attributes) {
                              if(!string.IsNullOrEmpty(attr.Value)) {
@@ -180,29 +176,10 @@
             </div>
         </div>
     </div>
-</div>
-
 @section Styles {
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="~/vendor/leaflet/leaflet.css" />
 }
 
 @section Scripts {
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script>
-        @if (Model.Enlem.HasValue && Model.Boylam.HasValue)
-        {
-            <text>
-            document.addEventListener('DOMContentLoaded', function() {
-                 const lat = parseFloat('@Model.Enlem.Value.ToString(CultureInfo.InvariantCulture)');
-                 const lng = parseFloat('@Model.Boylam.Value.ToString(CultureInfo.InvariantCulture)');
-                 
-                 if(!isNaN(lat) && !isNaN(lng)) {
-                     const map = L.map('staticMap', { zoomControl: false, scrollWheelZoom: false, dragging: false }).setView([lat, lng], 13);
-                     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-                     L.marker([lat, lng]).addTo(map);
-                 }
-            });
-            </text>
-        }
-    </script>
+    <script src="~/vendor/leaflet/leaflet.js"></script>
 }
