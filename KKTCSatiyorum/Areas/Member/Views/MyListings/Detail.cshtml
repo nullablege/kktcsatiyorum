@@ -93,7 +93,7 @@
                         if(Model.Photos.Count > 1) {
                             <div class="d-flex gap-2 p-3 overflow-auto border-top">
                                 @foreach(var p in Model.Photos) {
-                                    <div style="flex: 0 0 80px; height: 60px; cursor: pointer;" class="rounded overflow-hidden border @(p.Url == cover.Url ? "border-primary border-2" : "border-muted")">
+                                    <div style="flex: 0 0 80px; height: 60px;" class="rounded overflow-hidden border">
                                         <img src="@p.Url" style="width: 100%; height: 100%; object-fit: cover;" alt="İlan Fotoğrafı" />
                                     </div>
                                 }
@@ -173,7 +173,7 @@
                           <div class="row g-3">
                               @foreach(var attr in Model.Attributes) {
                                   if(!string.IsNullOrEmpty(attr.Value)) {
-                                      <div class="col-6">
+                                      <div class="col-12 col-md-6">
                                           <label class="small text-muted d-block mb-1">@attr.Ad</label>
                                           <div class="fw-medium small">
                                               @if(attr.VeriTipi == EntityLayer.Enums.VeriTipi.DogruYanlis) {
