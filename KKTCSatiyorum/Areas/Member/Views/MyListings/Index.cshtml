@@ -52,6 +52,7 @@
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="row g-3 align-items-center">
+                            @* Image Column *@
                             <div class="col-3 col-md-2">
                                 @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
                                 {
@@ -64,6 +65,8 @@
                                     </div>
                                 }
                             </div>
+                            
+                            @* Content Column *@
                             <div class="col-9 col-md-6">
                                 @switch (item.Durum)
                                 {
@@ -83,7 +86,7 @@
                                         <span class="badge bg-dark small">@item.Durum</span>
                                         break;
                                 }
-                                <h6 class="mb-1">@item.Baslik</h6>
+                                <h6 class="mb-1 mt-1">@item.Baslik</h6>
                                 <p class="text-primary fw-bold mb-0">@item.Fiyat.ToString("N0") @(item.ParaBirimi == EntityLayer.Enums.ParaBirimi.TRY ? "₺" : item.ParaBirimi.ToString())</p>
                                 <small class="text-muted">
                                     <i class="bi bi-calendar me-1"></i>@item.OlusturmaTarihi.ToString("dd.MM.yyyy")
@@ -94,17 +97,22 @@
                                 </small>
                                 @if (!string.IsNullOrEmpty(item.RedNedeni))
                                 {
-                                    <div class="text-danger small mt-1">@item.RedNedeni</div>
+                                    <div class="text-danger small mt-1">
+                                        <i class="bi bi-exclamation-circle me-1"></i>@item.RedNedeni
+                                    </div>
                                 }
                             </div>
-                                <div class="btn-group" role="group">
+
+                            @* Actions Column *@
+                            <div class="col-12 col-md-4">
+                                <div class="d-flex justify-content-md-end justify-content-start flex-wrap gap-1">
                                     @if (isPublished)
                                     {
                                         <a asp-area="" asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.SeoSlug" class="btn btn-sm btn-outline-primary" title="Görüntüle" target="_blank">
-                                            <i class="bi bi-eye"></i>
+                                            <i class="bi bi-eye"></i> <span class="d-md-none">Görüntüle</span>
                                         </a>
                                         <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal" title="Yayından Kaldır">
-                                            <i class="bi bi-pause-circle"></i>
+                                            <i class="bi bi-pause-circle"></i> <span class="d-md-none">Durdur</span>
                                         </button>
                                     }
                                     else
@@ -114,16 +122,19 @@
                                         </button>
                                     }
                                     <a asp-area="Member" asp-controller="MyListings" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Düzenle">
-                                        <i class="bi bi-pencil"></i>
+                                        <i class="bi bi-pencil"></i> <span class="d-md-none">Düzenle</span>
                                     </a>
                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#deleteConfirmModal" 
-                                            data-listing-id="@item.Id"
+                                            data-url="@Url.Action("Delete", "MyListings", new { area = "Member" })?id=@item.Id"
+                                            data-title="İlanı Sil"
+                                            data-body="&quot;@item.Baslik&quot; başlıklı ilanı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz."
                                             title="Sil">
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-trash"></i> <span class="d-md-none">Sil</span>
                                     </button>
                                 </div>
+                            </div>
                         </div>
                     </div>
                 </div>
