@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var rejectModal = document.getElementById('rejectModal');
     if (rejectModal) {
+        var form = rejectModal.querySelector('form');
+        var reasonInput = rejectModal.querySelector('#RedNedeni');
+
         rejectModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
             var listingId = button.getAttribute('data-id');
@@ -25,12 +28,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
             var modalTitle = rejectModal.querySelector('.modal-title');
             var inputId = rejectModal.querySelector('#rejectListingId');
-            var reasonInput = rejectModal.querySelector('#RedNedeni');
 
             if (modalTitle) modalTitle.textContent = 'İlanı Reddet: ' + listingTitle;
             if (inputId) inputId.value = listingId;
-            if (reasonInput) reasonInput.value = '';
+            if (reasonInput) {
+                reasonInput.value = '';
+                var err = reasonInput.parentElement.querySelector('.text-danger');
+                if (err) err.remove();
+            }
         });
+
+        if (form && reasonInput) {
+            form.addEventListener('submit', function (e) {
+                if (!reasonInput.value.trim()) {
+                    e.preventDefault();
+                    var existingErr = reasonInput.parentElement.querySelector('.text-danger');
+                    if (!existingErr) {
+                        var div = document.createElement('div');
+                        div.className = 'text-danger small mt-1';
+                        div.textContent = 'Lütfen red nedeni giriniz.';
+                        reasonInput.parentElement.appendChild(div);
+                    }
+                }
+            });
+        }
     }
     var mapEl = document.getElementById('staticMap');
     if (mapEl && window.L) {

@@ -29,6 +29,7 @@
                     <table class="table table-hover align-middle">
                         <thead class="table-light">
                             <tr>
+                                <th>Durum</th>
                                 <th>İlan Başlığı</th>
                                 <th>Kullanıcı</th>
                                 <th>Tarih</th>
@@ -41,6 +42,9 @@
                             {
                                 <tr>
                                     <td>
+                                        <span class="badge bg-warning text-dark">Beklemede</span>
+                                    </td>
+                                    <td>
                                         <div class="fw-bold">@item.Baslik</div>
                                         <small class="text-muted">ID: @item.Id</small>
                                     </td>
@@ -49,21 +53,23 @@
                                     <td>@item.KategoriAdi</td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-primary">
-                                                <i class="bi bi-eye"></i> İncele
+                                            <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Görüntüle" aria-label="Görüntüle">
+                                                <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Görüntüle</span>
                                             </a>
                                             <form asp-action="Approve" method="post" class="d-inline">
                                                 <input type="hidden" name="id" value="@item.Id" />
-                                                <button type="submit" class="btn btn-success">
-                                                    <i class="bi bi-check-lg"></i> Onayla
+                                                <button type="submit" class="btn btn-success" title="Onayla" aria-label="Onayla">
+                                                    <i class="bi bi-check-lg"></i> <span class="d-none d-md-inline">Onayla</span>
                                                 </button>
                                             </form>
                                             <button type="button" class="btn btn-danger" 
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#rejectModal" 
                                                     data-id="@item.Id"
-                                                    data-title="@item.Baslik">
-                                                <i class="bi bi-x-lg"></i> Reddet
+                                                    data-title="@item.Baslik"
+                                                    title="Reddet"
+                                                    aria-label="Reddet">
+                                                <i class="bi bi-x-lg"></i> <span class="d-none d-md-inline">Reddet</span>
                                             </button>
                                         </div>
                                     </td>
@@ -77,7 +83,7 @@
                 {
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
-                             <li class="page-item disabled"><span class="page-link">Sayfa @Model.Listings.Page / @((int)Math.Ceiling(Model.Listings.TotalCount / (double)Model.Listings.PageSize))</span></li>
+                            <li class="page-item disabled"><span class="page-link">Sayfa @Model.Listings.Page / @((int)Math.Ceiling(Model.Listings.TotalCount / (double)Model.Listings.PageSize))</span></li>
                         </ul>
                     </nav>
                 }
@@ -85,8 +91,8 @@
             else
             {
                 <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel { 
-                    Title = "Bekleyen İlan Yok", 
-                    Message = "Harika! Onay bekleyen tüm ilanlar incelendi.", 
+                    Title = "Bekleyen Kayıt Yok", 
+                    Message = "Bekleyen moderasyon kaydı yok.", 
                     Icon = "bi-check2-all", 
                     IconClass = "text-success" 
                 })" />
