@@ -46,12 +46,6 @@
                     </div>
                 </div>
 
-                <div class="mb-3" id="seceneklerWrapper" style="display:none;">
-                    <label asp-for="SeceneklerText" class="form-label">Seçenekler (Tire ile ayırın: Kırmızı-Mavi-Yeşil)</label>
-                    <textarea asp-for="SeceneklerText" class="form-control" rows="3"></textarea>
-                    <span asp-validation-for="SeceneklerText" class="text-danger small"></span>
-                    <div class="form-text">Sadece "Tek Seçim" veri tipi için gereklidir.</div>
-                </div>
 
                 <div class="d-flex justify-content-between mt-4">
                     <a asp-action="Index" asp-route-kategoriId="@Model.KategoriId" class="btn btn-outline-secondary">
