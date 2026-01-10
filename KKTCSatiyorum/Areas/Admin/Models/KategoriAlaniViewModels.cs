@@ -71,5 +71,6 @@ namespace KKTCSatiyorum.Areas.Admin.Models
 
         public IReadOnlyList<SelectListItem> VeriTipiOptions { get; set; } = Array.Empty<SelectListItem>();
         public IReadOnlyList<KategoriAlaniSecenegiDto> Secenekler { get; set; } = Array.Empty<KategoriAlaniSecenegiDto>();
+        public string? SeceneklerText { get; set; }
     }
 }

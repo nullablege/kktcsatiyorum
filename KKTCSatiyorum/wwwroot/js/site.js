@@ -15,6 +15,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
+
+    var rejectModal = document.getElementById('rejectModal');
+    if (rejectModal) {
+        rejectModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget;
+            var listingId = button.getAttribute('data-id');
+            var listingTitle = button.getAttribute('data-title');
+
+            var modalTitle = rejectModal.querySelector('.modal-title');
+            var inputId = rejectModal.querySelector('#rejectListingId');
+            var reasonInput = rejectModal.querySelector('#RedNedeni');
+
+            if (modalTitle) modalTitle.textContent = 'İlanı Reddet: ' + listingTitle;
+            if (inputId) inputId.value = listingId;
+            if (reasonInput) reasonInput.value = '';
+        });
+    }
     var mapEl = document.getElementById('staticMap');
     if (mapEl && window.L) {
         var lat = parseFloat(mapEl.getAttribute('data-lat'));
