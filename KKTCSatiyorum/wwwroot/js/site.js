@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (deleteConfirmModal) {
         deleteConfirmModal.addEventListener('show.bs.modal', function (event) {
             var button = event.relatedTarget;
-            var listingId = button.getAttribute('data-listing-id');
+            var listingId = button.getAttribute('data-listing-id') || button.getAttribute('data-id');
             var url = button.getAttribute('data-url');
 
             var input = deleteConfirmModal.querySelector('#deleteListingId');

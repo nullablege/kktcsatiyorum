@@ -16,7 +16,7 @@
                  <i class="bi bi-arrow-left me-1"></i> Kategorilere Dön
              </a>
              <a asp-action="Create" asp-route-kategoriId="@Context.Request.Query["kategoriId"]" class="btn btn-cta">
-                <i class="bi bi-plus-lg me-1"></i> Yeni Özellik
+                <i class="bi bi-plus-lg me-1"></i> Yeni Ekle
              </a>
          </div>
     </div>
@@ -67,13 +67,14 @@
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group btn-group-sm">
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Düzenle">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <button type="button" class="btn btn-outline-danger" 
+                                                    title="Sil"
                                                     data-bs-toggle="modal" 
                                                     data-bs-target="#deleteConfirmModal" 
-                                                    data-listing-id="@item.Id"
+                                                    data-id="@item.Id"
                                                     data-url="@Url.Action("Delete", "KategoriAlani", new { area = "Admin", id = item.Id })">
                                                 <i class="bi bi-trash"></i>
                                             </button>
@@ -87,10 +88,12 @@
             }
             else
             {
-                <div class="text-center py-5">
-                    <i class="bi bi-list-check fs-1 text-muted"></i>
-                    <p class="text-muted mt-2">Bu kategoride henüz tanımlanmış özellik yok.</p>
-                </div>
+                <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel { 
+                    Title = "Özellik Bulunamadı", 
+                    Message = "Bu kategoride henüz tanımlanmış özellik yok.", 
+                    Icon = "bi-list-check", 
+                    IconClass = "text-muted" 
+                })" />
             }
         </div>
     </div>

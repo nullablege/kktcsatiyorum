@@ -8,7 +8,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
          <h1 class="h3 mb-0 text-gray-800">Kategori Yönetimi</h1>
          <a asp-action="Create" class="btn btn-cta">
-            <i class="bi bi-plus-lg me-1"></i> Yeni Kategori
+            <i class="bi bi-plus-lg me-1"></i> Yeni Ekle
          </a>
     </div>
 
@@ -30,13 +30,14 @@
                                         <small class="text-muted">ID: @item.Id</small>
                                     </div>
                                     <div class="btn-group btn-group-sm">
-                                        <a asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-primary">
+                                        <a asp-action="Index" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Düzenle">
                                             <i class="bi bi-pencil"></i>
                                         </a>
                                         <button type="button" class="btn btn-outline-danger" 
+                                                title="Sil"
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#deleteConfirmModal" 
-                                                data-listing-id="@item.Id"
+                                                data-id="@item.Id"
                                                 data-url="@Url.Action("Delete", "Kategori", new { area = "Admin", id = item.Id })">
                                             <i class="bi bi-trash"></i>
                                         </button>
@@ -85,7 +86,10 @@
                                 <span asp-validation-for="Selected.UstKategoriId" class="text-danger small"></span>
                             </div>
 
-                             <div class="d-flex justify-content-end mt-4">
+                             <div class="d-flex justify-content-between mt-4">
+                                <a asp-action="Index" class="btn btn-outline-secondary">
+                                    <i class="bi bi-x-lg me-1"></i> İptal
+                                </a>
                                 <button type="submit" class="btn btn-cta">
                                     <i class="bi bi-check-lg me-1"></i> Güncelle
                                 </button>
