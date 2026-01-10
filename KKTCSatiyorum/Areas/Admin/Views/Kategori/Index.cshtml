@@ -47,10 +47,12 @@
                     }
                     else
                     {
-                        <div class="text-center py-4">
-                            <i class="bi bi-folder-x fs-1 text-muted"></i>
-                            <p class="text-muted mt-2">Kategori bulunamadı.</p>
-                        </div>
+                        <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel { 
+                            Title = "Kategori Bulunamadı", 
+                            Message = "Henüz sistemde kayıtlı bir kategori bulunmuyor.", 
+                            Icon = "bi-folder-x", 
+                            IconClass = "text-muted" 
+                        })" />
                     }
                 </div>
              </div>

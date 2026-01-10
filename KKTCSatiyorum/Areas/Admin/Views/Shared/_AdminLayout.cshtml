@@ -18,14 +18,14 @@
             <h4><i class="bi bi-shop me-2"></i>KKTC Admin</h4>
         </div>
         <nav class="sidebar-nav">
-            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Moderasyon" ? "active" : "")">
+            <a asp-area="Admin" asp-controller="Moderasyon" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Moderasyon" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                 <i class="bi bi-shield-check"></i> Moderasyon
             </a>
 
-            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Kategori" || ViewContext.RouteData.Values["controller"]?.ToString() == "KategoriAlani" ? "active" : "")">
+            <a asp-area="Admin" asp-controller="Kategori" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Kategori" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                 <i class="bi bi-folder"></i> Kategoriler
             </a>            
             <button type="button" class="nav-link w-100 text-start border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">
@@ -40,7 +40,7 @@
             <button type="button" class="nav-link w-100 text-start border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#demoNotAvailableModal">
                 <i class="bi bi-gear"></i> Ayarlar
             </button>
-            <a asp-area="Admin" asp-controller="Logs" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Logs" ? "active" : "")">
+            <a asp-area="Admin" asp-controller="Logs" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Logs" && ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
                 <i class="bi bi-activity"></i> Denetim Kayıtları
             </a>
             <hr class="mx-3">

@@ -16,7 +16,7 @@
                 <h5>Kategoriler</h5>
                 @{
                     var kategoriResult = await KategoriService.GetListAsync();
-                    var categories = kategoriResult.IsSuccess 
+                    var categories = (kategoriResult.IsSuccess && kategoriResult.Data != null)
                         ? kategoriResult.Data.Where(c => c.UstKategoriId == null && c.AktifMi).Take(6).ToList()
                         : new List<BusinessLayer.Features.Kategoriler.DTOs.KategoriListItemDto>();
                 }

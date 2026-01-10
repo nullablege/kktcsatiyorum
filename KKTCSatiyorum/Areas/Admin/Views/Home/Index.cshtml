@@ -77,7 +77,12 @@
                     </select>
                 </div>
                 <div class="card-body">
-                    <canvas id="statsChart" height="300"></canvas>
+                    <div class="d-flex justify-content-center align-items-center bg-light rounded" style="height:300px;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-bar-chart-line fs-1"></i>
+                            <p class="mt-2 mb-0">İstatistikler hazırlanıyor...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -106,7 +111,12 @@
                     <h5 class="mb-0">Kategori Dağılımı</h5>
                 </div>
                 <div class="card-body">
-                    <canvas id="categoryChart" height="200"></canvas>
+                    <div class="d-flex justify-content-center align-items-center bg-light rounded" style="height:200px;">
+                        <div class="text-center text-muted">
+                            <i class="bi bi-pie-chart fs-1"></i>
+                            <p class="mt-2 mb-0">Veri yok</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -122,8 +132,7 @@
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         <div class="list-group-item d-flex align-items-center">
-                            <img src="https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=60&h=40&fit=crop"
-                                 class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
+                            <div class="rounded me-3 bg-secondary bg-opacity-10" style="width:50px;height:35px;"></div>
                             <div class="flex-grow-1">
                                 <strong>2021 BMW 320i M Sport</strong>
                                 <div class="small text-muted">Mehmet Y. • 10 dk önce</div>
@@ -131,8 +140,7 @@
                             <span class="badge bg-warning">Bekliyor</span>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
-                            <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=60&h=40&fit=crop"
-                                 class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
+                            <div class="rounded me-3 bg-secondary bg-opacity-10" style="width:50px;height:35px;"></div>
                             <div class="flex-grow-1">
                                 <strong>3+1 Deniz Manzaralı Daire</strong>
                                 <div class="small text-muted">Ayşe K. • 25 dk önce</div>
@@ -140,8 +148,7 @@
                             <span class="badge bg-success">Onaylı</span>
                         </div>
                         <div class="list-group-item d-flex align-items-center">
-                            <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=60&h=40&fit=crop"
-                                 class="rounded me-3" style="width:50px;height:35px;object-fit:cover;">
+                            <div class="rounded me-3 bg-secondary bg-opacity-10" style="width:50px;height:35px;"></div>
                             <div class="flex-grow-1">
                                 <strong>iPhone 15 Pro Max</strong>
                                 <div class="small text-muted">Ali M. • 1 saat önce</div>
@@ -199,48 +206,4 @@
 
 
 @section Scripts{
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        new Chart(document.getElementById('statsChart'), {
-            type: 'line',
-            data: {
-                labels: ['1 Ara', '5 Ara', '10 Ara', '15 Ara', '20 Ara', '25 Ara', '30 Ara'],
-                datasets: [{
-                    label: 'Yeni İlanlar',
-                    data: [120, 190, 150, 220, 180, 250, 342],
-                    borderColor: '#0D6EFD',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }, {
-                    label: 'Yeni Kullanıcılar',
-                    data: [40, 55, 45, 70, 60, 85, 124],
-                    borderColor: '#198754',
-                    backgroundColor: 'rgba(25, 135, 84, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-        new Chart(document.getElementById('categoryChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Emlak', 'Vasıta', 'Elektronik', 'Ev & Yaşam', 'Diğer'],
-                datasets: [{
-                    data: [12450, 8320, 15780, 6940, 2402],
-                    backgroundColor: ['#0D6EFD', '#198754', '#FFC107', '#DC3545', '#6C757D']
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom' } }
-            }
-        });
-    </script>
 }

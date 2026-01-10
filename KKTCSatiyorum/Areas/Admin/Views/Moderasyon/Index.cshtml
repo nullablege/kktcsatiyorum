@@ -84,10 +84,12 @@
             }
             else
             {
-                <div class="text-center py-5">
-                    <i class="bi bi-check2-all fs-1 text-success"></i>
-                    <p class="text-muted mt-2">Bekleyen ilan yok. Hepsi güncel!</p>
-                </div>
+                <partial name="_StateMessage" model="@(new KKTCSatiyorum.Models.StateMessageViewModel { 
+                    Title = "Bekleyen İlan Yok", 
+                    Message = "Harika! Onay bekleyen tüm ilanlar incelendi.", 
+                    Icon = "bi-check2-all", 
+                    IconClass = "text-success" 
+                })" />
             }
         </div>
     </div>
