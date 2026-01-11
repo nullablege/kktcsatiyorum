@@ -19,6 +19,7 @@
     }
     
     ViewData["Title"] = pageTitle;
+    ViewData["Canonical"] = $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Action("Index", "Listings")}";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 
     var eavFilters = Model.Query.EavFilters ?? new Dictionary<int, string>();

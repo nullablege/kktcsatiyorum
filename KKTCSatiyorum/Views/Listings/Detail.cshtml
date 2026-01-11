@@ -8,6 +8,7 @@
     var cleanDescription = listing?.Aciklama ?? "";
     if (cleanDescription.Length > 155) cleanDescription = cleanDescription.Substring(0, 155) + "...";
     ViewData["Description"] = cleanDescription;
+    ViewData["Canonical"] = $"{Context.Request.Scheme}://{Context.Request.Host}{Url.Action("Detail", "Listings", new { slug = listing?.Slug })}";
     
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 }

@@ -1,6 +1,7 @@
 @model KKTCSatiyorum.Models.Home.HomeIndexViewModel
 @{
     ViewData["Title"] = "Ana Sayfa";
+    ViewData["Canonical"] = $"{Context.Request.Scheme}://{Context.Request.Host}/";
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
     var hasCategories = Model.Categories != null && Model.Categories.Count > 0;
 }
