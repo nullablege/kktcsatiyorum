@@ -30,16 +30,17 @@
                                         <small class="text-muted">ID: @item.Id</small>
                                     </div>
                                     <div class="btn-group btn-group-sm">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Düzenle">
-                                            <i class="bi bi-pencil"></i>
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Düzenle" aria-label="Düzenle">
+                                            <i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Düzenle</span>
                                         </a>
                                         <button type="button" class="btn btn-outline-danger" 
                                                 title="Sil"
+                                                aria-label="Sil"
                                                 data-bs-toggle="modal" 
                                                 data-bs-target="#deleteConfirmModal" 
                                                 data-id="@item.Id"
                                                 data-url="@Url.Action("Delete", "Kategori", new { area = "Admin", id = item.Id })">
-                                            <i class="bi bi-trash"></i>
+                                            <i class="bi bi-trash"></i> <span class="d-none d-md-inline">Sil</span>
                                         </button>
                                     </div>
                                  </div>
