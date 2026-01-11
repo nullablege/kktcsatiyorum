@@ -1,6 +1,24 @@
 @model ListingsIndexViewModel
 @{
-    ViewData["Title"] = string.IsNullOrEmpty(Model.Query.Q) ? "İlanlar" : $"\"{Model.Query.Q}\" için Arama Sonuçları";
+    var kategoriTextRaw = Model.Query.KategoriId.HasValue
+        ? Model.KategoriOptions.FirstOrDefault(x => x.Value == Model.Query.KategoriId.Value.ToString())?.Text
+        : null;
+
+    var pageTitle = "İlanlar";
+    if (!string.IsNullOrEmpty(Model.Query.Q))
+    {
+        pageTitle = $"\"{Model.Query.Q}\" Arama Sonuçları";
+    }
+    else if (!string.IsNullOrEmpty(kategoriTextRaw))
+    {
+        pageTitle = $"{kategoriTextRaw} İlanları";
+    }
+    else if (Model.Query.MinFiyat.HasValue || Model.Query.MaxFiyat.HasValue || !string.IsNullOrEmpty(Model.Query.Sehir))
+    {
+        pageTitle = "İlanlar - Filtreli";
+    }
+    
+    ViewData["Title"] = pageTitle;
     Layout = "~/Views/Shared/_PublicLayout.cshtml";
 
     var eavFilters = Model.Query.EavFilters ?? new Dictionary<int, string>();
@@ -51,7 +69,7 @@
                     </button>
                 </div>
                 <div class="col-lg-1">
-                    <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+                    <button class="btn btn-outline-secondary w-100" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas" aria-label="Filtrele" title="Filtrele">
                         <i class="bi bi-funnel"></i>
                     </button>
                 </div>
@@ -313,7 +331,7 @@
                             <div class="col-6 col-md-4">
                                 <a asp-controller="Listings" asp-action="Detail" asp-route-slug="@item.Slug" class="text-decoration-none">
                                     <div class="card card-product">
-                                        <button class="btn-favorite" type="button"><i class="bi bi-heart"></i></button>
+                                        <button class="btn-favorite" type="button" aria-label="Favorilere ekle" title="Favorilere ekle"><i class="bi bi-heart"></i></button>
                                         @if (!string.IsNullOrEmpty(item.KapakFotoUrl))
                                         {
                                             <img src="@item.KapakFotoUrl" class="card-img-top" alt="@item.Baslik">

@@ -7,11 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] | KKTCSatiyorum</title>
-    <meta name="description" content="@(ViewData["Description"] ?? "KKTC'nin en guvenilir ilan platformu")">
+    <meta name="description" content="@(ViewData["Description"] ?? "KKTCSatiyorum - ilanlar, kategoriler ve detaylı arama.")">
     <meta name="robots" content="index,follow">
 
     <link rel="icon" href="~/favicon.ico">
-
+    <link rel="canonical" href="@($"{Context.Request.Scheme}://{Context.Request.Host}{Context.Request.Path}")" />
 
     <meta property="og:site_name" content="KKTCSatiyorum">
     <meta property="og:type" content="website">
